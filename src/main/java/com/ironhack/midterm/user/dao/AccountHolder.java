@@ -1,5 +1,6 @@
-package com.ironhack.midterm.account.dao;
+package com.ironhack.midterm.user.dao;
 
+import com.ironhack.midterm.user.model.Address;
 import lombok.*;
 
 import javax.persistence.*;

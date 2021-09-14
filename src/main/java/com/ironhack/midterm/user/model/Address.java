@@ -1,4 +1,4 @@
-package com.ironhack.midterm.account.dao;
+package com.ironhack.midterm.user.model;
 
 import lombok.*;
 
