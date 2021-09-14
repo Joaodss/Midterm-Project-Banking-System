@@ -12,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "account_holder")
+@PrimaryKeyJoinColumn(name = "id")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

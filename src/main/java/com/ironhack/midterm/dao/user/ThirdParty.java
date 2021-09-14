@@ -4,12 +4,14 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "third_party")
+@PrimaryKeyJoinColumn(name = "id")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

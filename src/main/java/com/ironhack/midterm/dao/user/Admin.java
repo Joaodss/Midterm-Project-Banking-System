@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "admin")
+@PrimaryKeyJoinColumn(name = "id")
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
