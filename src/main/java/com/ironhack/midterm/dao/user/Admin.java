@@ -14,11 +14,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Admin extends UserType {
+public class Admin extends User {
+
 
   // ======================================== Constructors ========================================
-  public Admin(String name) {
-    super(name);
+  public Admin(String username, String password, String name) {
+    super(username, password, name);
   }
 
 

@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class AccountHolder extends UserType {
+public class AccountHolder extends User {
 
   @NotNull
   @Past
@@ -44,9 +44,6 @@ public class AccountHolder extends UserType {
   })
   private Address mailingAddress;
 
-
-  // TODO JA - apply mapping for accountType
-
   @OneToMany(mappedBy = "primaryOwner", cascade = {})
   private List<Account> primaryAccounts;
 
@@ -55,15 +52,15 @@ public class AccountHolder extends UserType {
 
 
   // ======================================== Constructors ========================================
-  public AccountHolder(String name, LocalDate dateOfBirth, Address primaryAddress, Address mailingAddress) {
-    super(name);
+  public AccountHolder(String username, String password, String name, LocalDate dateOfBirth, Address primaryAddress, Address mailingAddress) {
+    super(username, password, name);
     this.dateOfBirth = dateOfBirth;
     this.primaryAddress = primaryAddress;
     this.mailingAddress = mailingAddress;
   }
 
-  public AccountHolder(String name, LocalDate dateOfBirth, Address primaryAddress) {
-    super(name);
+  public AccountHolder(String username, String password, String name, LocalDate dateOfBirth, Address primaryAddress) {
+    super(username, password, name);
     this.dateOfBirth = dateOfBirth;
     this.primaryAddress = primaryAddress;
   }

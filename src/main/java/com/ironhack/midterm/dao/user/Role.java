@@ -6,31 +6,27 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class UserType {
+public class Role {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id")
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-  @NotNull
   @NotBlank
-  @Column(name = "name")
   private String name;
 
-
-  // TODO JA - Apply User_Role Security
+  @ManyToMany(mappedBy = "roles")
+  private Set<User> users;
 
 
   // ======================================== Constructors ========================================
-  public UserType(String name) {
+  public Role(String name) {
     this.name = name;
   }
 

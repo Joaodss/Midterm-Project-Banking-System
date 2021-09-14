@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class ThirdParty extends UserType {
+public class ThirdParty extends User {
 
   // TODO JA - Study how to setup hashed key.
   @NotNull
@@ -25,8 +25,8 @@ public class ThirdParty extends UserType {
 
 
   // ======================================== Constructors ========================================
-  public ThirdParty(String name, String hashedKey) {
-    super(name);
+  public ThirdParty(String username, String password, String name, String hashedKey) {
+    super(username, password, name);
     this.hashedKey = hashedKey;
   }
 
