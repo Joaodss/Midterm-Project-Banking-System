@@ -1,11 +1,8 @@
 package com.ironhack.midterm.account.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
@@ -15,17 +12,9 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountHolder {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-    @NotNull
-    @NotBlank
-    @Column(name = "name")
-    private String name;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class AccountHolder extends UserType {
 
     @NotNull
     @Past
@@ -53,6 +42,6 @@ public class AccountHolder {
     private Address mailingAddress;
 
 
-    // TODO JA - apply mapping
+    // TODO JA - apply mapping for accountType
 
 }

@@ -1,10 +1,10 @@
 package com.ironhack.midterm.account.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -13,17 +13,9 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThirdParty {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-    @NotNull
-    @NotBlank
-    @Column(name = "name")
-    private String name;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ThirdParty extends UserType {
 
     // TODO JA - Study how to setup hashed key.
     @NotNull
