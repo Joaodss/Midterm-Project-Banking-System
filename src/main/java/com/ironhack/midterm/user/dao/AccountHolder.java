@@ -1,5 +1,6 @@
 package com.ironhack.midterm.user.dao;
 
+import com.ironhack.midterm.account.dao.Account;
 import com.ironhack.midterm.user.model.Address;
 import lombok.*;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "account_holder")
@@ -44,6 +46,12 @@ public class AccountHolder extends UserType {
 
 
     // TODO JA - apply mapping for accountType
+
+    @OneToMany(mappedBy = "primaryOwner", cascade = {})
+    private List<Account> primaryAccounts;
+
+    @OneToMany(mappedBy = "secondaryOwner", cascade = {})
+    private List<Account> secondaryAccounts;
 
 
     // ======================================== Constructors ========================================

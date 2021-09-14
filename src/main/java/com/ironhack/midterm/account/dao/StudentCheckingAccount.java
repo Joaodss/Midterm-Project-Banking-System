@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 @ToString(callSuper = true)
 public class StudentCheckingAccount extends CheckingAccount {
 
+
     // ======================================== Constructors ========================================
     // ==================== Constructors with default creditLimit/interestRate ====================
     public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
