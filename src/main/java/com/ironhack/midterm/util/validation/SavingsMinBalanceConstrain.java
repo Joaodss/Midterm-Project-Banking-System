@@ -1,16 +1,16 @@
-package com.ironhack.midterm.account.validation;
+package com.ironhack.midterm.util.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = {CreditLimitValidation.class})
+@Constraint(validatedBy = {SavingsMinBalanceValidation.class})
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CreditLimitConstrain {
+public @interface SavingsMinBalanceConstrain {
 
-    String message() default "Invalid Credit limit";
+    String message() default "Invalid Savings Balance. Minimum of 100.";
 
     Class<?>[] groups() default {};
 

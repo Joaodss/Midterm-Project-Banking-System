@@ -1,6 +1,6 @@
-package com.ironhack.midterm.user.repository;
+package com.ironhack.midterm.repository.user;
 
-import com.ironhack.midterm.user.dao.ThirdParty;
+import com.ironhack.midterm.dao.user.ThirdParty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

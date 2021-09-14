@@ -1,4 +1,4 @@
-package com.ironhack.midterm.user.dao;
+package com.ironhack.midterm.dao.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

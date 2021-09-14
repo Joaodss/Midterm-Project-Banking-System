@@ -1,6 +1,6 @@
-package com.ironhack.midterm.user.repository;
+package com.ironhack.midterm.repository.user;
 
-import com.ironhack.midterm.user.dao.AccountHolder;
+import com.ironhack.midterm.dao.user.AccountHolder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

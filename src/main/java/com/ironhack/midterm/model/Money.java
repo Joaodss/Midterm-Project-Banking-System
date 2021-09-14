@@ -1,4 +1,4 @@
-package com.ironhack.midterm.account.model;
+package com.ironhack.midterm.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

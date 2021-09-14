@@ -1,4 +1,4 @@
-package com.ironhack.midterm.user.model;
+package com.ironhack.midterm.model;
 
 import lombok.*;
 

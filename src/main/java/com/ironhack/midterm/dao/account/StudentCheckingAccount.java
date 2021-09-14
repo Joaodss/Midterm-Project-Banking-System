@@ -1,7 +1,7 @@
-package com.ironhack.midterm.account.dao;
+package com.ironhack.midterm.dao.account;
 
-import com.ironhack.midterm.account.model.Money;
-import com.ironhack.midterm.user.dao.AccountHolder;
+import com.ironhack.midterm.model.Money;
+import com.ironhack.midterm.dao.user.AccountHolder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

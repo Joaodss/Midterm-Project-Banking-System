@@ -1,23 +1,21 @@
-package com.ironhack.midterm.account.validation;
+package com.ironhack.midterm.util.validation;
 
-import com.ironhack.midterm.account.model.Money;
+import com.ironhack.midterm.model.Money;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 
-public class CreditLimitValidation implements ConstraintValidator<CreditLimitConstrain, Money> {
+public class SavingsMinBalanceValidation implements ConstraintValidator<SavingsMinBalanceConstrain, Money> {
 
     @Override
-    public void initialize(CreditLimitConstrain constraintAnnotation) {
+    public void initialize(SavingsMinBalanceConstrain constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
     public boolean isValid(Money money, ConstraintValidatorContext constraintValidatorContext) {
         BigDecimal bd = money.getAmount();
-        return bd.compareTo(BigDecimal.ZERO) >= 0 && bd.compareTo(new BigDecimal("100000.00")) <= 0;
+        return bd.compareTo(new BigDecimal("100.00")) >= 0;
     }
-
-
 }

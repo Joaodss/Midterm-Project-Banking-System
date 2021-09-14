@@ -1,4 +1,4 @@
-package com.ironhack.midterm.account.enums;
+package com.ironhack.midterm.enums;
 
 public enum Status {
     ACTIVE,
