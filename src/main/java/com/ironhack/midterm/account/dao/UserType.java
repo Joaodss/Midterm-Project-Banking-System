@@ -29,4 +29,10 @@ public abstract class UserType {
     // TODO JA - Apply User_Role Security
 
 
+    // ======================================== Constructors ========================================
+    public UserType(String name) {
+        this.name = name;
+    }
+
+
 }

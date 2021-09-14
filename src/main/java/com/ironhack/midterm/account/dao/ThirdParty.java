@@ -24,4 +24,11 @@ public class ThirdParty extends UserType {
     private String hashedKey;
 
 
+    // ======================================== Constructors ========================================
+    public ThirdParty(String name, String hashedKey) {
+        super(name);
+        this.hashedKey = hashedKey;
+    }
+
+
 }

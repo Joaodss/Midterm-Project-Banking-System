@@ -44,4 +44,20 @@ public class AccountHolder extends UserType {
 
     // TODO JA - apply mapping for accountType
 
+
+    // ======================================== Constructors ========================================
+    public AccountHolder(String name, LocalDate dateOfBirth, Address primaryAddress, Address mailingAddress) {
+        super(name);
+        this.dateOfBirth = dateOfBirth;
+        this.primaryAddress = primaryAddress;
+        this.mailingAddress = mailingAddress;
+    }
+
+    public AccountHolder(String name, LocalDate dateOfBirth, Address primaryAddress) {
+        super(name);
+        this.dateOfBirth = dateOfBirth;
+        this.primaryAddress = primaryAddress;
+    }
+
+
 }
