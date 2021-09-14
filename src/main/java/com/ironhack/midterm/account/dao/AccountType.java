@@ -24,6 +24,7 @@ public abstract class AccountType {
     @Column(name = "id")
     private Long id;
 
+    @Valid
     @NotNull
     @CreditLimitConstrain
     @Embedded

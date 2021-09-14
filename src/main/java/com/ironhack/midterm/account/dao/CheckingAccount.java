@@ -6,6 +6,7 @@ import com.ironhack.midterm.account.enums.Status;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -29,6 +30,7 @@ public class CheckingAccount extends AccountType {
     @Column(name = "secret_key")
     private String secretKey;
 
+    @Valid
     @NotNull
     @Embedded
     @AttributeOverrides({
@@ -37,11 +39,12 @@ public class CheckingAccount extends AccountType {
     })
     private Money minimumBalance = new Money(new BigDecimal("250.00"));
 
+    @Valid
     @NotNull
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "amount", column = @Column(name = "monthly maintenance_fee_amount", nullable = false)),
-            @AttributeOverride(name = "currency", column = @Column(name = "monthly maintenance_fee_currency", nullable = false))
+            @AttributeOverride(name = "amount", column = @Column(name = "monthly_maintenance_fee_amount", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "monthly_maintenance_fee_currency", nullable = false))
     })
     private Money monthlyMaintenanceFee = new Money(new BigDecimal("12.00"));
 

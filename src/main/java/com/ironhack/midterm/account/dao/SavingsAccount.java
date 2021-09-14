@@ -7,6 +7,7 @@ import com.ironhack.midterm.account.validation.SavingsMinBalanceConstrain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class SavingsAccount extends AccountType {
     @Column(name = "secret_key")
     private String secretKey;
 
+    @Valid
     @NotNull
     @SavingsMinBalanceConstrain
     @Embedded

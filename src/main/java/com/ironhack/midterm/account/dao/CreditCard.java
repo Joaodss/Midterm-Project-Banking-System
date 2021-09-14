@@ -6,6 +6,7 @@ import com.ironhack.midterm.account.validation.CreditLimitConstrain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 @ToString(callSuper = true)
 public class CreditCard extends AccountType {
 
-
+    @Valid
     @NotNull
     @CreditLimitConstrain
     @Embedded
