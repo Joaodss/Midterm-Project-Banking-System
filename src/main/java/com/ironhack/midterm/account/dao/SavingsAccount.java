@@ -1,9 +1,9 @@
 package com.ironhack.midterm.account.dao;
 
-import com.ironhack.midterm.account.model.Money;
-import com.ironhack.midterm.user.dao.AccountHolder;
 import com.ironhack.midterm.account.enums.Status;
-import com.ironhack.midterm.account.validation.SavingsMinBalanceConstrain;
+import com.ironhack.midterm.account.model.Money;
+import com.ironhack.midterm.account.util.validation.SavingsMinBalanceConstrain;
+import com.ironhack.midterm.user.dao.AccountHolder;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,7 +21,7 @@ import java.time.ZoneId;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class SavingsAccount extends AccountType {
+public class SavingsAccount extends Account {
 
     @NotNull
     @NotBlank

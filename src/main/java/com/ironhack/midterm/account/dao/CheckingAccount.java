@@ -1,8 +1,8 @@
 package com.ironhack.midterm.account.dao;
 
+import com.ironhack.midterm.account.enums.Status;
 import com.ironhack.midterm.account.model.Money;
 import com.ironhack.midterm.user.dao.AccountHolder;
-import com.ironhack.midterm.account.enums.Status;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ import java.time.ZoneId;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class CheckingAccount extends AccountType {
+public class CheckingAccount extends Account {
 
     @NotNull
     @NotBlank

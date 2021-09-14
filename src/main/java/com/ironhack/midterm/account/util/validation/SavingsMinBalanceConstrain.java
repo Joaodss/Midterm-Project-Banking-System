@@ -1,4 +1,4 @@
-package com.ironhack.midterm.account.validation;
+package com.ironhack.midterm.account.util.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

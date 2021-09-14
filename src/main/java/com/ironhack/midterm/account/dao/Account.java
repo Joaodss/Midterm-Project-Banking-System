@@ -1,8 +1,8 @@
 package com.ironhack.midterm.account.dao;
 
 import com.ironhack.midterm.account.model.Money;
+import com.ironhack.midterm.account.util.validation.CreditLimitConstrain;
 import com.ironhack.midterm.user.dao.AccountHolder;
-import com.ironhack.midterm.account.validation.CreditLimitConstrain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,11 +13,12 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "account")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AccountType {
+public abstract class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,13 +56,13 @@ public abstract class AccountType {
 
     // ======================================== Constructors ========================================
     // ==================== Constructors with default penaltyFee ====================
-    public AccountType(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+    public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
     }
 
-    public AccountType(Money balance, AccountHolder primaryOwner) {
+    public Account(Money balance, AccountHolder primaryOwner) {
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = null;

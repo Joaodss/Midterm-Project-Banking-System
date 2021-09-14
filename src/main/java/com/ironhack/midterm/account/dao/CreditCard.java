@@ -1,8 +1,8 @@
 package com.ironhack.midterm.account.dao;
 
 import com.ironhack.midterm.account.model.Money;
+import com.ironhack.midterm.account.util.validation.CreditLimitConstrain;
 import com.ironhack.midterm.user.dao.AccountHolder;
-import com.ironhack.midterm.account.validation.CreditLimitConstrain;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class CreditCard extends AccountType {
+public class CreditCard extends Account {
 
     @Valid
     @NotNull
