@@ -15,24 +15,24 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public abstract class UserType {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
+  private Long id;
 
-    @NotNull
-    @NotBlank
-    @Column(name = "name")
-    private String name;
-
-
-    // TODO JA - Apply User_Role Security
+  @NotNull
+  @NotBlank
+  @Column(name = "name")
+  private String name;
 
 
-    // ======================================== Constructors ========================================
-    public UserType(String name) {
-        this.name = name;
-    }
+  // TODO JA - Apply User_Role Security
+
+
+  // ======================================== Constructors ========================================
+  public UserType(String name) {
+    this.name = name;
+  }
 
 
 }

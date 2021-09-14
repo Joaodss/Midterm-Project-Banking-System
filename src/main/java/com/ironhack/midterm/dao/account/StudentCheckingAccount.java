@@ -1,7 +1,7 @@
 package com.ironhack.midterm.dao.account;
 
-import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.model.Money;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,19 +21,20 @@ import java.math.BigDecimal;
 @ToString(callSuper = true)
 public class StudentCheckingAccount extends CheckingAccount {
 
-    // ======================================== Constructors ========================================
-    // ==================== Constructors with default creditLimit/interestRate ====================
-    public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
-        super(balance, primaryOwner, secondaryOwner, secretKey);
-        setMinimumBalance(new Money(new BigDecimal("0.00")));
-        setPenaltyFee(new Money(new BigDecimal("0.00")));
-        setMonthlyMaintenanceFee(new Money(new BigDecimal("0.00")));
-    }
 
-    public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, String secretKey) {
-        super(balance, primaryOwner, secretKey);
-        setMinimumBalance(new Money(new BigDecimal("0.00")));
-        setPenaltyFee(new Money(new BigDecimal("0.00")));
-        setMonthlyMaintenanceFee(new Money(new BigDecimal("0.00")));
-    }
+  // ======================================== Constructors ========================================
+  // ==================== Constructors with default creditLimit/interestRate ====================
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
+    super(balance, primaryOwner, secondaryOwner, secretKey);
+    setMinimumBalance(new Money(new BigDecimal("0.00")));
+    setPenaltyFee(new Money(new BigDecimal("0.00")));
+    setMonthlyMaintenanceFee(new Money(new BigDecimal("0.00")));
+  }
+
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, String secretKey) {
+    super(balance, primaryOwner, secretKey);
+    setMinimumBalance(new Money(new BigDecimal("0.00")));
+    setPenaltyFee(new Money(new BigDecimal("0.00")));
+    setMonthlyMaintenanceFee(new Money(new BigDecimal("0.00")));
+  }
 }

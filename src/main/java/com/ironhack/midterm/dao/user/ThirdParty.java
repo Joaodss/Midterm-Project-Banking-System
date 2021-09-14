@@ -17,18 +17,18 @@ import javax.validation.constraints.NotNull;
 @ToString(callSuper = true)
 public class ThirdParty extends UserType {
 
-    // TODO JA - Study how to setup hashed key.
-    @NotNull
-    @NotBlank
-    @Column(name = "hashed_key")
-    private String hashedKey;
+  // TODO JA - Study how to setup hashed key.
+  @NotNull
+  @NotBlank
+  @Column(name = "hashed_key")
+  private String hashedKey;
 
 
-    // ======================================== Constructors ========================================
-    public ThirdParty(String name, String hashedKey) {
-        super(name);
-        this.hashedKey = hashedKey;
-    }
+  // ======================================== Constructors ========================================
+  public ThirdParty(String name, String hashedKey) {
+    super(name);
+    this.hashedKey = hashedKey;
+  }
 
 
 }

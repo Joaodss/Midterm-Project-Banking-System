@@ -8,14 +8,14 @@ import java.math.BigDecimal;
 
 public class SavingsMinBalanceValidation implements ConstraintValidator<SavingsMinBalanceConstrain, Money> {
 
-    @Override
-    public void initialize(SavingsMinBalanceConstrain constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
+  @Override
+  public void initialize(SavingsMinBalanceConstrain constraintAnnotation) {
+    ConstraintValidator.super.initialize(constraintAnnotation);
+  }
 
-    @Override
-    public boolean isValid(Money money, ConstraintValidatorContext constraintValidatorContext) {
-        BigDecimal bd = money.getAmount();
-        return bd.compareTo(new BigDecimal("100.00")) >= 0;
-    }
+  @Override
+  public boolean isValid(Money money, ConstraintValidatorContext constraintValidatorContext) {
+    BigDecimal bd = money.getAmount();
+    return bd.compareTo(new BigDecimal("100.00")) >= 0;
+  }
 }

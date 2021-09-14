@@ -14,16 +14,16 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class Address {
 
-    @NotBlank
-    private String streetAddress;
+  @NotBlank
+  private String streetAddress;
 
-    @NotBlank
-    private String postalCode;
+  @NotBlank
+  private String postalCode;
 
-    @NotBlank
-    private String city;
+  @NotBlank
+  private String city;
 
-    @NotBlank
-    private String country;
+  @NotBlank
+  private String country;
 
 }

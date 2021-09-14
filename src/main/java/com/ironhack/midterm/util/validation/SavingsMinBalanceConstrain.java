@@ -10,10 +10,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SavingsMinBalanceConstrain {
 
-    String message() default "Invalid Savings Balance. Minimum of 100.";
+  String message() default "Invalid Savings Balance. Minimum of 100.";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 
 }
