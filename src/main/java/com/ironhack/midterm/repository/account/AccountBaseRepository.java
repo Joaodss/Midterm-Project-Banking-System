@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface AccountBaseRepository<T extends Account> extends JpaRepository<T, Long> {
+
   @Query("SELECT e FROM #{#entityName} e " +
       "LEFT JOIN FETCH e.primaryOwner " +
       "LEFT JOIN FETCH e.secondaryOwner")
@@ -17,6 +18,7 @@ public interface AccountBaseRepository<T extends Account> extends JpaRepository<
 
   @Query("SELECT e FROM #{#entityName} e " +
       "LEFT JOIN FETCH e.primaryOwner " +
+      "LEFT JOIN FETCH e.secondaryOwner " +
       "WHERE e.id = :id")
   Optional<T> findByIdJoined(long id);
 
