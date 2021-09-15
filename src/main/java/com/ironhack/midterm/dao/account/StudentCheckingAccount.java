@@ -41,6 +41,20 @@ public class StudentCheckingAccount extends CheckingAccount {
 
 
   // ======================================== Custom Getters & Setters ========================================
+  @Override
+  public void setPenaltyFee(Money penaltyFee) {
+    super.setPenaltyFee(newMoney("0.00"));
+  }
+
+  @Override
+  public void setMonthlyMaintenanceFee(Money monthlyMaintenanceFee) {
+    super.setMonthlyMaintenanceFee(newMoney("0.00"));
+  }
+
+  @Override
+  public void setMinimumBalance(Money minimumBalance) {
+    super.setMinimumBalance(newMoney("0.00"));
+  }
 
 
 }

@@ -24,12 +24,13 @@ public abstract class User {
   private Long id;
 
   @NotBlank
-  @UniqueElements
   @Length(min = 3)
+  @Column(name = "username", unique = true)
   private String username;
 
   @NotBlank
   @Length(min = 5)
+  @Column(name = "password")
   private String password;
 
   @ManyToMany(cascade = {}, fetch = FetchType.LAZY)
