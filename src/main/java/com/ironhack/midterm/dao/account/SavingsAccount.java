@@ -10,8 +10,12 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+
+import static com.ironhack.midterm.util.MoneyHelper.newBD;
+import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "savings_account")
@@ -59,8 +63,8 @@ public class SavingsAccount extends Account {
   public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
     super(balance, primaryOwner, secondaryOwner);
     this.secretKey = secretKey;
-    this.minimumBalance = new Money(new BigDecimal("1000"));
-    this.interestRate = new BigDecimal("0.0025");
+    this.minimumBalance = newMoney("1000");
+    this.interestRate = newBD("0.0025", 4);
     this.creationDate = LocalDateTime.now(ZoneId.of("Europe/London"));
     this.status = Status.ACTIVE;
   }
@@ -68,9 +72,25 @@ public class SavingsAccount extends Account {
   public SavingsAccount(Money balance, AccountHolder primaryOwner, String secretKey) {
     super(balance, primaryOwner);
     this.secretKey = secretKey;
-    this.minimumBalance = new Money(new BigDecimal("1000"));
-    this.interestRate = new BigDecimal("0.0025");
+    this.minimumBalance = newMoney("1000");
+    this.interestRate = newBD("0.0025", 4);
     this.creationDate = LocalDateTime.now(ZoneId.of("Europe/London"));
     this.status = Status.ACTIVE;
   }
+
+
+  // ======================================== Custom Getters & Setters ========================================
+  public void setMinimumBalance(Money minimumBalance) {
+    if (minimumBalance.getAmount().compareTo(newBD("100")) < 0)
+      throw new IllegalArgumentException("Invalid minimum balance amount. Must be equal or greater than 100€.");
+    this.minimumBalance = minimumBalance;
+  }
+
+  public void setInterestRate(BigDecimal interestRate) {
+    if (interestRate.compareTo(newBD("0.5")) > 0)
+      throw new IllegalArgumentException("Invalid interest rate amount. Must be equal or lesser than 0.5.");
+    this.interestRate = interestRate.setScale(4, RoundingMode.HALF_EVEN);
+  }
+
+
 }

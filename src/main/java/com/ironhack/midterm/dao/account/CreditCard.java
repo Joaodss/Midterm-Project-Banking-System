@@ -11,6 +11,10 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import static com.ironhack.midterm.util.MoneyHelper.newBD;
+import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "credit_card_account")
@@ -42,14 +46,28 @@ public class CreditCard extends Account {
   // ==================== Constructors with default creditLimit/interestRate ====================
   public CreditCard(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     super(balance, primaryOwner, secondaryOwner);
-    this.creditLimit = new Money(new BigDecimal("100.00"));
-    this.interestRate = new BigDecimal("0.20");
+    this.creditLimit = newMoney("100.00");
+    this.interestRate = newBD("0.20", 4);
   }
 
   public CreditCard(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
-    this.creditLimit = new Money(new BigDecimal("100.00"));
-    this.interestRate = new BigDecimal("0.20");
+    this.creditLimit = newMoney("100.00");
+    this.interestRate = newBD("0.20", 4);
+  }
+
+
+  // ======================================== Custom Getters & Setters ========================================
+  public void setCreditLimit(Money creditLimit) {
+    if (creditLimit.getAmount().compareTo(newBD("1000")) > 0)
+      throw new IllegalArgumentException("Invalid credit limit amount. Must be equal or lesser than 1000€.");
+    this.creditLimit = creditLimit;
+  }
+
+  public void setInterestRate(BigDecimal interestRate) {
+    if (interestRate.compareTo(newBD("0.1")) < 0)
+      throw new IllegalArgumentException("Invalid interest rate amount. Must be equal or greater than 0.1.");
+    this.interestRate = interestRate.setScale(4, RoundingMode.HALF_EVEN);
   }
 
 

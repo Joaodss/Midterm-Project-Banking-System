@@ -1,8 +1,7 @@
 package com.ironhack.midterm.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
@@ -12,9 +11,8 @@ import java.math.RoundingMode;
 import java.util.Currency;
 
 @Embeddable
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
+@AllArgsConstructor
 public class Money {
 
   private static final Currency EUR = Currency.getInstance("EUR");
@@ -29,6 +27,10 @@ public class Money {
 
 
   // ======================================== Constructors ========================================
+  public Money() {
+    this.currency = Currency.getInstance("EUR");
+  }
+
   // Class constructor specifying amount, currency, and rounding
   public Money(BigDecimal amount, Currency currency, RoundingMode rounding) {
     this.currency = currency;

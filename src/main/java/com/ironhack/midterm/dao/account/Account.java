@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+
+import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "account")
@@ -51,7 +52,7 @@ public abstract class Account {
       @AttributeOverride(name = "amount", column = @Column(name = "penaltyFee_amount", nullable = false)),
       @AttributeOverride(name = "currency", column = @Column(name = "penaltyFee_currency", nullable = false))
   })
-  private Money penaltyFee = new Money(new BigDecimal("40.00"));
+  private Money penaltyFee;
 
 
   // ======================================== Constructors ========================================
@@ -60,13 +61,18 @@ public abstract class Account {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
     this.secondaryOwner = secondaryOwner;
+    this.penaltyFee = newMoney("40.00");
   }
 
   public Account(Money balance, AccountHolder primaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
     this.secondaryOwner = null;
+    this.penaltyFee = newMoney("40.00");
   }
+
+
+  // ======================================== Custom Getters & Setters ========================================
 
 
 }
