@@ -50,7 +50,6 @@ class CheckingAccountRepositoryTest {
     ca1 = new CheckingAccount(newMoney("2000"), ah1, "abcdef123");
     ca2 = new CheckingAccount(newMoney("500"), ah1, ah2, "secretword");
     ca3 = new CheckingAccount(newMoney("1000"), ah2, "password123");
-    ca3.setMinimumBalance(newMoney("200.00"));
     checkingAccountRepository.saveAll(List.of(ca1, ca2, ca3));
   }
 

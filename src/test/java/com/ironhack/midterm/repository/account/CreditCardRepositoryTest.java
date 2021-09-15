@@ -51,7 +51,6 @@ class CreditCardRepositoryTest {
     cc1 = new CreditCard(newMoney("2000"), ah1);
     cc2 = new CreditCard(newMoney("500"), ah1, ah2);
     cc3 = new CreditCard(newMoney("1000"), ah2);
-    cc3.setCreditLimit(newMoney("200.00"));
     creditCardRepository.saveAll(List.of(cc1, cc2, cc3));
   }
 

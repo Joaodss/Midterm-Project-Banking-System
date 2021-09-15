@@ -51,7 +51,6 @@ class StudentCheckingAccountRepositoryTest {
     sca1 = new StudentCheckingAccount(newMoney("2000"), ah1, "abcdef123");
     sca2 = new StudentCheckingAccount(newMoney("500"), ah1, ah2, "secretword");
     sca3 = new StudentCheckingAccount(newMoney("1000"), ah2, "password123");
-    sca3.setMinimumBalance(newMoney("200.00"));
     studentCheckingAccountRepository.saveAll(List.of(sca1, sca2, sca3));
   }
 

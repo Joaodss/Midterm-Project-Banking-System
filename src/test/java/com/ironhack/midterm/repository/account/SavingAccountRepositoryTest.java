@@ -50,7 +50,6 @@ class SavingAccountRepositoryTest {
     sa1 = new SavingsAccount(newMoney("2000"), ah1, "abcdef123");
     sa2 = new SavingsAccount(newMoney("500"), ah1, ah2, "secretword");
     sa3 = new SavingsAccount(newMoney("1000"), ah2, "password123");
-    sa3.setMinimumBalance(newMoney("200.00"));
     savingsAccountRepository.saveAll(List.of(sa1, sa2, sa3));
   }
 
