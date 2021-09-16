@@ -11,14 +11,14 @@ import java.util.Optional;
 @NoRepositoryBean
 public interface AccountBaseRepository<T extends Account> extends JpaRepository<T, Long> {
 
-  @Query("SELECT e FROM #{#entityName} e " +
-      "LEFT JOIN FETCH e.primaryOwner " +
-      "LEFT JOIN FETCH e.secondaryOwner")
+  @Query("SELECT e FROM Account e " +
+      "LEFT JOIN FETCH e.primaryOwner p " +
+      "LEFT JOIN FETCH e.secondaryOwner s")
   List<T> findAllJoined();
 
   @Query("SELECT e FROM #{#entityName} e " +
-      "LEFT JOIN FETCH e.primaryOwner " +
-      "LEFT JOIN FETCH e.secondaryOwner " +
+      "LEFT JOIN FETCH e.primaryOwner p " +
+      "LEFT JOIN FETCH e.secondaryOwner s " +
       "WHERE e.id = :id")
   Optional<T> findByIdJoined(long id);
 
