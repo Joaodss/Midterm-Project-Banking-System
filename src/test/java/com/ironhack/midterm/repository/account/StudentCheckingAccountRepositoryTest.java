@@ -139,6 +139,31 @@ class StudentCheckingAccountRepositoryTest {
 
   // ======================================== Relations Testing ========================================
   // ==================== Read from AccountHolders ====================
+  @Test
+  @Order(6)
+  void testReadFromAccountHolders_findAllJoined_returnStudentCheckingAccountsWithAccountHolders() {
+    var element1 = studentCheckingAccountRepository.findAllJoined();
+    assertFalse(element1.isEmpty());
+    assertEquals(ah1, element1.get(0).getPrimaryOwner());
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromAccountHolders_findByIdJoined_returnStudentCheckingAccountWithPrimaryAccountHolder() {
+    var element1 = studentCheckingAccountRepository.findByIdJoined(1);
+    assertTrue(element1.isPresent());
+    assertEquals(ah1, element1.get().getPrimaryOwner());
+    assertNull(element1.get().getSecondaryOwner());
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromAccountHolders_findByIdJoined_returnStudentCheckingAccountWithAccountHolders() {
+    var element1 = studentCheckingAccountRepository.findByIdJoined(2);
+    assertTrue(element1.isPresent());
+    assertEquals(ah1, element1.get().getPrimaryOwner());
+    assertEquals(ah2, element1.get().getSecondaryOwner());
+  }
 
 
   // ======================================== Custom Queries Testing ========================================
