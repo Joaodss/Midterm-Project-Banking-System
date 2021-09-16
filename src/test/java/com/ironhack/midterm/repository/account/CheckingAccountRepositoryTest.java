@@ -5,9 +5,9 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -15,8 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.ironhack.midterm.util.MoneyHelper.newMoney;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -94,11 +93,17 @@ class CheckingAccountRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadCheckingAccount_findById_returnsObjectsWithSameId() {
+  void testReadCheckingAccount_findById_validId_returnsObjectsWithSameId() {
     var element1 = checkingAccountRepository.findById(2L);
-    if (element1.isPresent()) {
-      assertEquals(2L, element1.get().getId());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    assertEquals(2L, element1.get().getId());
+  }
+
+  @Test
+  @Order(3)
+  void testReadCheckingAccount_findById_invalidId_returnsObjectsWithSameId() {
+    var element1 = checkingAccountRepository.findById(99L);
+    assertTrue(element1.isEmpty());
   }
 
   // ==================== Update ====================
@@ -106,25 +111,61 @@ class CheckingAccountRepositoryTest {
   @Order(4)
   void testUpdateCheckingAccount_changeMinBalance_newMinBalanceEqualsDefinedValue() {
     var element1 = checkingAccountRepository.findById(3L);
-    if (element1.isPresent()) {
-      element1.get().setMinimumBalance(newMoney("180"));
-      checkingAccountRepository.save(element1.get());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    element1.get().setMinimumBalance(newMoney("180"));
+    checkingAccountRepository.save(element1.get());
 
     var updatedElement1 = checkingAccountRepository.findById(3L);
-    if (updatedElement1.isPresent()) {
-      assertEquals(newMoney("180"), updatedElement1.get().getMinimumBalance());
-    } else throw new TestInstantiationException("Updated id not found");
+    assertTrue(updatedElement1.isPresent());
+    assertEquals(newMoney("180"), updatedElement1.get().getMinimumBalance());
   }
 
   // ==================== Delete ====================
   @Test
   @Order(5)
-  void testDeleteCheckingAccount_deleteCheckingAccount_deletedFromRepository() {
+  void testDeleteCheckingAccount_deleteCheckingAccount_validId_deletedFromRepository() {
     var initialSize = checkingAccountRepository.count();
     checkingAccountRepository.deleteById(2L);
     assertEquals(initialSize - 1, checkingAccountRepository.count());
   }
+
+  @Test
+  @Order(5)
+  void testDeleteCheckingAccount_deleteCheckingAccount_invalidId_deletedFromRepository() {
+    assertThrows(EmptyResultDataAccessException.class, () -> checkingAccountRepository.deleteById(99L));
+  }
+
+
+  // ======================================== Relations Testing ========================================
+  // ==================== Read from AccountHolders ====================
+  @Test
+  @Order(6)
+  void testReadFromAccountHolders_findAllJoined_returnCheckingAccountsWithAccountHolders() {
+    var element1 = checkingAccountRepository.findAllJoined();
+    assertFalse(element1.isEmpty());
+    assertEquals(ah1, element1.get(0).getPrimaryOwner());
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromAccountHolders_findByIdJoined_returnCheckingAccountWithPrimaryAccountHolder() {
+    var element1 = checkingAccountRepository.findByIdJoined(1);
+    assertTrue(element1.isPresent());
+    assertEquals(ah1, element1.get().getPrimaryOwner());
+    assertNull(element1.get().getSecondaryOwner());
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromAccountHolders_findByIdJoined_returnCheckingAccountWithAccountHolders() {
+    var element1 = checkingAccountRepository.findByIdJoined(2);
+    assertTrue(element1.isPresent());
+    assertEquals(ah1, element1.get().getPrimaryOwner());
+    assertEquals(ah2, element1.get().getSecondaryOwner());
+  }
+
+
+  // ======================================== Custom Queries Testing ========================================
 
 
 }

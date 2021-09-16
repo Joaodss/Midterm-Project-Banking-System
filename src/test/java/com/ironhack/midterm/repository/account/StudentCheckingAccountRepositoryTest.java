@@ -6,9 +6,9 @@ import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -16,8 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.ironhack.midterm.util.MoneyHelper.newMoney;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -95,11 +94,17 @@ class StudentCheckingAccountRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadStudentCheckingAccount_findById_returnsObjectsWithSameId() {
+  void testReadStudentCheckingAccount_findById_validId_returnsObjectsWithSameId() {
     var element1 = studentCheckingAccountRepository.findById(2L);
-    if (element1.isPresent()) {
-      assertEquals(2L, element1.get().getId());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    assertEquals(2L, element1.get().getId());
+  }
+
+  @Test
+  @Order(3)
+  void testReadStudentCheckingAccount_findById_invalidId_returnsObjectsWithSameId() {
+    var element1 = studentCheckingAccountRepository.findById(99L);
+    assertTrue(element1.isEmpty());
   }
 
   // ==================== Update ====================
@@ -107,25 +112,36 @@ class StudentCheckingAccountRepositoryTest {
   @Order(4)
   void testUpdateStudentCheckingAccount_changeBalance_newMinBalanceEqualsDefinedValue() {
     var element1 = studentCheckingAccountRepository.findById(3L);
-    if (element1.isPresent()) {
-      element1.get().setStatus(Status.FROZEN);
-      studentCheckingAccountRepository.save(element1.get());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    element1.get().setStatus(Status.FROZEN);
+    studentCheckingAccountRepository.save(element1.get());
 
     var updatedElement1 = studentCheckingAccountRepository.findById(3L);
-    if (updatedElement1.isPresent()) {
-      assertEquals(Status.FROZEN, updatedElement1.get().getStatus());
-    } else throw new TestInstantiationException("Updated id not found");
+    assertTrue(updatedElement1.isPresent());
+    assertEquals(Status.FROZEN, updatedElement1.get().getStatus());
   }
 
   // ==================== Delete ====================
   @Test
   @Order(5)
-  void testDeleteStudentCheckingAccount_deleteStudentCheckingAccount_deletedFromRepository() {
+  void testDeleteStudentCheckingAccount_deleteStudentCheckingAccount_validId_deletedFromRepository() {
     var initialSize = studentCheckingAccountRepository.count();
     studentCheckingAccountRepository.deleteById(2L);
     assertEquals(initialSize - 1, studentCheckingAccountRepository.count());
   }
+
+  @Test
+  @Order(5)
+  void testDeleteStudentCheckingAccount_deleteStudentCheckingAccount_invalidId_deletedFromRepository() {
+    assertThrows(EmptyResultDataAccessException.class, () -> studentCheckingAccountRepository.deleteById(99L));
+  }
+
+
+  // ======================================== Relations Testing ========================================
+  // ==================== Read from AccountHolders ====================
+
+
+  // ======================================== Custom Queries Testing ========================================
 
 
 }
