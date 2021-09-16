@@ -1,22 +1,24 @@
 package com.ironhack.midterm.dao.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public abstract class User {
 
   @Id
@@ -33,12 +35,13 @@ public abstract class User {
   @Column(name = "password")
   private String password;
 
-  @ManyToMany(cascade = {}, fetch = FetchType.LAZY)
+  @JsonIgnoreProperties(value = {"users"}, allowSetters = true)
+  @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
   @JoinTable(name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
   )
-  private Set<Role> roles;
+  private Set<Role> roles = Collections.emptySet();
 
   @NotNull
   @NotBlank
@@ -53,5 +56,22 @@ public abstract class User {
     this.name = name;
   }
 
+
+  // ======================================== Override Getters & Setters ========================================
+
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return getId().equals(user.getId()) && getUsername().equals(user.getUsername()) && getPassword().equals(user.getPassword()) && getName().equals(user.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getUsername(), getPassword(), getName());
+  }
 
 }

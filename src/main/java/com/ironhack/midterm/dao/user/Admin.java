@@ -1,8 +1,8 @@
 package com.ironhack.midterm.dao.user;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -12,9 +12,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "admin")
 @PrimaryKeyJoinColumn(name = "id")
-@Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @ToString(callSuper = true)
 public class Admin extends User {
 
@@ -24,5 +24,19 @@ public class Admin extends User {
     super(username, password, name);
   }
 
+
+  // ======================================== Override Getters & Setters ========================================
+
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 
 }

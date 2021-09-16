@@ -1,5 +1,6 @@
 package com.ironhack.midterm.dao.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.model.Address;
 import lombok.*;
@@ -8,15 +9,17 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "account_holder")
 @PrimaryKeyJoinColumn(name = "id")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @ToString(callSuper = true)
 public class AccountHolder extends User {
 
@@ -45,11 +48,15 @@ public class AccountHolder extends User {
   })
   private Address mailingAddress;
 
+  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
+  @ToString.Exclude
   @OneToMany(mappedBy = "primaryOwner", cascade = {})
-  private List<Account> primaryAccounts;
+  private List<Account> primaryAccounts = new ArrayList<>();
 
+  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
+  @ToString.Exclude
   @OneToMany(mappedBy = "secondaryOwner", cascade = {})
-  private List<Account> secondaryAccounts;
+  private List<Account> secondaryAccounts = new ArrayList<>();
 
 
   // ======================================== Constructors ========================================
@@ -66,5 +73,23 @@ public class AccountHolder extends User {
     this.primaryAddress = primaryAddress;
   }
 
+
+  // ======================================== Override Getters & Setters ========================================
+
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    AccountHolder that = (AccountHolder) o;
+    return getDateOfBirth().equals(that.getDateOfBirth()) && getPrimaryAddress().equals(that.getPrimaryAddress()) && Objects.equals(getMailingAddress(), that.getMailingAddress());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getDateOfBirth(), getPrimaryAddress(), getMailingAddress());
+  }
 
 }

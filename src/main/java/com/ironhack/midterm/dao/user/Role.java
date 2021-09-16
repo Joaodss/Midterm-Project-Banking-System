@@ -1,17 +1,20 @@
 package com.ironhack.midterm.dao.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Data
+@Table(name = "roles")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Role {
 
   @Id
@@ -21,8 +24,8 @@ public class Role {
   @NotBlank
   private String name;
 
-  @ManyToMany(mappedBy = "roles")
-  private Set<User> users;
+  @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+  private Set<User> users = Collections.emptySet();
 
 
   // ======================================== Constructors ========================================
@@ -30,5 +33,22 @@ public class Role {
     this.name = name;
   }
 
+
+  // ======================================== Override Getters & Setters ========================================
+
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Role role = (Role) o;
+    return getId().equals(role.getId()) && getName().equals(role.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getName());
+  }
 
 }
