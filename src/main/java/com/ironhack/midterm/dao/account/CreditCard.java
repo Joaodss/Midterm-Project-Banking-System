@@ -12,6 +12,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyHelper.newBD;
 import static com.ironhack.midterm.util.MoneyHelper.newMoney;
@@ -19,10 +20,10 @@ import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 @Entity
 @Table(name = "credit_card_account")
 @PrimaryKeyJoinColumn(name = "id")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @ToString(callSuper = true)
 public class CreditCard extends Account {
 
@@ -57,7 +58,7 @@ public class CreditCard extends Account {
   }
 
 
-  // ======================================== Custom Getters & Setters ========================================
+  // ======================================== Getters & Setters ========================================
   public void setCreditLimit(Money creditLimit) {
     if (creditLimit.getAmount().compareTo(newBD("1000")) > 0)
       throw new IllegalArgumentException("Invalid credit limit amount. Must be equal or lesser than 1000€.");
@@ -70,5 +71,20 @@ public class CreditCard extends Account {
     this.interestRate = interestRate.setScale(4, RoundingMode.HALF_EVEN);
   }
 
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    CreditCard that = (CreditCard) o;
+    return getCreditLimit().equals(that.getCreditLimit()) && getInterestRate().equals(that.getInterestRate());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getCreditLimit(), getInterestRate());
+  }
 
 }

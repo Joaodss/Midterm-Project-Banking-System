@@ -1,24 +1,28 @@
 package com.ironhack.midterm.dao.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.util.validation.CreditLimitConstrain;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "account")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public abstract class Account {
 
   @Id
@@ -36,11 +40,13 @@ public abstract class Account {
   })
   private Money balance;
 
+  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "primary_owner_id")
   private AccountHolder primaryOwner;
 
+  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "secondary_owner_id")
   private AccountHolder secondaryOwner;
@@ -72,7 +78,32 @@ public abstract class Account {
   }
 
 
-  // ======================================== Custom Getters & Setters ========================================
+  // ======================================== Getters & Setters ========================================
 
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Account account = (Account) o;
+    return getId().equals(account.getId()) && getBalance().equals(account.getBalance()) && getPrimaryOwner().equals(account.getPrimaryOwner()) && Objects.equals(getSecondaryOwner(), account.getSecondaryOwner()) && getPenaltyFee().equals(account.getPenaltyFee());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getBalance(), getPrimaryOwner(), getSecondaryOwner(), getPenaltyFee());
+  }
+
+  @Override
+  public String toString() {
+    return "Account{" +
+        "id=" + id +
+        ", balance=" + balance +
+        ", primaryOwner=" + primaryOwner.getId() + ": " + primaryOwner.getName() +
+        ", secondaryOwner=" + secondaryOwner.getId() + ": " + secondaryOwner.getName() +
+        ", penaltyFee=" + penaltyFee +
+        '}';
+  }
 
 }

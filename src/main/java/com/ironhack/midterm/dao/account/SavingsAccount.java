@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyHelper.newBD;
 import static com.ironhack.midterm.util.MoneyHelper.newMoney;
@@ -20,10 +21,10 @@ import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 @Entity
 @Table(name = "savings_account")
 @PrimaryKeyJoinColumn(name = "id")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @ToString(callSuper = true)
 public class SavingsAccount extends Account {
 
@@ -79,7 +80,7 @@ public class SavingsAccount extends Account {
   }
 
 
-  // ======================================== Custom Getters & Setters ========================================
+  // ======================================== Getters & Setters ========================================
   public void setMinimumBalance(Money minimumBalance) {
     if (minimumBalance.getAmount().compareTo(newBD("100")) < 0)
       throw new IllegalArgumentException("Invalid minimum balance amount. Must be equal or greater than 100€.");
@@ -92,5 +93,20 @@ public class SavingsAccount extends Account {
     this.interestRate = interestRate.setScale(4, RoundingMode.HALF_EVEN);
   }
 
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    SavingsAccount that = (SavingsAccount) o;
+    return getSecretKey().equals(that.getSecretKey()) && getMinimumBalance().equals(that.getMinimumBalance()) && getInterestRate().equals(that.getInterestRate()) && getCreationDate().equals(that.getCreationDate()) && getStatus() == that.getStatus();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getSecretKey(), getMinimumBalance(), getInterestRate(), getCreationDate(), getStatus());
+  }
 
 }

@@ -12,17 +12,18 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 
-import static com.ironhack.midterm.util.MoneyHelper.*;
+import static com.ironhack.midterm.util.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "checking_account")
 @PrimaryKeyJoinColumn(name = "id")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @ToString(callSuper = true)
 public class CheckingAccount extends Account {
 
@@ -81,7 +82,22 @@ public class CheckingAccount extends Account {
   }
 
 
-  // ======================================== Custom Getters & Setters ========================================
+  // ======================================== Getters & Setters ========================================
 
+
+  // ======================================== Override Methods ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    CheckingAccount that = (CheckingAccount) o;
+    return getSecretKey().equals(that.getSecretKey()) && getMinimumBalance().equals(that.getMinimumBalance()) && getMonthlyMaintenanceFee().equals(that.getMonthlyMaintenanceFee()) && getCreationDate().equals(that.getCreationDate()) && getStatus() == that.getStatus();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getSecretKey(), getMinimumBalance(), getMonthlyMaintenanceFee(), getCreationDate(), getStatus());
+  }
 
 }
