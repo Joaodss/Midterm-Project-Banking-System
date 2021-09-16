@@ -1,8 +1,7 @@
 package com.ironhack.midterm.util;
 
 import com.ironhack.midterm.model.Money;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -16,14 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MoneyHelperTest {
 
-  @BeforeEach
-  void setUp() {
-  }
-
-  @AfterEach
-  void tearDown() {
-  }
-
+  // ======================================== new Money ========================================
   @ParameterizedTest
   @ValueSource(strings = {"0", "3.333", "235723572.5721571"})
   void testNewMoney_validStringNumber(String value) {
@@ -38,6 +30,14 @@ class MoneyHelperTest {
     });
   }
 
+  @Test
+  void testNewMoney_toString() {
+    Money actualNewMoneyResult = MoneyHelper.newMoney("42");
+    assertEquals("€ 42.00", actualNewMoneyResult.toString());
+    assertEquals("42.00", actualNewMoneyResult.getAmount().toString());
+  }
+
+  // ======================================== new BigDecimal ========================================
   @ParameterizedTest
   @ValueSource(strings = {"0", "3.333", "235723572.5721571"})
   void testNewBD_validStringNumber(String value) {
@@ -50,8 +50,15 @@ class MoneyHelperTest {
   void testNewBD_invalidStringNumber(String value) {
     assertThrows(NumberFormatException.class, () -> {
       var bd1 = newBD(value);
-      var bd2 = newBD(value,2);
+      var bd2 = newBD(value, 2);
     });
+  }
+
+  @Test
+  void testNewBD_toString() {
+    assertEquals("42", MoneyHelper.newBD("42").toString());
+    assertEquals("42.00", MoneyHelper.newBD("42", 2).toString());
+    assertEquals("42", MoneyHelper.newBD("42", 0).toString());
   }
 
 
