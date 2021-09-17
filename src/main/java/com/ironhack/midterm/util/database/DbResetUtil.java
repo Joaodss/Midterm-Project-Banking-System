@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DbTestUtil {
+public class DbResetUtil {
 
 
   public static void resetAutoIncrementColumns(ApplicationContext applicationContext, String... tableNames) throws SQLException {

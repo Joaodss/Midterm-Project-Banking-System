@@ -1,7 +1,6 @@
-package com.ironhack.midterm.util;
+package com.ironhack.midterm.util.money;
 
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.util.helper.MoneyHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -9,8 +8,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static com.ironhack.midterm.util.helper.MoneyHelper.newBD;
-import static com.ironhack.midterm.util.helper.MoneyHelper.newMoney;
+import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newBD;
+import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newMoney;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -33,7 +32,7 @@ class MoneyHelperTest {
 
   @Test
   void testNewMoney_toString() {
-    Money actualNewMoneyResult = MoneyHelper.newMoney("42");
+    Money actualNewMoneyResult = MoneyInitializerUtil.newMoney("42");
     assertEquals("€ 42.00", actualNewMoneyResult.toString());
     assertEquals("42.00", actualNewMoneyResult.getAmount().toString());
   }
@@ -57,9 +56,9 @@ class MoneyHelperTest {
 
   @Test
   void testNewBD_toString() {
-    assertEquals("42", MoneyHelper.newBD("42").toString());
-    assertEquals("42.00", MoneyHelper.newBD("42", 2).toString());
-    assertEquals("42", MoneyHelper.newBD("42", 0).toString());
+    assertEquals("42", MoneyInitializerUtil.newBD("42").toString());
+    assertEquals("42.00", MoneyInitializerUtil.newBD("42", 2).toString());
+    assertEquals("42", MoneyInitializerUtil.newBD("42", 0).toString());
   }
 
 

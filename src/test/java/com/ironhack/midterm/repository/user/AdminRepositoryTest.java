@@ -2,7 +2,7 @@ package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.Role;
-import com.ironhack.midterm.util.database.DbTestUtil;
+import com.ironhack.midterm.util.database.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,7 +61,7 @@ class AdminRepositoryTest {
   @AfterEach
   void tearDown() throws SQLException {
     adminRepository.deleteAll();
-    DbTestUtil.resetAutoIncrementColumns(applicationContext, "user");
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user");
   }
 
 

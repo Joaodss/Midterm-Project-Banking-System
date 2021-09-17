@@ -3,7 +3,7 @@ package com.ironhack.midterm.repository.user;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.model.Address;
-import com.ironhack.midterm.util.database.DbTestUtil;
+import com.ironhack.midterm.util.database.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -70,7 +70,7 @@ class AccountHolderRepositoryTest {
   @AfterEach
   void tearDown() throws SQLException {
     accountHolderRepository.deleteAll();
-    DbTestUtil.resetAutoIncrementColumns(applicationContext, "user");
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user");
   }
 
 

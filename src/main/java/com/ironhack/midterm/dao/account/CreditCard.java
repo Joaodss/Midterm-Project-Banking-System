@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import static com.ironhack.midterm.util.helper.MoneyHelper.newBD;
-import static com.ironhack.midterm.util.helper.MoneyHelper.newMoney;
+import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newBD;
+import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newMoney;
 
 @Entity
 @Table(name = "credit_card_account")
