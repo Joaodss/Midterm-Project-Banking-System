@@ -20,7 +20,7 @@ class validBalanceUtilTest {
 
   // ======================================== Is Valid Balance ========================================
   @ParameterizedTest
-  @ValueSource(strings = {"0", "0.000000001", "1", "35723.677"})
+  @ValueSource(strings = {"0", "0.01", "1", "35723.677"})
   @Order(1)
   void testIsValidBalance_validValues_true(String values) {
     var value = new BigDecimal(values);
@@ -37,6 +37,7 @@ class validBalanceUtilTest {
     assertFalse(isValidBalance(value));
     assertFalse(isValidBalance(new Money(value)));
   }
+
 
   // =================================== Is Valid Balance Transfer ===================================
   @ParameterizedTest
@@ -77,4 +78,3 @@ class validBalanceUtilTest {
 
 
 }
-

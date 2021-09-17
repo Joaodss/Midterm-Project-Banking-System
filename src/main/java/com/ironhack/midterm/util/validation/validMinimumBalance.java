@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class validMinimumBalance {
 
-  // =================================== Valid Minimum Balance (>= 100) ===================================
+  // =================================== Valid Minimum Balance (>= 0) ===================================
   public static boolean isValidMinimumBalance(Money minimumBalance) {
     return minimumBalance.getAmount().compareTo(BigDecimal.ZERO) >= 0;
   }

@@ -17,7 +17,7 @@ public class validStatusUtil {
   }
 
   // =================================== Get Status from String ===================================
-  public static Status StatusFromString(String stringStatus) {
+  public static Status statusFromString(String stringStatus) {
     for (Status s : Status.values()) {
       if (s.name().equalsIgnoreCase(stringStatus))
         return s;
