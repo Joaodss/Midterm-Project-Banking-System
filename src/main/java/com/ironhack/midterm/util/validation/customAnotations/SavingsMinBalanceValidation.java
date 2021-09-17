@@ -1,4 +1,4 @@
-package com.ironhack.midterm.util.validation;
+package com.ironhack.midterm.util.validation.customAnotations;
 
 import com.ironhack.midterm.model.Money;
 

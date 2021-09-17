@@ -3,7 +3,7 @@ package com.ironhack.midterm.dao.account;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.util.validation.SavingsMinBalanceConstrain;
+import com.ironhack.midterm.util.validation.customAnotations.SavingsMinBalanceConstrain;
 import lombok.*;
 
 import javax.persistence.*;

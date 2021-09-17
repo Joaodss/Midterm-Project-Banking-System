@@ -11,10 +11,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Objects;
 
 import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newMoney;
+import static com.ironhack.midterm.util.validation.validDateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "checking_account")
@@ -68,7 +68,7 @@ public class CheckingAccount extends Account {
     this.secretKey = secretKey;
     this.minimumBalance = newMoney("250.00");
     this.monthlyMaintenanceFee = newMoney("12.00");
-    this.creationDate = LocalDateTime.now(ZoneId.of("Europe/London"));
+    this.creationDate = dateTimeNow();
     this.status = Status.ACTIVE;
   }
 
@@ -77,7 +77,7 @@ public class CheckingAccount extends Account {
     this.minimumBalance = newMoney("250.00");
     this.monthlyMaintenanceFee = newMoney("12.00");
     this.secretKey = secretKey;
-    this.creationDate = LocalDateTime.now(ZoneId.of("Europe/London"));
+    this.creationDate = dateTimeNow();
     this.status = Status.ACTIVE;
   }
 

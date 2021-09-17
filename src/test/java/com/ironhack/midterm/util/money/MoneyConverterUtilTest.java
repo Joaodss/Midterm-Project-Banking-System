@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class MoneyConverterUtilTest {
 
   // ======================================== Is Same Currency ========================================
-  @Order(1)
   @Test
+  @Order(1)
   void testIsSameCurrency_sameCurrency_true() {
     var m1 = newMoney("100", "EUR");
     var m2 = newMoney("350.5", "EUR");
@@ -24,8 +24,8 @@ class MoneyConverterUtilTest {
     assertTrue(MoneyConverterUtil.isSameCurrency(m1.getCurrency(), m2));
   }
 
-  @Order(1)
   @Test
+  @Order(1)
   void testIsSameCurrency_differentCurrency_false() {
     var m1 = newMoney("100", "EUR");
     var m2 = newMoney("350.5", "USD");
@@ -34,9 +34,8 @@ class MoneyConverterUtilTest {
   }
 
   // ======================================== Is Same Currency ========================================
-
-  @Order(2)
   @Test
+  @Order(2)
   void testConvertCurrency_multipleConversions_differentCurrency_convertValues() { // slow
     var initialMoney1 = newMoney("100", "USD");
     var initialMoney2 = newMoney("200", "CHF");
@@ -48,8 +47,8 @@ class MoneyConverterUtilTest {
     assertEquals("USD", money2.getCurrency().getCurrencyCode());
   }
 
-  @Order(2)
   @Test
+  @Order(2)
   void testConvertCurrency_multipleConversions_sameCurrency_convertValues() { // less slow
     var initialMoney1 = newMoney("100", "USD");
     var initialMoney2 = newMoney("200", "CHF");
@@ -61,12 +60,15 @@ class MoneyConverterUtilTest {
     assertEquals("EUR", money2.getCurrency().getCurrencyCode());
   }
 
-  @Order(2)
   @Test
+  @Order(2)
   void testConvertCurrency_sameCurrency_returnInitialValue() {
-    var initialMoney = newMoney("10");
-    var money = convertCurrency(Currency.getInstance("EUR"), initialMoney);
-    assertEquals(money, initialMoney);
+    var initialMoney1 = newMoney("10");
+    var initialMoney2 = newMoney("20", "USD");
+    var money1 = convertCurrency(newMoney("1"), initialMoney1);
+    var money2 = convertCurrency(Currency.getInstance("USD"), initialMoney2);
+    assertEquals(money1, initialMoney1);
+    assertEquals(money2, initialMoney2);
   }
 
 

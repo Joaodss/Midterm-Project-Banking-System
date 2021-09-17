@@ -3,7 +3,7 @@ package com.ironhack.midterm.dao.account;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.util.validation.CreditLimitConstrain;
+import com.ironhack.midterm.util.validation.customAnotations.CreditLimitConstrain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

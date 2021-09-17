@@ -26,7 +26,9 @@ class DbTestUtilTest {
   private RoleRepository roleRepository;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws SQLException {
+    roleRepository.deleteAll();
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "roles");
     roleRepository.save(new Role("TEST"));
   }
 

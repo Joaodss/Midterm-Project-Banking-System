@@ -2,7 +2,7 @@ package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.util.validation.CreditLimitConstrain;
+import com.ironhack.midterm.util.validation.customAnotations.CreditLimitConstrain;
 import lombok.*;
 
 import javax.persistence.*;
