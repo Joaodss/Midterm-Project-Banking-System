@@ -2,24 +2,27 @@ package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Address;
+import com.ironhack.midterm.util.DbTestUtil;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)   // Resets DB and id generation (slower)
 class AccountHolderRepositoryTest {
+
+  @Autowired
+  private ApplicationContext applicationContext;
 
   @Autowired
   private AccountHolderRepository accountHolderRepository;
@@ -44,8 +47,9 @@ class AccountHolderRepositoryTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws SQLException {
     accountHolderRepository.deleteAll();
+    DbTestUtil.resetAutoIncrementColumns(applicationContext, "user");
   }
 
 
@@ -59,9 +63,17 @@ class AccountHolderRepositoryTest {
   // ==================== Create ====================
   @Test
   @Order(2)
-  void testCreateAccountHolder_saveNewAccountHolderWithOneOwner_storedInRepository() {
+  void testCreateAccountHolder_saveNewAccountHolderWithOneAddress_storedInRepository() {
     var initialSize = accountHolderRepository.count();
     accountHolderRepository.save(new AccountHolder("joaoa", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa2));
+    assertEquals(initialSize + 1, accountHolderRepository.count());
+  }
+
+  @Test
+  @Order(2)
+  void testCreateAccountHolder_saveNewAccountHolderWithTwoAddresses_storedInRepository() {
+    var initialSize = accountHolderRepository.count();
+    accountHolderRepository.save(new AccountHolder("joaoa2", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa1, pa2));
     assertEquals(initialSize + 1, accountHolderRepository.count());
   }
 
@@ -75,11 +87,17 @@ class AccountHolderRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadAccountHolder_findById_returnsObjectsWithSameId() {
+  void testReadAccountHolder_findById_validId_returnsObjectsWithSameId() {
     var element1 = accountHolderRepository.findById(2L);
-    if (element1.isPresent()) {
-      assertEquals(2L, element1.get().getId());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    assertEquals(2L, element1.get().getId());
+  }
+
+  @Test
+  @Order(3)
+  void testReadAccountHolder_findById_invalidId_returnsObjectsWithSameId() {
+    var element1 = accountHolderRepository.findById(99L);
+    assertTrue(element1.isEmpty());
   }
 
   // ==================== Update ====================
@@ -87,25 +105,36 @@ class AccountHolderRepositoryTest {
   @Order(4)
   void testUpdateAccountHolder_changeInterestRate_newInterestRateEqualsDefinedValue() {
     var element1 = accountHolderRepository.findById(3L);
-    if (element1.isPresent()) {
-      element1.get().setName("New name");
-      accountHolderRepository.save(element1.get());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    element1.get().setName("New name");
+    accountHolderRepository.save(element1.get());
 
     var updatedElement1 = accountHolderRepository.findById(3L);
-    if (updatedElement1.isPresent()) {
-      assertEquals("New name", updatedElement1.get().getName());
-    } else throw new TestInstantiationException("Updated id not found");
+    assertTrue(updatedElement1.isPresent());
+    assertEquals("New name", updatedElement1.get().getName());
   }
 
   // ==================== Delete ====================
   @Test
   @Order(5)
-  void testDeleteAccountHolder_deleteAccountHolder_deletedFromRepository() {
+  void testDeleteAccountHolder_deleteAccountHolder_validId_deletedFromRepository() {
     var initialSize = accountHolderRepository.count();
     accountHolderRepository.deleteById(2L);
     assertEquals(initialSize - 1, accountHolderRepository.count());
   }
+
+  @Test
+  @Order(5)
+  void testDeleteAccountHolder_deleteAccountHolder_invalidId_deletedFromRepository() {
+    assertThrows(EmptyResultDataAccessException.class, () -> accountHolderRepository.deleteById(99L));
+  }
+
+
+  // ======================================== Relations Testing ========================================
+  // ==================== Read from AccountHolders ====================
+
+
+  // ======================================== Custom Queries Testing ========================================
 
 
 }

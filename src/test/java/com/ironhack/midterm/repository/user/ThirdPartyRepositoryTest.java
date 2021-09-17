@@ -1,23 +1,26 @@
 package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.ThirdParty;
+import com.ironhack.midterm.util.DbTestUtil;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)   // Resets DB and id generation (slower)
 class ThirdPartyRepositoryTest {
+
+  @Autowired
+  private ApplicationContext applicationContext;
 
   @Autowired
   private ThirdPartyRepository thirdPartyRepository;
@@ -35,8 +38,9 @@ class ThirdPartyRepositoryTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws SQLException {
     thirdPartyRepository.deleteAll();
+    DbTestUtil.resetAutoIncrementColumns(applicationContext, "user");
   }
 
 
@@ -66,11 +70,17 @@ class ThirdPartyRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadThirdParty_findById_returnsObjectsWithSameId() {
+  void testReadThirdParty_findById_validId_returnsObjectsWithSameId() {
     var element1 = thirdPartyRepository.findById(2L);
-    if (element1.isPresent()) {
-      assertEquals(2L, element1.get().getId());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    assertEquals(2L, element1.get().getId());
+  }
+
+  @Test
+  @Order(3)
+  void testReadThirdParty_findById_invalidId_returnsObjectsWithSameId() {
+    var element1 = thirdPartyRepository.findById(99L);
+    assertTrue(element1.isEmpty());
   }
 
   // ==================== Update ====================
@@ -78,25 +88,36 @@ class ThirdPartyRepositoryTest {
   @Order(4)
   void testUpdateThirdParty_changeInterestRate_newInterestRateEqualsDefinedValue() {
     var element1 = thirdPartyRepository.findById(3L);
-    if (element1.isPresent()) {
-      element1.get().setName("New name");
-      thirdPartyRepository.save(element1.get());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    element1.get().setName("New name");
+    thirdPartyRepository.save(element1.get());
 
     var updatedElement1 = thirdPartyRepository.findById(3L);
-    if (updatedElement1.isPresent()) {
-      assertEquals("New name", updatedElement1.get().getName());
-    } else throw new TestInstantiationException("Updated id not found");
+    assertTrue(updatedElement1.isPresent());
+    assertEquals("New name", updatedElement1.get().getName());
   }
 
   // ==================== Delete ====================
   @Test
   @Order(5)
-  void testDeleteThirdParty_deleteThirdParty_deletedFromRepository() {
+  void testDeleteThirdParty_deleteThirdParty_validId_deletedFromRepository() {
     var initialSize = thirdPartyRepository.count();
     thirdPartyRepository.deleteById(2L);
     assertEquals(initialSize - 1, thirdPartyRepository.count());
   }
+
+  @Test
+  @Order(5)
+  void testDeleteThirdParty_deleteThirdParty_invalidId_deletedFromRepository() {
+    assertThrows(EmptyResultDataAccessException.class, () -> thirdPartyRepository.deleteById(99L));
+  }
+
+
+  // ======================================== Relations Testing ========================================
+  // ==================== Read from AccountHolders ====================
+
+
+  // ======================================== Custom Queries Testing ========================================
 
 
 }

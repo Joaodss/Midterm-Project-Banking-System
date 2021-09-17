@@ -1,23 +1,26 @@
 package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.Admin;
+import com.ironhack.midterm.util.DbTestUtil;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)   // Resets DB and id generation (slower)
 class AdminRepositoryTest {
+
+  @Autowired
+  private ApplicationContext applicationContext;
 
   @Autowired
   private AdminRepository adminRepository;
@@ -35,8 +38,9 @@ class AdminRepositoryTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws SQLException {
     adminRepository.deleteAll();
+    DbTestUtil.resetAutoIncrementColumns(applicationContext, "user");
   }
 
 
@@ -66,11 +70,17 @@ class AdminRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadAdmin_findById_returnsObjectsWithSameId() {
+  void testReadAdmin_findById_validId_returnsObjectsWithSameId() {
     var element1 = adminRepository.findById(2L);
-    if (element1.isPresent()) {
-      assertEquals(2L, element1.get().getId());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    assertEquals(2L, element1.get().getId());
+  }
+
+  @Test
+  @Order(3)
+  void testReadAdmin_findById_invalidId_returnsObjectsWithSameId() {
+    var element1 = adminRepository.findById(99L);
+    assertTrue(element1.isEmpty());
   }
 
   // ==================== Update ====================
@@ -78,25 +88,36 @@ class AdminRepositoryTest {
   @Order(4)
   void testUpdateAdmin_changeInterestRate_newInterestRateEqualsDefinedValue() {
     var element1 = adminRepository.findById(3L);
-    if (element1.isPresent()) {
-      element1.get().setName("New name");
-      adminRepository.save(element1.get());
-    } else throw new TestInstantiationException("Id not found");
+    assertTrue(element1.isPresent());
+    element1.get().setName("New name");
+    adminRepository.save(element1.get());
 
     var updatedElement1 = adminRepository.findById(3L);
-    if (updatedElement1.isPresent()) {
-      assertEquals("New name", updatedElement1.get().getName());
-    } else throw new TestInstantiationException("Updated id not found");
+    assertTrue(updatedElement1.isPresent());
+    assertEquals("New name", updatedElement1.get().getName());
   }
 
   // ==================== Delete ====================
   @Test
   @Order(5)
-  void testDeleteAdmin_deleteAdmin_deletedFromRepository() {
+  void testDeleteAdmin_deleteAdmin_validId_deletedFromRepository() {
     var initialSize = adminRepository.count();
     adminRepository.deleteById(2L);
     assertEquals(initialSize - 1, adminRepository.count());
   }
+
+  @Test
+  @Order(5)
+  void testDeleteAdmin_deleteAdmin_invalidId_deletedFromRepository() {
+    assertThrows(EmptyResultDataAccessException.class, () -> adminRepository.deleteById(99L));
+  }
+
+
+  // ======================================== Relations Testing ========================================
+  // ==================== Read from AccountHolders ====================
+
+
+  // ======================================== Custom Queries Testing ========================================
 
 
 }
