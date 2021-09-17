@@ -75,10 +75,8 @@ class MoneyInitializerUtilTest {
   @Order(2)
   @ValueSource(strings = {"", "  ", "ah3haefhb", "157135,13532"})
   void testNewBD_invalidStringNumber(String value) {
-    assertThrows(NumberFormatException.class, () -> {
-      newBD(value);
-      newBD(value, 2);
-    });
+    assertThrows(NumberFormatException.class, () -> newBD(value));
+    assertThrows(NumberFormatException.class, () -> newBD(value, 2));
   }
 
   @Test

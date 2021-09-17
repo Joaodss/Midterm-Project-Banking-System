@@ -15,7 +15,6 @@ public class SavingsMinBalanceValidation implements ConstraintValidator<SavingsM
 
   @Override
   public boolean isValid(Money money, ConstraintValidatorContext constraintValidatorContext) {
-    BigDecimal bd = money.getAmount();
-    return bd.compareTo(new BigDecimal("100.00")) >= 0;
+    return money.getAmount().compareTo(new BigDecimal("100.00")) >= 0;
   }
 }
