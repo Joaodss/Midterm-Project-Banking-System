@@ -4,13 +4,15 @@ import com.ironhack.midterm.dao.account.CreditCard;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
+import com.ironhack.midterm.util.DbTestUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,8 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)   // Resets DB and id generation (slower)
 class CreditCardRepositoryTest {
+
+  @Autowired
+  private ApplicationContext applicationContext;
 
   @Autowired
   private AccountHolderRepository accountHolderRepository;
@@ -54,9 +58,10 @@ class CreditCardRepositoryTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws SQLException {
     creditCardRepository.deleteAll();
     accountHolderRepository.deleteAll();
+    DbTestUtil.resetAutoIncrementColumns(applicationContext, "account", "user");
   }
 
 

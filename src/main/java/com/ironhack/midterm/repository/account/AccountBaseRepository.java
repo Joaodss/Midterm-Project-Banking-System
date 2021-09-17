@@ -11,7 +11,7 @@ import java.util.Optional;
 @NoRepositoryBean
 public interface AccountBaseRepository<T extends Account> extends JpaRepository<T, Long> {
 
-  @Query("SELECT e FROM Account e " +
+  @Query("SELECT e FROM #{#entityName} e " +
       "LEFT JOIN FETCH e.primaryOwner p " +
       "LEFT JOIN FETCH e.secondaryOwner s")
   List<T> findAllJoined();
