@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .jpb/
+.resourceCache/
 
 ### STS ###
 .apt_generated
