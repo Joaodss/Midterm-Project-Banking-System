@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,7 +41,7 @@ public abstract class User {
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
   )
-  private Set<Role> roles = Collections.emptySet();
+  private Set<Role> roles = new HashSet<>();
 
   @NotNull
   @NotBlank

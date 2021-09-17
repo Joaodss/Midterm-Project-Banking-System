@@ -1,5 +1,6 @@
 package com.ironhack.midterm.repository.user;
 
+import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.util.database.DbTestUtil;
 import org.junit.jupiter.api.*;
@@ -25,15 +26,35 @@ class ThirdPartyRepositoryTest {
   @Autowired
   private ThirdPartyRepository thirdPartyRepository;
 
+  @Autowired
+  private RoleRepository roleRepository;
+
+  private Role r1;
+  private Role r2;
+
   private ThirdParty tp1;
   private ThirdParty tp2;
   private ThirdParty tp3;
 
   @BeforeEach
   void setUp() {
+    r1 = new Role("USER");
+    r2 = new Role("ADMIN");
+    roleRepository.saveAll(List.of(r1, r2));
+
     tp1 = new ThirdParty("thirdParty", "thirdParty", "thirdParty");
     tp2 = new ThirdParty("superuser", "test1", "SU");
     tp3 = new ThirdParty("joaodss", "password", "Joaods");
+
+    var roles1 = tp1.getRoles();
+    roles1.add(r1);
+    roles1.add(r2);
+    tp1.setRoles(roles1);
+
+    var roles2 = tp2.getRoles();
+    roles2.add(r1);
+    tp2.setRoles(roles2);
+
     thirdPartyRepository.saveAll(List.of(tp1, tp2, tp3));
   }
 
@@ -114,7 +135,31 @@ class ThirdPartyRepositoryTest {
 
 
   // ======================================== Relations Testing ========================================
-  // ==================== Read from AccountHolders ====================
+  // ==================== Read from Roles ====================
+  @Test
+  @Order(6)
+  void testReadFromRoles_findAll_returnThirdPartyWithSetOfRoles() {
+    var element1 = thirdPartyRepository.findAll();
+    assertFalse(element1.isEmpty());
+    assertTrue(element1.get(0).getRoles().contains(r1));
+    assertTrue(element1.get(0).getRoles().contains(r2));
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromRoles_findById_returnThirdPartyWithItsSetOfRoles() {
+    var element1 = thirdPartyRepository.findById(1L);
+    assertTrue(element1.isPresent());
+    assertTrue(element1.get().getRoles().contains(r1));
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromRoles_findById_returnThirdPartyWithItsSetOfRoles_roleWithCorrectName() {
+    var element1 = thirdPartyRepository.findById(2L);
+    assertTrue(element1.isPresent());
+    assertEquals("USER", element1.get().getRoles().stream().findFirst().get().getName());
+  }
 
 
   // ======================================== Custom Queries Testing ========================================

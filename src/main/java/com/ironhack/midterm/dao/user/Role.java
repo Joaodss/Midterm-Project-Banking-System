@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ public class Role {
   private String name;
 
   @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-  private Set<User> users = Collections.emptySet();
+  private Set<User> users = new HashSet<>();
 
 
   // ======================================== Constructors ========================================

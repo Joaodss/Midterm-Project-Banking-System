@@ -1,6 +1,7 @@
 package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.Admin;
+import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.util.database.DbTestUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,35 @@ class AdminRepositoryTest {
   @Autowired
   private AdminRepository adminRepository;
 
+  @Autowired
+  private RoleRepository roleRepository;
+
+  private Role r1;
+  private Role r2;
+
   private Admin a1;
   private Admin a2;
   private Admin a3;
 
   @BeforeEach
   void setUp() {
+    r1 = new Role("USER");
+    r2 = new Role("ADMIN");
+    roleRepository.saveAll(List.of(r1, r2));
+
     a1 = new Admin("admin", "admin", "Admin");
     a2 = new Admin("superuser", "test1", "SU");
     a3 = new Admin("joaodss", "password", "Joaods");
+
+    var roles1 = a1.getRoles();
+    roles1.add(r1);
+    roles1.add(r2);
+    a1.setRoles(roles1);
+
+    var roles2 = a2.getRoles();
+    roles2.add(r1);
+    a2.setRoles(roles2);
+
     adminRepository.saveAll(List.of(a1, a2, a3));
   }
 
@@ -114,7 +135,31 @@ class AdminRepositoryTest {
 
 
   // ======================================== Relations Testing ========================================
-  // ==================== Read from AccountHolders ====================
+  // ==================== Read from Roles ====================
+  @Test
+  @Order(6)
+  void testReadFromRoles_findAll_returnAdminWithSetOfRoles() {
+    var element1 = adminRepository.findAll();
+    assertFalse(element1.isEmpty());
+    assertTrue(element1.get(0).getRoles().contains(r1));
+    assertTrue(element1.get(0).getRoles().contains(r2));
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromRoles_findById_returnAdminWithItsSetOfRoles() {
+    var element1 = adminRepository.findById(1L);
+    assertTrue(element1.isPresent());
+    assertTrue(element1.get().getRoles().contains(r1));
+  }
+
+  @Test
+  @Order(6)
+  void testReadFromRoles_findById_returnAdminWithItsSetOfRoles_roleWithCorrectName() {
+    var element1 = adminRepository.findById(2L);
+    assertTrue(element1.isPresent());
+    assertEquals("USER", element1.get().getRoles().stream().findFirst().get().getName());
+  }
 
 
   // ======================================== Custom Queries Testing ========================================
