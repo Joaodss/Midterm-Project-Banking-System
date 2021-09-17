@@ -1,4 +1,4 @@
-package com.ironhack.midterm.util;
+package com.ironhack.midterm.util.helper;
 
 import com.ironhack.midterm.model.Money;
 import lombok.AccessLevel;

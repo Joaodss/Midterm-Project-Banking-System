@@ -1,6 +1,7 @@
 package com.ironhack.midterm.util;
 
 import com.ironhack.midterm.model.Money;
+import com.ironhack.midterm.util.helper.MoneyHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -8,8 +9,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static com.ironhack.midterm.util.MoneyHelper.newBD;
-import static com.ironhack.midterm.util.MoneyHelper.newMoney;
+import static com.ironhack.midterm.util.helper.MoneyHelper.newBD;
+import static com.ironhack.midterm.util.helper.MoneyHelper.newMoney;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

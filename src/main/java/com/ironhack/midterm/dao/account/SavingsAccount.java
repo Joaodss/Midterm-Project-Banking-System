@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
 
-import static com.ironhack.midterm.util.MoneyHelper.newBD;
-import static com.ironhack.midterm.util.MoneyHelper.newMoney;
+import static com.ironhack.midterm.util.helper.MoneyHelper.newBD;
+import static com.ironhack.midterm.util.helper.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "savings_account")

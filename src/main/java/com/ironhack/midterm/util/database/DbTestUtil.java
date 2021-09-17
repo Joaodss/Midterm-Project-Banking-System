@@ -1,4 +1,4 @@
-package com.ironhack.midterm.util;
+package com.ironhack.midterm.util.database;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

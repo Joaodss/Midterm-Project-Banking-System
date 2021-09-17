@@ -4,7 +4,7 @@ import com.ironhack.midterm.dao.account.SavingsAccount;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
-import com.ironhack.midterm.util.DbTestUtil;
+import com.ironhack.midterm.util.database.DbTestUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.ironhack.midterm.util.MoneyHelper.newMoney;
+import static com.ironhack.midterm.util.helper.MoneyHelper.newMoney;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

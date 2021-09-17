@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
-import static com.ironhack.midterm.util.MoneyHelper.newMoney;
+import static com.ironhack.midterm.util.helper.MoneyHelper.newMoney;
 
 @Entity
 @Table(name = "account")
