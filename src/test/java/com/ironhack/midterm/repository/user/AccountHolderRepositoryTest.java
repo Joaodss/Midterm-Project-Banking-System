@@ -52,25 +52,19 @@ class AccountHolderRepositoryTest {
     roleRepository.saveAll(List.of(r1, r2));
 
     ah1 = new AccountHolder("joaodss", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa1, pa1);
+    ah1.getRoles().add(r1);
+    ah1.getRoles().add(r2);
     ah2 = new AccountHolder("anamaria", "123456", "Ana Maria", LocalDate.parse("1989-08-25"), pa2);
+    ah2.getRoles().add(r1);
     ah3 = new AccountHolder("jose", "123456", "Jose", LocalDate.parse("1964-03-19"), pa1, pa2);
-
-    var roles1 = ah1.getRoles();
-    roles1.add(r1);
-    roles1.add(r2);
-    ah1.setRoles(roles1);
-
-    var roles2 = ah2.getRoles();
-    roles2.add(r1);
-    ah2.setRoles(roles2);
-
     accountHolderRepository.saveAll(List.of(ah1, ah2, ah3));
   }
 
   @AfterEach
   void tearDown() throws SQLException {
     accountHolderRepository.deleteAll();
-    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user");
+    roleRepository.deleteAll();
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user", "roles");
   }
 
 

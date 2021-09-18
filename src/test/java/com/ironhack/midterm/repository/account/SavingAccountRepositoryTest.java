@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,16 +44,16 @@ class SavingAccountRepositoryTest {
 
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws NoSuchAlgorithmException {
     var pa1 = new Address("Rua 1", "1010", "Coimbra", "Portugal");
     var pa2 = new Address("Rua 22", "2222", "Lisbon", "Portugal");
     ah1 = new AccountHolder("joa0ds5", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa1, pa1);
     ah2 = new AccountHolder("an5m6ri7", "123456", "Ana Maria", LocalDate.parse("1989-08-25"), pa2);
     accountHolderRepository.saveAll(List.of(ah1, ah2));
 
-    sa1 = new SavingsAccount(newMoney("2000"), ah1, "abcdef123");
-    sa2 = new SavingsAccount(newMoney("500"), ah1, ah2, "secretword");
-    sa3 = new SavingsAccount(newMoney("1000"), ah2, "password123");
+    sa1 = new SavingsAccount(newMoney("2000"), ah1);
+    sa2 = new SavingsAccount(newMoney("500"), ah1, ah2);
+    sa3 = new SavingsAccount(newMoney("1000"), ah2);
     savingsAccountRepository.saveAll(List.of(sa1, sa2, sa3));
   }
 
@@ -74,17 +75,17 @@ class SavingAccountRepositoryTest {
   // ==================== Create ====================
   @Test
   @Order(2)
-  void testCreateSavingsAccount_saveNewSavingsAccountWithOneOwner_storedInRepository() {
+  void testCreateSavingsAccount_saveNewSavingsAccountWithOneOwner_storedInRepository() throws NoSuchAlgorithmException {
     var initialSize = savingsAccountRepository.count();
-    savingsAccountRepository.save(new SavingsAccount(newMoney("2500"), ah1, "testTest"));
+    savingsAccountRepository.save(new SavingsAccount(newMoney("2500"), ah1));
     assertEquals(initialSize + 1, savingsAccountRepository.count());
   }
 
   @Test
   @Order(2)
-  void testCreateSavingsAccount_saveNewSavingsAccountWithTwoOwner_storedInRepository() {
+  void testCreateSavingsAccount_saveNewSavingsAccountWithTwoOwner_storedInRepository() throws NoSuchAlgorithmException {
     var initialSize = savingsAccountRepository.count();
-    savingsAccountRepository.save(new SavingsAccount(newMoney("7000"), ah1, ah2, "testTest2"));
+    savingsAccountRepository.save(new SavingsAccount(newMoney("7000"), ah1, ah2));
     assertEquals(initialSize + 1, savingsAccountRepository.count());
   }
 

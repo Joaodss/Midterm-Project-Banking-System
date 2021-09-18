@@ -1,20 +1,20 @@
 package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Money;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.security.NoSuchAlgorithmException;
 
+import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
-import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "checking_account")
@@ -24,11 +24,9 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(callSuper = true)
 public class CheckingAccount extends Account {
 
   @NotNull
-  @NotBlank
   @Column(name = "secret_key")
   private String secretKey;
 
@@ -51,53 +49,47 @@ public class CheckingAccount extends Account {
   private Money monthlyMaintenanceFee;
 
   @NotNull
-  @PastOrPresent
-  @Column(name = "creation_date")
-  private LocalDateTime creationDate;
-
-  @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
-  private Status status;
+  private AccountStatus accountStatus;
 
 
-  // ======================================== Constructors ========================================
-  // ==================== Constructors with default creditLimit/interestRate ====================
-  public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
+  // ======================================== CONSTRUCTORS ========================================
+  public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     super(balance, primaryOwner, secondaryOwner);
-    this.secretKey = secretKey;
-    this.minimumBalance = newMoney("250.00");
-    this.monthlyMaintenanceFee = newMoney("12.00");
-    this.creationDate = dateTimeNow();
-    this.status = Status.ACTIVE;
+    try {
+      this.secretKey = generateSecretKey();
+    } catch (NoSuchAlgorithmException e) {
+      this.secretKey = "0000000000";
+    }
+    this.minimumBalance = newMoney("250");
+    this.monthlyMaintenanceFee = newMoney("12");
+    this.accountStatus = AccountStatus.ACTIVE;
   }
 
-  public CheckingAccount(Money balance, AccountHolder primaryOwner, String secretKey) {
+  public CheckingAccount(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
-    this.minimumBalance = newMoney("250.00");
-    this.monthlyMaintenanceFee = newMoney("12.00");
-    this.secretKey = secretKey;
-    this.creationDate = dateTimeNow();
-    this.status = Status.ACTIVE;
+    try {
+      this.secretKey = generateSecretKey();
+    } catch (NoSuchAlgorithmException e) {
+      this.secretKey = "0000000000";
+    }
+    this.minimumBalance = newMoney("250");
+    this.monthlyMaintenanceFee = newMoney("12");
+    this.accountStatus = AccountStatus.ACTIVE;
   }
 
 
-  // ======================================== Getters & Setters ========================================
-
-
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    CheckingAccount that = (CheckingAccount) o;
-    return getSecretKey().equals(that.getSecretKey()) && getMinimumBalance().equals(that.getMinimumBalance()) && getMonthlyMaintenanceFee().equals(that.getMonthlyMaintenanceFee()) && getCreationDate().equals(that.getCreationDate()) && getStatus() == that.getStatus();
+  // ======================================== METHODS ========================================
+  public void updateSecretKey() {
+    try {
+      this.secretKey = generateSecretKey();
+    } catch (NoSuchAlgorithmException ignored) {
+    }
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), getSecretKey(), getMinimumBalance(), getMonthlyMaintenanceFee(), getCreationDate(), getStatus());
-  }
+
+  // ======================================== OVERRIDE METHODS ========================================
+
 
 }

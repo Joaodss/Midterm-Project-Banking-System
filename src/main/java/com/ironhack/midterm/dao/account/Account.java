@@ -1,9 +1,11 @@
 package com.ironhack.midterm.dao.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ironhack.midterm.dao.transaction.Deposit;
+import com.ironhack.midterm.dao.transaction.LocalTransfer;
+import com.ironhack.midterm.dao.transaction.ThirdPartyTransfer;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.util.validation.customAnotations.CreditLimitConstrain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +14,12 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
+import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "account")
@@ -32,7 +37,6 @@ public abstract class Account {
 
   @Valid
   @NotNull
-  @CreditLimitConstrain
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "balance_amount", nullable = false)),
@@ -40,18 +44,17 @@ public abstract class Account {
   })
   private Money balance;
 
-  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "primary_owner_id")
+  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
   private AccountHolder primaryOwner;
 
-  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "secondary_owner_id")
+  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
   private AccountHolder secondaryOwner;
 
-  @Valid
   @NotNull
   @Embedded
   @AttributeOverrides({
@@ -60,50 +63,58 @@ public abstract class Account {
   })
   private Money penaltyFee;
 
+  @NotNull
+  @Column(name = "creation_date")
+  private LocalDateTime creationDate;
 
-  // ======================================== Constructors ========================================
-  // ==================== Constructors with default penaltyFee ====================
+  // ======================================== MAPPING ========================================
+  @OneToMany(mappedBy = "targetAccount", cascade = {})
+  @JsonIgnoreProperties(value = {}, allowSetters = true)
+  private List<Deposit> depositList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "account", cascade = {})
+  @JsonIgnoreProperties(value = {}, allowSetters = true)
+  private List<LocalTransfer> transferSentList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "targetAccount", cascade = {})
+  @JsonIgnoreProperties(value = {}, allowSetters = true)
+  private List<LocalTransfer> transferReceivedList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "targetAccount", cascade = {})
+  @JsonIgnoreProperties(value = {}, allowSetters = true)
+  private List<ThirdPartyTransfer> thirdPartyTransferList = new ArrayList<>();
+
+
+  // ======================================== CONSTRUCTORS ========================================
   public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
     this.secondaryOwner = secondaryOwner;
-    this.penaltyFee = newMoney("40.00");
+    this.penaltyFee = newMoney("40");
+    this.creationDate = dateTimeNow();
   }
 
   public Account(Money balance, AccountHolder primaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
-    this.secondaryOwner = null;
-    this.penaltyFee = newMoney("40.00");
+    this.penaltyFee = newMoney("40");
+    this.creationDate = dateTimeNow();
   }
 
+  // ======================================== METHODS ========================================
 
-  // ======================================== Getters & Setters ========================================
+  // ======================================== OVERRIDE METHODS ========================================
 
 
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Account account = (Account) o;
-    return getId().equals(account.getId()) && getBalance().equals(account.getBalance()) && getPrimaryOwner().equals(account.getPrimaryOwner()) && Objects.equals(getSecondaryOwner(), account.getSecondaryOwner()) && getPenaltyFee().equals(account.getPenaltyFee());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(), getBalance(), getPrimaryOwner(), getSecondaryOwner(), getPenaltyFee());
-  }
-
-  @Override
-  public String toString() {
-    return "Account{" +
-        "id=" + id +
-        ", balance=" + balance +
-        ", primaryOwner=" + primaryOwner.getId() + ": " + primaryOwner.getName() +
-        ", secondaryOwner=" + secondaryOwner.getId() + ": " + secondaryOwner.getName() +
-        ", penaltyFee=" + penaltyFee +
-        '}';
-  }
-
+//  @Override
+//  public String toString() {
+//    return "Account{" +
+//        "id=" + id +
+//        ", balance=" + balance.toString() +
+//        ", primaryOwner=" + primaryOwner.getId() + ": " + primaryOwner.getName() +
+//        (secondaryOwner == null ? "" : ", secondaryOwner=" + secondaryOwner.getId() + ": " + secondaryOwner.getName()) +
+//        ", penaltyFee=" + penaltyFee +
+//        ", creationDate=" + creationDate +
+//        '}';
+//  }
 }

@@ -32,13 +32,15 @@ public class ThirdParty extends User {
   // ======================================== CONSTRUCTORS ========================================
   public ThirdParty(String username, String password, String name) {
     super(username, password, name);
-    this.hashedKey = encryptedKey(username + password + name);
+    this.hashedKey = encryptedKey(username + password + name + super.hashCode());
   }
+
 
   // ======================================== METHODS ========================================
   public void updateHashedKey() {
-    this.hashedKey = encryptedKey(getId() + getName() + getUsername() + getPassword());
+    this.hashedKey = encryptedKey(this.toString());
   }
+
 
   // ======================================== OVERRIDE METHODS ========================================
 

@@ -11,7 +11,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,25 +45,19 @@ class AdminRepositoryTest {
     roleRepository.saveAll(List.of(r1, r2));
 
     a1 = new Admin("admin", "admin", "Admin");
+    a1.getRoles().add(r1);
+    a1.getRoles().add(r2);
     a2 = new Admin("superuser", "test1", "SU");
+    a2.getRoles().add(r1);
     a3 = new Admin("joaodss", "password", "Joaods");
-
-    var roles1 = a1.getRoles();
-    roles1.add(r1);
-    roles1.add(r2);
-    a1.setRoles(roles1);
-
-    var roles2 = a2.getRoles();
-    roles2.add(r1);
-    a2.setRoles(roles2);
-
     adminRepository.saveAll(List.of(a1, a2, a3));
   }
 
   @AfterEach
   void tearDown() throws SQLException {
     adminRepository.deleteAll();
-    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user");
+    roleRepository.deleteAll();
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user", "roles");
   }
 
 

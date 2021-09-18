@@ -1,20 +1,21 @@
 package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.util.validation.customAnotations.SavingsMinBalanceConstrain;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Objects;
 
+import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
 import static com.ironhack.midterm.util.MoneyUtil.newBD;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 
@@ -25,17 +26,14 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(callSuper = true)
 public class SavingsAccount extends Account {
 
   @NotNull
-  @NotBlank
   @Column(name = "secret_key")
   private String secretKey;
 
   @Valid
   @NotNull
-  @SavingsMinBalanceConstrain
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "min_balance_amount", nullable = false)),
@@ -44,69 +42,56 @@ public class SavingsAccount extends Account {
   private Money minimumBalance;
 
   @NotNull
-  @Digits(integer = 1, fraction = 4)
-  @DecimalMax(value = "0.5000")
+  @Column(name = "interest_rate")
   private BigDecimal interestRate;
 
   @NotNull
-  @PastOrPresent
-  @Column(name = "creation_date")
-  private LocalDateTime creationDate;
+  @Column(name = "last_interest_update")
+  private LocalDateTime lastInterestUpdate;
 
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
-  private Status status;
+  private AccountStatus accountStatus;
 
 
-  // ======================================== Constructors ========================================
-  // ==================== Constructors with default minimumBalance/interestRate/creationDate/status ====================
-  public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
+  // ======================================== CONSTRUCTORS ========================================
+  public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner)  {
     super(balance, primaryOwner, secondaryOwner);
-    this.secretKey = secretKey;
+    try {
+      this.secretKey = generateSecretKey();
+    } catch (NoSuchAlgorithmException e) {
+      this.secretKey = "0000000000";
+    }
     this.minimumBalance = newMoney("1000");
-    this.interestRate = newBD("0.0025", 4);
-    this.creationDate = LocalDateTime.now(ZoneId.of("Europe/London"));
-    this.status = Status.ACTIVE;
+    this.interestRate = newBD("0.0025");
+    this.lastInterestUpdate = getCreationDate();
+    this.accountStatus = AccountStatus.ACTIVE;
   }
 
-  public SavingsAccount(Money balance, AccountHolder primaryOwner, String secretKey) {
+  public SavingsAccount(Money balance, AccountHolder primaryOwner)  {
     super(balance, primaryOwner);
-    this.secretKey = secretKey;
+    try {
+      this.secretKey = generateSecretKey();
+    } catch (NoSuchAlgorithmException e) {
+      this.secretKey = "0000000000";
+    }
     this.minimumBalance = newMoney("1000");
-    this.interestRate = newBD("0.0025", 4);
-    this.creationDate = LocalDateTime.now(ZoneId.of("Europe/London"));
-    this.status = Status.ACTIVE;
+    this.interestRate = newBD("0.0025");
+    this.lastInterestUpdate = getCreationDate();
+    this.accountStatus = AccountStatus.ACTIVE;
   }
 
 
-  // ======================================== Getters & Setters ========================================
-  public void setMinimumBalance(Money minimumBalance) {
-    if (minimumBalance.getAmount().compareTo(newBD("100")) < 0)
-      throw new IllegalArgumentException("Invalid minimum balance amount. Must be equal or greater than 100€.");
-    this.minimumBalance = minimumBalance;
-  }
-
-  public void setInterestRate(BigDecimal interestRate) {
-    if (interestRate.compareTo(newBD("0.5")) > 0)
-      throw new IllegalArgumentException("Invalid interest rate amount. Must be equal or lesser than 0.5.");
-    this.interestRate = interestRate.setScale(4, RoundingMode.HALF_EVEN);
+  // ======================================== METHODS ========================================
+  public void updateSecretKey() {
+    try {
+      this.secretKey = generateSecretKey();
+    } catch (NoSuchAlgorithmException ignored) {
+    }
   }
 
 
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    SavingsAccount that = (SavingsAccount) o;
-    return getSecretKey().equals(that.getSecretKey()) && getMinimumBalance().equals(that.getMinimumBalance()) && getInterestRate().equals(that.getInterestRate()) && getCreationDate().equals(that.getCreationDate()) && getStatus() == that.getStatus();
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), getSecretKey(), getMinimumBalance(), getInterestRate(), getCreationDate(), getStatus());
-  }
+  // ======================================== OVERRIDE METHODS ========================================
 
 }

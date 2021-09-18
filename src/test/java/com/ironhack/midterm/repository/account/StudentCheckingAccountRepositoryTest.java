@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -51,9 +52,9 @@ class StudentCheckingAccountRepositoryTest {
     ah2 = new AccountHolder("an5m6ri7", "123456", "Ana Maria", LocalDate.parse("1989-08-25"), pa2);
     accountHolderRepository.saveAll(List.of(ah1, ah2));
 
-    sca1 = new StudentCheckingAccount(newMoney("2000"), ah1, "abcdef123");
-    sca2 = new StudentCheckingAccount(newMoney("500"), ah1, ah2, "secretword");
-    sca3 = new StudentCheckingAccount(newMoney("1000"), ah2, "password123");
+    sca1 = new StudentCheckingAccount(newMoney("2000"), ah1);
+    sca2 = new StudentCheckingAccount(newMoney("500"), ah1, ah2);
+    sca3 = new StudentCheckingAccount(newMoney("1000"), ah2);
     studentCheckingAccountRepository.saveAll(List.of(sca1, sca2, sca3));
   }
 
@@ -75,17 +76,17 @@ class StudentCheckingAccountRepositoryTest {
   // ==================== Create ====================
   @Test
   @Order(2)
-  void testCreateStudentCheckingAccount_saveNewStudentCheckingAccountWithOneOwner_storedInRepository() {
+  void testCreateStudentCheckingAccount_saveNewStudentCheckingAccountWithOneOwner_storedInRepository() throws NoSuchAlgorithmException {
     var initialSize = studentCheckingAccountRepository.count();
-    studentCheckingAccountRepository.save(new StudentCheckingAccount(newMoney("2500"), ah1, "testTest"));
+    studentCheckingAccountRepository.save(new StudentCheckingAccount(newMoney("2500"), ah1));
     assertEquals(initialSize + 1, studentCheckingAccountRepository.count());
   }
 
   @Test
   @Order(2)
-  void testCreateStudentCheckingAccount_saveNewStudentCheckingAccountWithTwoOwner_storedInRepository() {
+  void testCreateStudentCheckingAccount_saveNewStudentCheckingAccountWithTwoOwner_storedInRepository() throws NoSuchAlgorithmException {
     var initialSize = studentCheckingAccountRepository.count();
-    studentCheckingAccountRepository.save(new StudentCheckingAccount(newMoney("7000"), ah1, ah2, "testTest2"));
+    studentCheckingAccountRepository.save(new StudentCheckingAccount(newMoney("7000"), ah1, ah2));
     assertEquals(initialSize + 1, studentCheckingAccountRepository.count());
   }
 

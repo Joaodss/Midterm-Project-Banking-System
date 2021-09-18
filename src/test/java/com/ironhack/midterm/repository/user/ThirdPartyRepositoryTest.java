@@ -43,25 +43,19 @@ class ThirdPartyRepositoryTest {
     roleRepository.saveAll(List.of(r1, r2));
 
     tp1 = new ThirdParty("thirdParty", "thirdParty", "thirdParty");
+    tp1.getRoles().add(r1);
+    tp1.getRoles().add(r2);
     tp2 = new ThirdParty("superuser", "test1", "SU");
+    tp2.getRoles().add(r1);
     tp3 = new ThirdParty("joaodss", "password", "Joaods");
-
-    var roles1 = tp1.getRoles();
-    roles1.add(r1);
-    roles1.add(r2);
-    tp1.setRoles(roles1);
-
-    var roles2 = tp2.getRoles();
-    roles2.add(r1);
-    tp2.setRoles(roles2);
-
     thirdPartyRepository.saveAll(List.of(tp1, tp2, tp3));
   }
 
   @AfterEach
   void tearDown() throws SQLException {
     thirdPartyRepository.deleteAll();
-    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user");
+    roleRepository.deleteAll();
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "user", "roles");
   }
 
 

@@ -10,6 +10,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "request")
@@ -39,18 +42,24 @@ public abstract class Request {
   @Column(name = "description")
   private String description;
 
+  @NotNull
+  @Column(name = "request_date")
+  private LocalDateTime requestDate;
+
 
   // ======================================== CONSTRUCTORS ========================================
   public Request(AccountHolder user, Status status, String description) {
     this.user = user;
     this.status = status;
     this.description = description;
+    this.requestDate = dateTimeNow();
   }
 
   public Request(AccountHolder user, String description) {
     this.user = user;
     this.status = Status.PROCESSING;
     this.description = description;
+    this.requestDate = dateTimeNow();
   }
 
 

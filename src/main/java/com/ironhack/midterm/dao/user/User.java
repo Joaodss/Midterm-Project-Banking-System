@@ -36,7 +36,7 @@ public abstract class User {
   private String password;
 
   @JsonIgnoreProperties(value = {"users"}, allowSetters = true)
-  @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
+  @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")

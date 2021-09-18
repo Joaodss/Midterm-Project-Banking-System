@@ -5,13 +5,11 @@ import com.ironhack.midterm.model.Money;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-
-import static com.ironhack.midterm.util.MoneyUtil.newMoney;
+import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Table(name = "student_checking_account")
@@ -19,53 +17,22 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(callSuper = true)
 public class StudentCheckingAccount extends CheckingAccount {
 
 
-  // ======================================== Constructors ========================================
-  // ==================== Constructors with default creditLimit/interestRate ====================
-  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
-    super(balance, primaryOwner, secondaryOwner, secretKey);
-    setMinimumBalance(newMoney("0"));
-    setPenaltyFee(newMoney("0"));
-    setMonthlyMaintenanceFee(newMoney("0"));
+  // ======================================== CONSTRUCTORS ========================================
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner)  {
+    super(balance, primaryOwner, secondaryOwner);
   }
 
-  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, String secretKey) {
-    super(balance, primaryOwner, secretKey);
-    setMinimumBalance(newMoney("0"));
-    setPenaltyFee(newMoney("0"));
-    setMonthlyMaintenanceFee(newMoney("0"));
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner){
+    super(balance, primaryOwner);
   }
 
 
-  // ======================================== Getters & Setters ========================================
-  @Override
-  public void setPenaltyFee(Money penaltyFee) {
-    super.setPenaltyFee(newMoney("0"));
-  }
+  // ======================================== METHODS ========================================
 
-  @Override
-  public void setMonthlyMaintenanceFee(Money monthlyMaintenanceFee) {
-    super.setMonthlyMaintenanceFee(newMoney("0"));
-  }
+  // ======================================== OVERRIDE METHODS ========================================
 
-  @Override
-  public void setMinimumBalance(Money minimumBalance) {
-    super.setMinimumBalance(newMoney("0"));
-  }
-
-
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
-  }
 
 }

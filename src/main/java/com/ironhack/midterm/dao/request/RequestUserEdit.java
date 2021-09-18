@@ -14,7 +14,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "request_edit_user")
 @PrimaryKeyJoinColumn(name = "id")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
