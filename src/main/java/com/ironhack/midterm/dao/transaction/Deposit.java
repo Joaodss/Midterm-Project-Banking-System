@@ -63,7 +63,7 @@ public class Deposit extends Transaction {
         getConvertedAmount(),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -76,7 +76,7 @@ public class Deposit extends Transaction {
         TransactionType.DEPOSIT,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(), message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -88,7 +88,7 @@ public class Deposit extends Transaction {
         TransactionType.DEPOSIT,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(), message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }

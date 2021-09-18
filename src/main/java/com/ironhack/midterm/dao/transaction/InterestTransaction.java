@@ -53,7 +53,7 @@ public class InterestTransaction extends Transaction {
         getConvertedAmount(),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -67,7 +67,7 @@ public class InterestTransaction extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -80,7 +80,7 @@ public class InterestTransaction extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }

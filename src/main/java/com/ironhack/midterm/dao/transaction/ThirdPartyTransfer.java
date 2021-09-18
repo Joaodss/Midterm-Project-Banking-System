@@ -70,7 +70,7 @@ public class ThirdPartyTransfer extends Transaction {
           getConvertedAmount(),
           getStatus(),
           message,
-          dateTimeNow(),
+          getOperationDate(),
           this
       );
     } else {
@@ -81,7 +81,7 @@ public class ThirdPartyTransfer extends Transaction {
           negativeMoney(getConvertedAmount()),
           getStatus(),
           message,
-          dateTimeNow(),
+          getOperationDate(),
           this
       );
     }
@@ -97,7 +97,7 @@ public class ThirdPartyTransfer extends Transaction {
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           message,
-          dateTimeNow(),
+          getOperationDate(),
           this
       );
     } else {
@@ -108,7 +108,7 @@ public class ThirdPartyTransfer extends Transaction {
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           message,
-          dateTimeNow(),
+          getOperationDate(),
           this
       );
     }
@@ -123,7 +123,7 @@ public class ThirdPartyTransfer extends Transaction {
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           message,
-          dateTimeNow(),
+          getOperationDate(),
           this
       );
     } else {
@@ -133,7 +133,7 @@ public class ThirdPartyTransfer extends Transaction {
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           message,
-          dateTimeNow(),
+          getOperationDate(),
           this
       );
     }

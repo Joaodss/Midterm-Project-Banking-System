@@ -54,7 +54,7 @@ public class PenaltyFeeTransaction extends Transaction {
         negativeMoney(getConvertedAmount()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -68,7 +68,7 @@ public class PenaltyFeeTransaction extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -81,7 +81,7 @@ public class PenaltyFeeTransaction extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }

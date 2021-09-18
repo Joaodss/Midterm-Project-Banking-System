@@ -81,7 +81,7 @@ public class LocalTransfer extends Transaction {
         getConvertedAmount(),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -96,7 +96,7 @@ public class LocalTransfer extends Transaction {
         negativeMoney(getConvertedAmount()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -111,7 +111,7 @@ public class LocalTransfer extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -126,7 +126,7 @@ public class LocalTransfer extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -140,7 +140,7 @@ public class LocalTransfer extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -154,7 +154,7 @@ public class LocalTransfer extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }

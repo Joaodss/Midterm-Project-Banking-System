@@ -54,7 +54,7 @@ public class MaintenanceFeeTransaction extends Transaction {
         negativeMoney(getConvertedAmount()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -68,7 +68,7 @@ public class MaintenanceFeeTransaction extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
@@ -81,7 +81,7 @@ public class MaintenanceFeeTransaction extends Transaction {
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
-        dateTimeNow(),
+        getOperationDate(),
         this
     );
   }
