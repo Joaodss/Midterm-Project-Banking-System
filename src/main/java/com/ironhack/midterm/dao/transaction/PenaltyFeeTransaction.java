@@ -2,7 +2,6 @@ package com.ironhack.midterm.dao.transaction;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
-import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.enums.TransactionType;
 import com.ironhack.midterm.model.Money;
@@ -14,53 +13,45 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import static com.ironhack.midterm.util.MoneyUtil.negativeMoney;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
-@Table(name = "deposit")
+@Table(name = "penalty_fee_transaction")
 @PrimaryKeyJoinColumn(name = "id")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Deposit extends Transaction {
+public class PenaltyFeeTransaction extends Transaction {
 
   @NotNull
   @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "target_account_id")
-  private Account targetAccount;
-
-  @NotNull
-  @JsonIncludeProperties(value = {"id", "name"})
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "target_owner_id")
-  private AccountHolder targetOwner;
-
+  @JoinColumn(name = "account_id")
+  private Account account;
 
   // ======================================== CONSTRUCTORS ========================================
-  public Deposit(Money baseAmount, Money convertedAmount, Account targetAccount, AccountHolder targetOwner) {
+  public PenaltyFeeTransaction(Money baseAmount, Money convertedAmount, Account account) {
     super(baseAmount, convertedAmount);
-    this.targetAccount = targetAccount;
-    this.targetOwner = targetOwner;
+    this.account = account;
   }
 
-  public Deposit(Money baseAmount, Account targetAccount, AccountHolder targetOwner) {
+  public PenaltyFeeTransaction(Money baseAmount, Account account) {
     super(baseAmount);
-    this.targetAccount = targetAccount;
-    this.targetOwner = targetOwner;
+    this.account = account;
   }
 
 
   // ======================================== METHODS ========================================
   public TransactionReceipt acceptAndGenerateReceipt() {
     setStatus(Status.ACCEPTED);
-    String message = "The amount of " + getConvertedAmount().toString() + " was successfully deposited.";
+    String message = "The penalty fee of " + getConvertedAmount().toString() + " was withdrawn from this account.";
     return new TransactionReceipt(
-        getTargetAccount(),
-        TransactionType.DEPOSIT,
-        getConvertedAmount(),
+        getAccount(),
+        TransactionType.PENALTY_FEE,
+        negativeMoney(getConvertedAmount()),
         getStatus(),
         message,
         dateTimeNow(),
@@ -70,12 +61,13 @@ public class Deposit extends Transaction {
 
   public TransactionReceipt refuseAndGenerateReceipt() {
     setStatus(Status.REFUSED);
-    String message = "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT deposited.";
+    String message = "An error occurred! The penalty fee of " + getConvertedAmount().toString() + " was withdrawn from this account.";
     return new TransactionReceipt(
-        getTargetAccount(),
-        TransactionType.DEPOSIT,
+        getAccount(),
+        TransactionType.PENALTY_FEE,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
-        getStatus(), message,
+        getStatus(),
+        message,
         dateTimeNow(),
         this
     );
@@ -84,10 +76,11 @@ public class Deposit extends Transaction {
   public TransactionReceipt refuseAndGenerateReceipt(String message) {
     setStatus(Status.REFUSED);
     return new TransactionReceipt(
-        getTargetAccount(),
-        TransactionType.DEPOSIT,
+        getAccount(),
+        TransactionType.PENALTY_FEE,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
-        getStatus(), message,
+        getStatus(),
+        message,
         dateTimeNow(),
         this
     );

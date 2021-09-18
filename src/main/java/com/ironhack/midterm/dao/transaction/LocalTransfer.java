@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.enums.TransactionType;
 import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +14,12 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import static com.ironhack.midterm.util.MoneyUtil.negativeMoney;
+import static com.ironhack.midterm.util.MoneyUtil.newMoney;
+import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
+
 @Entity
-@Table(name = "local_transfer")
+@Table(name = "local_transaction")
 @PrimaryKeyJoinColumn(name = "id")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,16 +53,16 @@ public class LocalTransfer extends Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public LocalTransfer(Money baseAmount, Money convertedAmount, Status status, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
-    super(baseAmount, convertedAmount, status);
+  public LocalTransfer(Money baseAmount, Money convertedAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, convertedAmount);
     this.account = account;
     this.owner = owner;
     this.targetAccount = targetAccount;
     this.targetOwner = targetOwner;
   }
 
-  public LocalTransfer(Money baseAmount, Status status, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
-    super(baseAmount, status);
+  public LocalTransfer(Money baseAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount);
     this.account = account;
     this.owner = owner;
     this.targetAccount = targetAccount;
@@ -66,6 +71,95 @@ public class LocalTransfer extends Transaction {
 
 
   // ======================================== METHODS ========================================
+  public TransactionReceipt acceptAndGenerateReceiverReceipt() {
+    setStatus(Status.ACCEPTED);
+    String message = "The amount of " + getConvertedAmount().toString() + " was successfully transferred to this account.";
+    return new TransactionReceipt(
+        getTargetAccount(),
+        getAccount(),
+        TransactionType.RECEIVE_LOCAL,
+        getConvertedAmount(),
+        getStatus(),
+        message,
+        dateTimeNow(),
+        this
+    );
+  }
+
+  public TransactionReceipt acceptAndGenerateSenderReceipt() {
+    setStatus(Status.ACCEPTED);
+    String message = "The amount of " + getConvertedAmount().toString() + " was successfully transferred from this account.";
+    return new TransactionReceipt(
+        getAccount(),
+        getTargetAccount(),
+        TransactionType.SEND_LOCAL,
+        negativeMoney(getConvertedAmount()),
+        getStatus(),
+        message,
+        dateTimeNow(),
+        this
+    );
+  }
+
+  public TransactionReceipt refuseAndGenerateReceiverReceipt() {
+    setStatus(Status.REFUSED);
+    String message = "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred to this account.";
+    return new TransactionReceipt(
+        getTargetAccount(),
+        getAccount(),
+        TransactionType.RECEIVE_LOCAL,
+        newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
+        getStatus(),
+        message,
+        dateTimeNow(),
+        this
+    );
+  }
+
+  public TransactionReceipt refuseAndGenerateSenderReceipt() {
+    setStatus(Status.REFUSED);
+    String message = "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred from this account.";
+    return new TransactionReceipt(
+        getAccount(),
+        getTargetAccount(),
+        TransactionType.SEND_LOCAL,
+        newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
+        getStatus(),
+        message,
+        dateTimeNow(),
+        this
+    );
+  }
+
+  public TransactionReceipt refuseAndGenerateReceiverReceipt(String message) {
+    setStatus(Status.REFUSED);
+    return new TransactionReceipt(
+        getTargetAccount(),
+        getAccount(),
+        TransactionType.RECEIVE_LOCAL,
+        newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
+        getStatus(),
+        message,
+        dateTimeNow(),
+        this
+    );
+  }
+
+  public TransactionReceipt refuseAndGenerateSenderReceipt(String message) {
+    setStatus(Status.REFUSED);
+    return new TransactionReceipt(
+        getAccount(),
+        getTargetAccount(),
+        TransactionType.SEND_LOCAL,
+        newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
+        getStatus(),
+        message,
+        dateTimeNow(),
+        this
+    );
+  }
+
+
 
   // ======================================== OVERRIDE METHODS ========================================
 

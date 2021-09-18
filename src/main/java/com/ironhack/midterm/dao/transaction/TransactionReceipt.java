@@ -64,7 +64,8 @@ public class TransactionReceipt {
   @Column(name = "operation_date")
   private LocalDateTime operationDate;
 
-  @OneToOne(mappedBy = "receipt", fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "transaction_id")
   private Transaction transaction;
 
 
@@ -92,6 +93,7 @@ public class TransactionReceipt {
 
 
   // ======================================== METHODS ========================================
+
 
   // ======================================== OVERRIDE METHODS ========================================
 

@@ -10,8 +10,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
@@ -55,22 +55,21 @@ public abstract class Transaction {
   @Column(name = "operation_date")
   private LocalDateTime operationDate;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "transaction_receipt")
-  private TransactionReceipt receipt;
+  @OneToMany(mappedBy = "transaction", cascade = {CascadeType.REMOVE})
+  private List<TransactionReceipt> receipts;
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public Transaction(Money baseAmount, Money convertedAmount, Status status) {
+  public Transaction(Money baseAmount, Money convertedAmount) {
     this.baseAmount = baseAmount;
     this.convertedAmount = convertedAmount;
-    this.status = status;
+    this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();
   }
 
-  public Transaction(Money baseAmount, Status status) {
+  public Transaction(Money baseAmount) {
     this.baseAmount = baseAmount;
-    this.status = status;
+    this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();
   }
 
