@@ -64,7 +64,6 @@ public class AccountHolder extends User {
 
 
   // ======================================== CONSTRUCTORS ========================================
-
   public AccountHolder(String username, String password, String name, LocalDate dateOfBirth, Address primaryAddress, Address mailingAddress) {
     super(username, password, name);
     this.dateOfBirth = dateOfBirth;

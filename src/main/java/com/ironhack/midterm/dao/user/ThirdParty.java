@@ -36,6 +36,9 @@ public class ThirdParty extends User {
   }
 
   // ======================================== METHODS ========================================
+  public void updateHashedKey() {
+    this.hashedKey = encryptedKey(getId() + getName() + getUsername() + getPassword());
+  }
 
   // ======================================== OVERRIDE METHODS ========================================
 
