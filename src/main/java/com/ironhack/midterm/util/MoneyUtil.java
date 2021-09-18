@@ -65,5 +65,9 @@ public class MoneyUtil {
     return convertMoney;
   }
 
+  // =================================== Negative Balance ===================================
+  public static Money negativeMoney(Money money) {
+    return new Money(money.getAmount().negate(), money.getCurrency());
+  }
 
 }
