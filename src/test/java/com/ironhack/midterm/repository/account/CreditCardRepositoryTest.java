@@ -16,8 +16,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newBD;
-import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newMoney;
+import static com.ironhack.midterm.util.MoneyUtil.newBD;
+import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

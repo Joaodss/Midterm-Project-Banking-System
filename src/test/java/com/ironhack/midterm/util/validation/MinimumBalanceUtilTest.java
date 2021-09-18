@@ -9,13 +9,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static com.ironhack.midterm.util.validation.MinimumBalance.isValidMinimumBalance;
-import static com.ironhack.midterm.util.validation.MinimumBalance.isValidMinimumBalanceForSavingsAccount;
+import static com.ironhack.midterm.util.validation.MinimumBalanceUtil.isValidMinimumBalance;
+import static com.ironhack.midterm.util.validation.MinimumBalanceUtil.isValidMinimumBalanceForSavingsAccount;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MinimumBalanceTest {
+class MinimumBalanceUtilTest {
 
   // ======================================== Is Valid Minimum Balance ========================================
   @ParameterizedTest

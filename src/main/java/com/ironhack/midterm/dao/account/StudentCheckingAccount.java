@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newMoney;
+import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 
 @Entity
 @Table(name = "student_checking_account")

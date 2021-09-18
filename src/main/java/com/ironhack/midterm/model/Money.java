@@ -9,6 +9,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -73,6 +74,19 @@ public class Money {
   // ======================================== Override Methods ========================================
   public String toString() {
     return getCurrency().getSymbol() + " " + getAmount();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Money money = (Money) o;
+    return getCurrency().equals(money.getCurrency()) && getAmount().equals(money.getAmount());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getCurrency(), getAmount());
   }
 
 

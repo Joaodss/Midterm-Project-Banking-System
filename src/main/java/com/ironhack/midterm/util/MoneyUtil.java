@@ -1,15 +1,38 @@
-package com.ironhack.midterm.util.money;
+package com.ironhack.midterm.util;
 
 import com.ironhack.midterm.model.Money;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.money.convert.MonetaryConversions;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoneyConverterUtil {
+public class MoneyUtil {
 
+  // =================================== Simplify new Money ===================================
+  public static Money newMoney(String value) {
+    return new Money(new BigDecimal(value));
+  }
+
+  public static Money newMoney(String value, String currency) {
+    return new Money(new BigDecimal(value), Currency.getInstance(currency));
+  }
+
+
+  // =================================== Simplify new BigDecimal ===================================
+  public static BigDecimal newBD(String value) {
+    return new BigDecimal(value);
+  }
+
+  public static BigDecimal newBD(String value, int scale) {
+    return new BigDecimal(value).setScale(scale, RoundingMode.HALF_EVEN);
+  }
+
+
+  // =================================== Is Same Currency ===================================
   public static boolean isSameCurrency(Currency baseCurrency, Money comparativeMoney) {
     return baseCurrency.getCurrencyCode().equals(comparativeMoney.getCurrency().getCurrencyCode());
   }
@@ -18,6 +41,8 @@ public class MoneyConverterUtil {
     return baseMoney.getCurrency().getCurrencyCode().equals(comparativeMoney.getCurrency().getCurrencyCode());
   }
 
+
+  // =================================== Convert Currency ===================================
   public static Money convertCurrency(Currency baseCurrency, Money convertMoney) {
     if (!isSameCurrency(baseCurrency, convertMoney)) {
       var rateProvider = MonetaryConversions.getExchangeRateProvider();

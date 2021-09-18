@@ -9,12 +9,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static com.ironhack.midterm.util.validation.MonthlyMaintenanceFee.isValidMonthlyMaintenanceFee;
+import static com.ironhack.midterm.util.validation.MonthlyMaintenanceFeeUtil.isValidMonthlyMaintenanceFee;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MonthlyMaintenanceFeeTest {
+class MonthlyMaintenanceFeeUtilTest {
 
   // =================================== Is Valid Monthly Maintenance Fee ===================================
   @ParameterizedTest

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MonthlyMaintenanceFee {
+public class MonthlyMaintenanceFeeUtil {
 
   // ============================== Valid Monthly Maintenance Fee (>= 0) ==============================
   public static boolean isValidMonthlyMaintenanceFee(Money monthlyMaintenanceFee) {

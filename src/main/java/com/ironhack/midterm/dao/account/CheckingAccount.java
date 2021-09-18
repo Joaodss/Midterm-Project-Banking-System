@@ -13,7 +13,7 @@ import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.ironhack.midterm.util.money.MoneyInitializerUtil.newMoney;
+import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity

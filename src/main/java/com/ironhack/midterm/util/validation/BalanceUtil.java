@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-import static com.ironhack.midterm.util.money.MoneyConverterUtil.convertCurrency;
-import static com.ironhack.midterm.util.money.MoneyConverterUtil.isSameCurrency;
+import static com.ironhack.midterm.util.MoneyUtil.convertCurrency;
+import static com.ironhack.midterm.util.MoneyUtil.isSameCurrency;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BalanceUtil {
