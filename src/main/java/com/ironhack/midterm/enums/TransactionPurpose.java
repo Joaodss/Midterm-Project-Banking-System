@@ -1,6 +1,6 @@
 package com.ironhack.midterm.enums;
 
-public enum Purpose {
+public enum TransactionPurpose {
   SEND,
   RECEIVE
 }

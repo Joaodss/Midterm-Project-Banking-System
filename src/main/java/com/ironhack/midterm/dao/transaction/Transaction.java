@@ -52,9 +52,12 @@ public abstract class Transaction {
   private Status status;
 
   @NotNull
-  @PastOrPresent
   @Column(name = "operation_date")
   private LocalDateTime operationDate;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "transaction_receipt")
+  private TransactionReceipt receipt;
 
 
   // ======================================== CONSTRUCTORS ========================================
