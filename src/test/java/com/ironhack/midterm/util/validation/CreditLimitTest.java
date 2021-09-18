@@ -9,12 +9,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static com.ironhack.midterm.util.validation.validCreditLimit.isValidCreditLimitForCreditCard;
+import static com.ironhack.midterm.util.validation.CreditLimit.isValidCreditLimitForCreditCard;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class validCreditLimitTest {
+class CreditLimitTest {
 
   // ========================= Is Valid Credit Limit for Credit Card (>= 0, <= 100000) =========================
   @ParameterizedTest

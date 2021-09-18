@@ -8,13 +8,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static com.ironhack.midterm.util.validation.validInterestRateUtil.isValidInterestRateForCreditCard;
-import static com.ironhack.midterm.util.validation.validInterestRateUtil.isValidInterestRateForSavingsAccount;
+import static com.ironhack.midterm.util.validation.InterestRateUtil.isValidInterestRateForCreditCard;
+import static com.ironhack.midterm.util.validation.InterestRateUtil.isValidInterestRateForSavingsAccount;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class validInterestRateUtilTest {
+class InterestRateUtilTest {
 
   // ========================= Is Valid Interest Rate for Savings Account (>= 0, <= 0.5) =========================
   @ParameterizedTest

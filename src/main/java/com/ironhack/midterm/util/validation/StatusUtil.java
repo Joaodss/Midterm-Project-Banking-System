@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validStatusUtil {
+public class StatusUtil {
 
   // ============================== Valid Status from String (exists) ==============================
   public static boolean isValidStatusFromString(String stringStatus) {

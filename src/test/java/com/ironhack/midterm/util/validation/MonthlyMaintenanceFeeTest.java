@@ -9,31 +9,32 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static com.ironhack.midterm.util.validation.validPenaltyFeeUtil.isValidPenaltyFee;
+import static com.ironhack.midterm.util.validation.MonthlyMaintenanceFee.isValidMonthlyMaintenanceFee;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class validPenaltyFeeUtilTest {
+class MonthlyMaintenanceFeeTest {
 
-  // ======================================== Is Valid Penalty Fee ========================================
+  // =================================== Is Valid Monthly Maintenance Fee ===================================
   @ParameterizedTest
   @ValueSource(strings = {"0", "0.01", "1", "35723.677"})
   @Order(1)
-  void testIsValidPenaltyFee_validValues_true(String values) {
+  void testIsValidMonthlyMaintenanceFee_validValues_true(String values) {
     var value = new BigDecimal(values);
-    assertTrue(isValidPenaltyFee(value));
-    assertTrue(isValidPenaltyFee(new Money(value)));
+    assertTrue(isValidMonthlyMaintenanceFee(value));
+    assertTrue(isValidMonthlyMaintenanceFee(new Money(value)));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"-0.01", "-1", "-35723.677"})
   @Order(1)
-  void testIsValidPenaltyFee_invalidValues_false(String values) {
+  void testIsValidMonthlyMaintenanceFee_invalidValues_false(String values) {
     BigDecimal value = new BigDecimal(values);
     System.out.println(value);
-    assertFalse(isValidPenaltyFee(value));
-    assertFalse(isValidPenaltyFee(new Money(value)));
+    assertFalse(isValidMonthlyMaintenanceFee(value));
+    assertFalse(isValidMonthlyMaintenanceFee(new Money(value)));
   }
+
 
 }

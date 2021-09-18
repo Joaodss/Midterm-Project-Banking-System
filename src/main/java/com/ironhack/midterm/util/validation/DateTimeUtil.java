@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validDateTimeUtil {
+public class DateTimeUtil {
 
   // ============================== Valid Date/Time (before Now) ==============================
   public static boolean isValidDateTime(LocalDateTime creationDate) {

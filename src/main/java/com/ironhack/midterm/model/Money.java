@@ -1,7 +1,7 @@
 package com.ironhack.midterm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
@@ -11,8 +11,8 @@ import java.math.RoundingMode;
 import java.util.Currency;
 
 @Embeddable
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 public class Money {
 
   private static final Currency EUR = Currency.getInstance("EUR");
@@ -69,6 +69,8 @@ public class Money {
     return this.amount;
   }
 
+
+  // ======================================== Override Methods ========================================
   public String toString() {
     return getCurrency().getSymbol() + " " + getAmount();
   }

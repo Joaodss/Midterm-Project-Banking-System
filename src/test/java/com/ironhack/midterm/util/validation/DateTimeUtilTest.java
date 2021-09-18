@@ -7,30 +7,30 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
 
-import static com.ironhack.midterm.util.validation.validDateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class validDateTimeUtilTest {
+class DateTimeUtilTest {
 
   // ============================== Is Valid Date/Time (before Now) ==============================
   @Test
   @Order(1)
   void testIsValidDateTime_validDateTime_true() {
-    assertTrue(validDateTimeUtil.isValidDateTime(LocalDateTime.of(2020, 1, 1, 1, 1)));
+    assertTrue(DateTimeUtil.isValidDateTime(LocalDateTime.of(2020, 1, 1, 1, 1)));
   }
 
   @Test
   @Order(1)
   void testIsValidDateTime_nowDateTime_true() {
-    assertTrue(validDateTimeUtil.isValidDateTime(dateTimeNow()));
+    assertTrue(DateTimeUtil.isValidDateTime(dateTimeNow()));
   }
 
   @Test
   @Order(1)
   void testIsValidDateTime_invalidDateTime_false() {
-    assertFalse(validDateTimeUtil.isValidDateTime(dateTimeNow().plusMinutes(10)));
+    assertFalse(DateTimeUtil.isValidDateTime(dateTimeNow().plusMinutes(10)));
   }
 
 

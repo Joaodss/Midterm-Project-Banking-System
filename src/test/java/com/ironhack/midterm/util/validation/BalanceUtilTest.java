@@ -11,12 +11,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.util.Currency;
 
-import static com.ironhack.midterm.util.validation.validBalanceUtil.isValidBalance;
+import static com.ironhack.midterm.util.validation.BalanceUtil.isValidBalance;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class validBalanceUtilTest {
+class BalanceUtilTest {
 
   // ======================================== Is Valid Balance ========================================
   @ParameterizedTest
@@ -46,7 +46,7 @@ class validBalanceUtilTest {
   void testIsValidTransfer_validTransferValue_true(String value) {
     Money balance = new Money(new BigDecimal("1357.14"));
     Money transferQuantity = new Money(new BigDecimal(value));
-    assertTrue(validBalanceUtil.isValidTransfer(balance, transferQuantity));
+    assertTrue(BalanceUtil.isValidTransfer(balance, transferQuantity));
   }
 
   @ParameterizedTest
@@ -55,7 +55,7 @@ class validBalanceUtilTest {
   void testIsValidTransfer_invalidTransferValue_false(String value) {
     Money balance = new Money(new BigDecimal("1357.14"));
     Money transferQuantity = new Money(new BigDecimal(value));
-    assertFalse(validBalanceUtil.isValidTransfer(balance, transferQuantity));
+    assertFalse(BalanceUtil.isValidTransfer(balance, transferQuantity));
   }
 
 
@@ -65,7 +65,7 @@ class validBalanceUtilTest {
   void testIsValidTransfer_validDifferentCurrency_true() {
     Money balance = new Money(new BigDecimal("10000"));
     Money transferQuantity = new Money(new BigDecimal("0.81"), Currency.getInstance("USD"));
-    assertTrue(validBalanceUtil.isValidTransfer(balance, transferQuantity));
+    assertTrue(BalanceUtil.isValidTransfer(balance, transferQuantity));
   }
 
   @Test
@@ -73,7 +73,7 @@ class validBalanceUtilTest {
   void testIsValidTransfer_invalidDifferentCurrency_false() {
     Money balance = new Money(new BigDecimal("0.5"));
     Money transferQuantity = new Money(new BigDecimal("900000"), Currency.getInstance("USD"));
-    assertFalse(validBalanceUtil.isValidTransfer(balance, transferQuantity));
+    assertFalse(BalanceUtil.isValidTransfer(balance, transferQuantity));
   }
 
 

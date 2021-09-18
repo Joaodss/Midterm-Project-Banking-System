@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validCreditLimit {
+public class CreditLimit {
 
   // ========================= Valid Credit Limit for Credit Card (>= 0, <= 100000) =========================
   public static boolean isValidCreditLimitForCreditCard(Money creditLimit) {

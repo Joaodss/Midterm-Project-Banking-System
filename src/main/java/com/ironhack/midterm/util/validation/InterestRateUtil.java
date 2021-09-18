@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validInterestRateUtil {
+public class InterestRateUtil {
 
   // ========================= Valid Interest Rate for Savings Account (>= 0, <= 0.5) =========================
   public static boolean isValidInterestRateForSavingsAccount(BigDecimal interestRate) {

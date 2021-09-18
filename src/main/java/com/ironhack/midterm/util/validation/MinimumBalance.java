@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validMinimumBalance {
+public class MinimumBalance {
 
   // =================================== Valid Minimum Balance (>= 0) ===================================
   public static boolean isValidMinimumBalance(Money minimumBalance) {

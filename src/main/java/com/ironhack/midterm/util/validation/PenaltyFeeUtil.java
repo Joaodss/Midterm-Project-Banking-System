@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validPenaltyFeeUtil {
+public class PenaltyFeeUtil {
 
   // ======================================== Valid Penalty Fee (>= 0) ========================================
   public static boolean isValidPenaltyFee(Money penaltyFee) {

@@ -10,7 +10,7 @@ import static com.ironhack.midterm.util.money.MoneyConverterUtil.convertCurrency
 import static com.ironhack.midterm.util.money.MoneyConverterUtil.isSameCurrency;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class validBalanceUtil {
+public class BalanceUtil {
 
   // ======================================== Valid Balance (>= 0) ========================================
   public static boolean isValidBalance(Money balance) {
