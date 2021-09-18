@@ -1,6 +1,6 @@
 package com.ironhack.midterm.util.validation;
 
-import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.enums.AccountStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +9,7 @@ public class StatusUtil {
 
   // ============================== Valid Status from String (exists) ==============================
   public static boolean isValidStatusFromString(String stringStatus) {
-    for (Status s : Status.values()) {
+    for (AccountStatus s : AccountStatus.values()) {
       if (s.name().equalsIgnoreCase(stringStatus))
         return true;
     }
@@ -17,8 +17,8 @@ public class StatusUtil {
   }
 
   // =================================== Get Status from String ===================================
-  public static Status statusFromString(String stringStatus) {
-    for (Status s : Status.values()) {
+  public static AccountStatus statusFromString(String stringStatus) {
+    for (AccountStatus s : AccountStatus.values()) {
       if (s.name().equalsIgnoreCase(stringStatus))
         return s;
     }

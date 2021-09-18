@@ -3,7 +3,7 @@ package com.ironhack.midterm.dao.request;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.enums.RequestStatus;
+import com.ironhack.midterm.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +29,8 @@ public class RequestAccountEdit extends Request {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public RequestAccountEdit(AccountHolder user, RequestStatus requestStatus, String description, Account targetedAccount) {
-    super(user, requestStatus, description);
+  public RequestAccountEdit(AccountHolder user, Status status, String description, Account targetedAccount) {
+    super(user, status, description);
     this.targetedAccount = targetedAccount;
   }
 

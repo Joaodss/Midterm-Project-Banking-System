@@ -2,7 +2,7 @@ package com.ironhack.midterm.repository.account;
 
 import com.ironhack.midterm.dao.account.StudentCheckingAccount;
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
 import com.ironhack.midterm.util.database.DbResetUtil;
@@ -118,12 +118,12 @@ class StudentCheckingAccountRepositoryTest {
   void testUpdateStudentCheckingAccount_changeBalance_newMinBalanceEqualsDefinedValue() {
     var element1 = studentCheckingAccountRepository.findById(3L);
     assertTrue(element1.isPresent());
-    element1.get().setStatus(Status.FROZEN);
+    element1.get().setAccountStatus(AccountStatus.FROZEN);
     studentCheckingAccountRepository.save(element1.get());
 
     var updatedElement1 = studentCheckingAccountRepository.findById(3L);
     assertTrue(updatedElement1.isPresent());
-    assertEquals(Status.FROZEN, updatedElement1.get().getStatus());
+    assertEquals(AccountStatus.FROZEN, updatedElement1.get().getAccountStatus());
   }
 
   // ==================== Delete ====================

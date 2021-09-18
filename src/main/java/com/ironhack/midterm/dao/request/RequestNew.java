@@ -2,7 +2,7 @@ package com.ironhack.midterm.dao.request;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.AccountType;
-import com.ironhack.midterm.enums.RequestStatus;
+import com.ironhack.midterm.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +27,8 @@ public class RequestNew extends Request {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public RequestNew(AccountHolder user, RequestStatus requestStatus, String description, AccountType accountType) {
-    super(user, requestStatus, description);
+  public RequestNew(AccountHolder user, Status status, String description, AccountType accountType) {
+    super(user, status, description);
     this.accountType = accountType;
   }
 

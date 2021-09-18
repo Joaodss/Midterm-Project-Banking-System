@@ -2,7 +2,7 @@ package com.ironhack.midterm.dao.request;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.enums.RequestStatus;
+import com.ironhack.midterm.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,22 +34,22 @@ public abstract class Request {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "request_status")
-  private RequestStatus requestStatus;
+  private Status status;
 
   @Column(name = "description")
   private String description;
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public Request(AccountHolder user, RequestStatus requestStatus, String description) {
+  public Request(AccountHolder user, Status status, String description) {
     this.user = user;
-    this.requestStatus = requestStatus;
+    this.status = status;
     this.description = description;
   }
 
   public Request(AccountHolder user, String description) {
     this.user = user;
-    this.requestStatus = RequestStatus.PROCESSING;
+    this.status = Status.PROCESSING;
     this.description = description;
   }
 

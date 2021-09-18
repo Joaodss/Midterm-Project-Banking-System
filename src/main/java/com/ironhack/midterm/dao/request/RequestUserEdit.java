@@ -1,7 +1,7 @@
 package com.ironhack.midterm.dao.request;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.enums.RequestStatus;
+import com.ironhack.midterm.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +22,8 @@ public class RequestUserEdit extends Request {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public RequestUserEdit(AccountHolder user, RequestStatus requestStatus, String description) {
-    super(user, requestStatus, description);
+  public RequestUserEdit(AccountHolder user, Status status, String description) {
+    super(user, status, description);
   }
 
   public RequestUserEdit(AccountHolder user, String description) {

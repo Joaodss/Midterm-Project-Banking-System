@@ -1,6 +1,6 @@
 package com.ironhack.midterm.util.validation;
 
-import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.enums.AccountStatus;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -12,7 +12,7 @@ import static com.ironhack.midterm.util.validation.StatusUtil.statusFromString;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class StatusUtilTest {
+class AccountStatusUtilTest {
 
   // ============================== Is Valid Status from String ==============================
   @ParameterizedTest
@@ -35,14 +35,14 @@ class StatusUtilTest {
   @ValueSource(strings = {"active", "ActIVe"})
   @Order(2)
   void testStatusFromString_validActiveStatus_returnActiveStatus(String status) {
-    assertEquals(Status.ACTIVE, statusFromString(status));
+    assertEquals(AccountStatus.ACTIVE, statusFromString(status));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"Frozen", "FROZEN"})
   @Order(2)
   void testStatusFromString_validFrozenStatus_returnFrozenStatus(String status) {
-    assertEquals(Status.FROZEN, statusFromString(status));
+    assertEquals(AccountStatus.FROZEN, statusFromString(status));
   }
 
   @ParameterizedTest
