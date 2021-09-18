@@ -2,7 +2,6 @@ package com.ironhack.midterm.dao.request;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.Status;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

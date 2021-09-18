@@ -9,7 +9,6 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Table(name = "student_checking_account")
@@ -21,11 +20,11 @@ public class StudentCheckingAccount extends CheckingAccount {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner)  {
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     super(balance, primaryOwner, secondaryOwner);
   }
 
-  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner){
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
   }
 

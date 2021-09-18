@@ -56,7 +56,7 @@ public class SavingsAccount extends Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner)  {
+  public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     super(balance, primaryOwner, secondaryOwner);
     try {
       this.secretKey = generateSecretKey();
@@ -69,7 +69,7 @@ public class SavingsAccount extends Account {
     this.accountStatus = AccountStatus.ACTIVE;
   }
 
-  public SavingsAccount(Money balance, AccountHolder primaryOwner)  {
+  public SavingsAccount(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
     try {
       this.secretKey = generateSecretKey();
