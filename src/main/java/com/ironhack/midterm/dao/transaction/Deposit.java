@@ -3,6 +3,8 @@ package com.ironhack.midterm.dao.transaction;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Deposit extends Transaction{
+public class Deposit extends Transaction {
 
   @NotNull
   @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
@@ -32,11 +34,23 @@ public class Deposit extends Transaction{
   @JoinColumn(name = "target_owner_id")
   private AccountHolder targetOwner;
 
-  // ======================================== Constructors ========================================
+  // ======================================== CONSTRUCTORS ========================================
+  public Deposit(Money baseAmount, Money convertedAmount, Status status, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, convertedAmount, status);
+    this.targetAccount = targetAccount;
+    this.targetOwner = targetOwner;
+  }
 
-  // ======================================== Getters & Setters ========================================
+  public Deposit(Money baseAmount, Status status, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, status);
+    this.targetAccount = targetAccount;
+    this.targetOwner = targetOwner;
+  }
 
-  // ======================================== Override Methods ========================================
+
+  // ======================================== METHODS ========================================
+
+  // ======================================== OVERRIDE METHODS ========================================
 
 
 }

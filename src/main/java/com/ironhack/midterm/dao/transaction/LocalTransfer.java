@@ -3,6 +3,8 @@ package com.ironhack.midterm.dao.transaction;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,10 +47,26 @@ public class LocalTransfer extends Transaction {
   private AccountHolder targetOwner;
 
 
-  // ======================================== Constructors ========================================
+  // ======================================== CONSTRUCTORS ========================================
+  public LocalTransfer(Money baseAmount, Money convertedAmount, Status status, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, convertedAmount, status);
+    this.account = account;
+    this.owner = owner;
+    this.targetAccount = targetAccount;
+    this.targetOwner = targetOwner;
+  }
 
-  // ======================================== Getters & Setters ========================================
+  public LocalTransfer(Money baseAmount, Status status, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, status);
+    this.account = account;
+    this.owner = owner;
+    this.targetAccount = targetAccount;
+    this.targetOwner = targetOwner;
+  }
 
-  // ======================================== Override Methods ========================================
+
+  // ======================================== METHODS ========================================
+
+  // ======================================== OVERRIDE METHODS ========================================
 
 }

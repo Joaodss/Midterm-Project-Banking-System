@@ -1,8 +1,5 @@
 package com.ironhack.midterm.dao.transaction;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.ironhack.midterm.dao.account.Account;
-import com.ironhack.midterm.enums.Purpose;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
@@ -15,6 +12,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
+
+import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "transaction")
@@ -58,12 +57,24 @@ public abstract class Transaction {
   private LocalDateTime operationDate;
 
 
+  // ======================================== CONSTRUCTORS ========================================
+  public Transaction(Money baseAmount, Money convertedAmount, Status status) {
+    this.baseAmount = baseAmount;
+    this.convertedAmount = convertedAmount;
+    this.status = status;
+    this.operationDate = dateTimeNow();
+  }
 
-  // ======================================== Constructors ========================================
+  public Transaction(Money baseAmount, Status status) {
+    this.baseAmount = baseAmount;
+    this.status = status;
+    this.operationDate = dateTimeNow();
+  }
 
-  // ======================================== Getters & Setters ========================================
 
-  // ======================================== Override Methods ========================================
+  // ======================================== METHODS ========================================
+
+  // ======================================== OVERRIDE METHODS ========================================
 
 //  @Override
 //  public String toString() {
