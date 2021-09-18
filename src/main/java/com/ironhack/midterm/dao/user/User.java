@@ -1,14 +1,15 @@
 package com.ironhack.midterm.dao.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-import org.hibernate.validator.constraints.Length;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -18,20 +19,19 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public abstract class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotNull
   @NotBlank
-  @Length(min = 3)
   @Column(name = "username", unique = true)
   private String username;
 
+  @NotNull
   @NotBlank
-  @Length(min = 5)
   @Column(name = "password")
   private String password;
 
@@ -49,7 +49,7 @@ public abstract class User {
   private String name;
 
 
-  // ======================================== Constructors ========================================
+  // ======================================== CONSTRUCTORS ========================================
   public User(String username, String password, String name) {
     this.username = username;
     this.password = password;
@@ -57,21 +57,9 @@ public abstract class User {
   }
 
 
-  // ======================================== Getters & Setters ========================================
+  // ======================================== METHODS ========================================
 
+  // ======================================== OVERRIDE METHODS ========================================
 
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return getId().equals(user.getId()) && getUsername().equals(user.getUsername()) && getPassword().equals(user.getPassword()) && getName().equals(user.getName());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(), getUsername(), getPassword(), getName());
-  }
 
 }

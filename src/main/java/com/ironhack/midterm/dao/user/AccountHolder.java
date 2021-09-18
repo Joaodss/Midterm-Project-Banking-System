@@ -2,16 +2,19 @@ package com.ironhack.midterm.dao.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ironhack.midterm.dao.account.Account;
+import com.ironhack.midterm.dao.request.Request;
 import com.ironhack.midterm.model.Address;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "account_holder")
@@ -20,16 +23,14 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(callSuper = true)
 public class AccountHolder extends User {
 
   @NotNull
-  @Past
   @Column(name = "date_of_birth")
   private LocalDate dateOfBirth;
 
-  // TODO JA - check if not null applies only here
   @NotNull
+  @Valid
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "streetAddress", column = @Column(name = "pa_street", nullable = false)),
@@ -48,18 +49,22 @@ public class AccountHolder extends User {
   })
   private Address mailingAddress;
 
-  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
-  @ToString.Exclude
+  // ======================================== MAPPING ========================================
   @OneToMany(mappedBy = "primaryOwner", cascade = {})
+  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
   private List<Account> primaryAccounts = new ArrayList<>();
 
-  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
-  @ToString.Exclude
   @OneToMany(mappedBy = "secondaryOwner", cascade = {})
+  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
   private List<Account> secondaryAccounts = new ArrayList<>();
 
+  @OneToMany(mappedBy = "user", cascade = {})
+  @JsonIgnoreProperties(value = {"user"}, allowSetters = true)
+  private List<Request> requestList = new ArrayList<>();
 
-  // ======================================== Constructors ========================================
+
+  // ======================================== CONSTRUCTORS ========================================
+
   public AccountHolder(String username, String password, String name, LocalDate dateOfBirth, Address primaryAddress, Address mailingAddress) {
     super(username, password, name);
     this.dateOfBirth = dateOfBirth;
@@ -74,22 +79,9 @@ public class AccountHolder extends User {
   }
 
 
-  // ======================================== Getters & Setters ========================================
+  // ======================================== METHODS ========================================
 
+  // ======================================== OVERRIDE METHODS ========================================
 
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    AccountHolder that = (AccountHolder) o;
-    return getDateOfBirth().equals(that.getDateOfBirth()) && getPrimaryAddress().equals(that.getPrimaryAddress()) && Objects.equals(getMailingAddress(), that.getMailingAddress());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), getDateOfBirth(), getPrimaryAddress(), getMailingAddress());
-  }
 
 }

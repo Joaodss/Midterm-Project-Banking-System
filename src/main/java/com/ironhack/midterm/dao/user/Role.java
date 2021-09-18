@@ -1,11 +1,14 @@
 package com.ironhack.midterm.dao.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,13 +17,13 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Role {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @NotNull
   @NotBlank
   private String name;
 
@@ -28,27 +31,14 @@ public class Role {
   private Set<User> users = new HashSet<>();
 
 
-  // ======================================== Constructors ========================================
+  // ======================================== CONSTRUCTORS ========================================
   public Role(String name) {
     this.name = name;
   }
 
 
-  // ======================================== Getters & Setters ========================================
+  // ======================================== METHODS ========================================
 
-
-  // ======================================== Override Methods ========================================
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Role role = (Role) o;
-    return getId().equals(role.getId()) && getName().equals(role.getName());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(), getName());
-  }
+  // ======================================== OVERRIDE METHODS ========================================
 
 }
