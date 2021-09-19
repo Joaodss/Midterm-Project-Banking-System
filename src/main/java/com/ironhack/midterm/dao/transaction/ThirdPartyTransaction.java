@@ -25,7 +25,7 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ThirdPartyTransfer extends Transaction {
+public class ThirdPartyTransaction extends Transaction {
 
   @NotNull
   @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
@@ -44,14 +44,14 @@ public class ThirdPartyTransfer extends Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public ThirdPartyTransfer(Money baseAmount, Money convertedAmount, Account targetAccount, String secretKey, TransactionPurpose transactionPurpose) {
+  public ThirdPartyTransaction(Money baseAmount, Money convertedAmount, Account targetAccount, String secretKey, TransactionPurpose transactionPurpose) {
     super(baseAmount, convertedAmount);
     this.targetAccount = targetAccount;
     this.secretKey = secretKey;
     this.transactionPurpose = transactionPurpose;
   }
 
-  public ThirdPartyTransfer(Money baseAmount, Account targetAccount, String secretKey, TransactionPurpose transactionPurpose) {
+  public ThirdPartyTransaction(Money baseAmount, Account targetAccount, String secretKey, TransactionPurpose transactionPurpose) {
     super(baseAmount);
     this.targetAccount = targetAccount;
     this.secretKey = secretKey;

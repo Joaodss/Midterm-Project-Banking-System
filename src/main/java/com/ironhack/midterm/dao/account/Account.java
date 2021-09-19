@@ -2,8 +2,8 @@ package com.ironhack.midterm.dao.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ironhack.midterm.dao.transaction.Deposit;
-import com.ironhack.midterm.dao.transaction.LocalTransfer;
-import com.ironhack.midterm.dao.transaction.ThirdPartyTransfer;
+import com.ironhack.midterm.dao.transaction.LocalTransaction;
+import com.ironhack.midterm.dao.transaction.ThirdPartyTransaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
@@ -74,15 +74,15 @@ public abstract class Account {
 
   @OneToMany(mappedBy = "account", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
-  private List<LocalTransfer> transferSentList = new ArrayList<>();
+  private List<LocalTransaction> transferSentList = new ArrayList<>();
 
   @OneToMany(mappedBy = "targetAccount", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
-  private List<LocalTransfer> transferReceivedList = new ArrayList<>();
+  private List<LocalTransaction> transferReceivedList = new ArrayList<>();
 
   @OneToMany(mappedBy = "targetAccount", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
-  private List<ThirdPartyTransfer> thirdPartyTransferList = new ArrayList<>();
+  private List<ThirdPartyTransaction> thirdPartyTransactionList = new ArrayList<>();
 
 
   // ======================================== CONSTRUCTORS ========================================

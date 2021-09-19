@@ -25,7 +25,7 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LocalTransfer extends Transaction {
+public class LocalTransaction extends Transaction {
 
   @NotNull
   @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
@@ -53,7 +53,7 @@ public class LocalTransfer extends Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public LocalTransfer(Money baseAmount, Money convertedAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
+  public LocalTransaction(Money baseAmount, Money convertedAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
     super(baseAmount, convertedAmount);
     this.account = account;
     this.owner = owner;
@@ -61,7 +61,7 @@ public class LocalTransfer extends Transaction {
     this.targetOwner = targetOwner;
   }
 
-  public LocalTransfer(Money baseAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
+  public LocalTransaction(Money baseAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
     super(baseAmount);
     this.account = account;
     this.owner = owner;
