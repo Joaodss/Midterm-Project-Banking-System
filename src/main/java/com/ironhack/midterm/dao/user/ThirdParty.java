@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.encryptedKey;
+import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
 
 @Entity
 @Table(name = "third_party")
@@ -32,13 +33,16 @@ public class ThirdParty extends User {
   // ======================================== CONSTRUCTORS ========================================
   public ThirdParty(String username, String password, String name) {
     super(username, password, name);
-    this.hashedKey = encryptedKey(username + password + name + super.hashCode());
+    try {
+      this.hashedKey = encryptedKey(username + generateSecretKey());
+    } catch (Exception e) {
+      this.hashedKey = encryptedKey(username + password);
+    }
   }
-
 
   // ======================================== METHODS ========================================
   public void updateHashedKey() {
-    this.hashedKey = encryptedKey(this.toString());
+    this.hashedKey = encryptedKey(hashCode() + getUsername() + getPassword() + getId());
   }
 
 
