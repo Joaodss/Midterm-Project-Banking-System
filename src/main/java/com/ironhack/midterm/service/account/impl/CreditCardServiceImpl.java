@@ -58,7 +58,7 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     AccountHolder pah = accountHolderService.getByUsername(creditCard.getPrimaryOwnerUsername());
     AccountHolder sah = null;
-    if (creditCard.getSecondaryOwnerId() != null && creditCard.getSecondaryOwnerUsername() != null)
+    if (!creditCard.getPrimaryOwnerUsername().equals(creditCard.getSecondaryOwnerUsername()) && creditCard.getSecondaryOwnerId() != null && creditCard.getSecondaryOwnerUsername() != null)
       sah = accountHolderService.getByUsername(creditCard.getSecondaryOwnerUsername());
 
     CreditCard cc = new CreditCard(newMoney(creditCard.getInitialBalance().toString(), creditCard.getCurrency()), pah, sah);
