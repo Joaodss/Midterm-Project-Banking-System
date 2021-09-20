@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.security.NoSuchAlgorithmException;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
+import static com.ironhack.midterm.util.MoneyUtil.convertCurrency;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 
 @Entity
@@ -55,37 +56,28 @@ public class CheckingAccount extends Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+  public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
-    try {
-      this.secretKey = generateSecretKey();
-    } catch (NoSuchAlgorithmException e) {
-      this.secretKey = "0000000000";
-    }
     this.minimumBalance = newMoney("250");
     this.monthlyMaintenanceFee = newMoney("12");
     this.accountStatus = AccountStatus.ACTIVE;
+    this.secretKey = generateSecretKey();
   }
 
-  public CheckingAccount(Money balance, AccountHolder primaryOwner) {
+  public CheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
-    try {
-      this.secretKey = generateSecretKey();
-    } catch (NoSuchAlgorithmException e) {
-      this.secretKey = "0000000000";
-    }
     this.minimumBalance = newMoney("250");
     this.monthlyMaintenanceFee = newMoney("12");
     this.accountStatus = AccountStatus.ACTIVE;
+    this.secretKey = generateSecretKey();
   }
 
 
   // ======================================== METHODS ========================================
-  public void updateSecretKey() {
-    try {
-      this.secretKey = generateSecretKey();
-    } catch (NoSuchAlgorithmException ignored) {
-    }
+  public void updateCurrencyValues() {
+    setPenaltyFee(convertCurrency(getBalance(), getPenaltyFee()));
+    setMinimumBalance(convertCurrency(getBalance(), getMinimumBalance()));
+    setMonthlyMaintenanceFee(convertCurrency(getBalance(), getMonthlyMaintenanceFee()));
   }
 
 

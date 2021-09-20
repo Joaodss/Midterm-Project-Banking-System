@@ -9,6 +9,9 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.security.NoSuchAlgorithmException;
+
+import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 
 @Entity
 @Table(name = "student_checking_account")
@@ -20,16 +23,27 @@ public class StudentCheckingAccount extends CheckingAccount {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
+    setMinimumBalance(newMoney("0"));
+    setMonthlyMaintenanceFee(newMoney("0"));
+    setPenaltyFee(newMoney("0"));
   }
 
-  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner) {
+  public StudentCheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
+    setMinimumBalance(newMoney("0"));
+    setMonthlyMaintenanceFee(newMoney("0"));
+    setPenaltyFee(newMoney("0"));
   }
 
 
   // ======================================== METHODS ========================================
+  public void updateCurrencyValues() {
+    setPenaltyFee(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
+    setMinimumBalance(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
+    setMonthlyMaintenanceFee(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
+  }
 
   // ======================================== OVERRIDE METHODS ========================================
 

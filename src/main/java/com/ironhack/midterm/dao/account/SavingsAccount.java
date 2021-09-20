@@ -16,8 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
-import static com.ironhack.midterm.util.MoneyUtil.newBD;
-import static com.ironhack.midterm.util.MoneyUtil.newMoney;
+import static com.ironhack.midterm.util.MoneyUtil.*;
 
 @Entity
 @Table(name = "savings_account")
@@ -56,39 +55,29 @@ public class SavingsAccount extends Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+  public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
-    try {
-      this.secretKey = generateSecretKey();
-    } catch (NoSuchAlgorithmException e) {
-      this.secretKey = "0000000000";
-    }
     this.minimumBalance = newMoney("1000");
     this.interestRate = newBD("0.0025");
     this.lastInterestUpdate = getCreationDate();
     this.accountStatus = AccountStatus.ACTIVE;
+    this.secretKey = generateSecretKey();
   }
 
-  public SavingsAccount(Money balance, AccountHolder primaryOwner) {
+  public SavingsAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
-    try {
-      this.secretKey = generateSecretKey();
-    } catch (NoSuchAlgorithmException e) {
-      this.secretKey = "0000000000";
-    }
     this.minimumBalance = newMoney("1000");
     this.interestRate = newBD("0.0025");
     this.lastInterestUpdate = getCreationDate();
     this.accountStatus = AccountStatus.ACTIVE;
+    this.secretKey = generateSecretKey();
   }
 
 
   // ======================================== METHODS ========================================
-  public void updateSecretKey() {
-    try {
-      this.secretKey = generateSecretKey();
-    } catch (NoSuchAlgorithmException ignored) {
-    }
+  public void updateCurrencyValues() {
+    setPenaltyFee(convertCurrency(getBalance(), getPenaltyFee()));
+    setMinimumBalance(convertCurrency(getBalance(), getMinimumBalance()));
   }
 
 

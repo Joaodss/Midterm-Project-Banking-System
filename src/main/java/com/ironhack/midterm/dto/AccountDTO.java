@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreditCardDTO {
+public class AccountDTO {
 
   @DecimalMin(value = "0", message = "Initial balance must be positive")
   private BigDecimal initialBalance;

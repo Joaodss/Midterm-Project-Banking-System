@@ -45,7 +45,7 @@ class StudentCheckingAccountRepositoryTest {
 
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws NoSuchAlgorithmException {
     var pa1 = new Address("Rua 1", "1010", "Coimbra", "Portugal");
     var pa2 = new Address("Rua 22", "2222", "Lisbon", "Portugal");
     ah1 = new AccountHolder("joa0ds5", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa1, pa1);

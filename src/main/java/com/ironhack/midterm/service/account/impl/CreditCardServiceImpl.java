@@ -2,7 +2,7 @@ package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.CreditCard;
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.dto.CreditCardDTO;
+import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.repository.account.CreditCardRepository;
 import com.ironhack.midterm.service.account.CreditCardService;
 import com.ironhack.midterm.service.user.AccountHolderService;
@@ -35,33 +35,11 @@ public class CreditCardServiceImpl implements CreditCardService {
 
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  public void newUser(CreditCardDTO creditCard) throws InstanceNotFoundException {
-    // Check if usernames exists in Account Holders
-    if (!accountHolderService.isUsernamePresent(creditCard.getPrimaryOwnerUsername()))
-      throw new InstanceNotFoundException("Primary owner user not found by username.");
-    if (creditCard.getSecondaryOwnerUsername() != null && !accountHolderService.isUsernamePresent(creditCard.getSecondaryOwnerUsername()))
-      throw new InstanceNotFoundException("Secondary owner user not found by username.");
+  public void newUser(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException {
+    // Perform an identity check of both account owners
+    AccountHolder[] accountHolders = accountHolderService.getAccountHolders(creditCard, accountHolderService, userService);
 
-    // Check if username and id match
-    try {
-      if (!userService.getById(creditCard.getPrimaryOwnerId()).getUsername().equals(creditCard.getPrimaryOwnerUsername()))
-        throw new IllegalArgumentException("Primary owner's username and id do not match.");
-    } catch (InstanceNotFoundException e1) {
-      throw new InstanceNotFoundException("Primary owner's id not found.");
-    }
-    try {
-      if (creditCard.getSecondaryOwnerId() != null && !userService.getById(creditCard.getSecondaryOwnerId()).getUsername().equals(creditCard.getSecondaryOwnerUsername()))
-        throw new IllegalArgumentException("Secondary owner's username and id do not match.");
-    } catch (InstanceNotFoundException e1) {
-      throw new InstanceNotFoundException("Secondary owner's id not found.");
-    }
-
-    AccountHolder pah = accountHolderService.getByUsername(creditCard.getPrimaryOwnerUsername());
-    AccountHolder sah = null;
-    if (!creditCard.getPrimaryOwnerUsername().equals(creditCard.getSecondaryOwnerUsername()) && creditCard.getSecondaryOwnerId() != null && creditCard.getSecondaryOwnerUsername() != null)
-      sah = accountHolderService.getByUsername(creditCard.getSecondaryOwnerUsername());
-
-    CreditCard cc = new CreditCard(newMoney(creditCard.getInitialBalance().toString(), creditCard.getCurrency()), pah, sah);
+    CreditCard cc = new CreditCard(newMoney(creditCard.getInitialBalance().toString(), creditCard.getCurrency()), accountHolders[0], accountHolders[1]);
     cc.updateCurrencyValues(); // converts default values if primary balance currency is different.
 
     creditCardRepository.save(cc);

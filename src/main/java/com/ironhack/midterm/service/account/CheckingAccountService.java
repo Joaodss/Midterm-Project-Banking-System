@@ -1,19 +1,20 @@
 package com.ironhack.midterm.service.account;
 
-import com.ironhack.midterm.dao.account.CreditCard;
+import com.ironhack.midterm.dao.account.CheckingAccount;
 import com.ironhack.midterm.dto.AccountDTO;
 
 import javax.management.InstanceNotFoundException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public interface CreditCardService {
+public interface CheckingAccountService {
 
   // ======================================== GET ACCOUNT Methods ========================================
-  List<CreditCard> getAll();
+  List<CheckingAccount> getAll();
 
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  void newUser(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException;
+  void newUser(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException;
 
 
 }

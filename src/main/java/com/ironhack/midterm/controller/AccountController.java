@@ -1,7 +1,7 @@
 package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.account.*;
-import com.ironhack.midterm.dto.CreditCardDTO;
+import com.ironhack.midterm.dto.AccountDTO;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ public interface AccountController {
   // -------------------- All Users [ADMIN] --------------------
   List<Account> getAccounts();
 
-//  List<CheckingAccount> getCheckingAccounts();
-//
-//  List<StudentCheckingAccount> getStudentCheckingAccounts();
-//
-//  List<SavingsAccount> getSavingsAccounts();
+  List<CheckingAccount> getCheckingAccounts();
+
+  List<StudentCheckingAccount> getStudentCheckingAccounts();
+
+  List<SavingsAccount> getSavingsAccounts();
 
   List<CreditCard> getCreditCards();
 
@@ -23,14 +23,14 @@ public interface AccountController {
 
 
   // ======================================== POST Methods ========================================
-//  // -------------------- New Checking Account [ADMIN] --------------------
-//  void createCheckingAccount(CheckingAccountDTO checkingAccount);
-//
-//  // -------------------- New Savings Account [ADMIN] --------------------
-//  void createSavingsAccount(SavingsAccountDTO savingsAccount);
+  // -------------------- New Checking Account [ADMIN] --------------------
+  void createCheckingAccount(AccountDTO checkingAccount);
+
+  // -------------------- New Savings Account [ADMIN] --------------------
+  void createSavingsAccount(AccountDTO savingsAccount);
 
   // -------------------- New Credit Card [ADMIN] --------------------
-  void createCreditCard(CreditCardDTO creditCard);
+  void createCreditCard(AccountDTO creditCard);
 
 
   // ======================================== PUT Methods ========================================

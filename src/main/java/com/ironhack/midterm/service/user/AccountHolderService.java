@@ -1,6 +1,7 @@
 package com.ironhack.midterm.service.user;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.dto.AccountHolderDTO;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -21,5 +22,8 @@ public interface AccountHolderService {
 
   void newUser(AccountHolderDTO accountHolder) throws InstanceAlreadyExistsException;
 
+
+  // ======================================== UTILS Methods ========================================
+  AccountHolder[] getAccountHolders(AccountDTO account, AccountHolderService accountHolderService, UserService userService) throws InstanceNotFoundException, IllegalArgumentException;
 
 }
