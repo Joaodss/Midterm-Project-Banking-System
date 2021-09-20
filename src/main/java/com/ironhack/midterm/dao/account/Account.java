@@ -6,10 +6,7 @@ import com.ironhack.midterm.dao.transaction.LocalTransaction;
 import com.ironhack.midterm.dao.transaction.ThirdPartyTransaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -28,6 +25,7 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public abstract class Account {
 
   @Id
@@ -55,6 +53,7 @@ public abstract class Account {
   @JsonIgnoreProperties(value = {"username", "password", "roles", "primaryAddress", "mailingAddress", "primaryAccounts", "secondaryAccounts", "requestList"}, allowSetters = true)
   private AccountHolder secondaryOwner;
 
+  @Valid
   @NotNull
   @Embedded
   @AttributeOverrides({
@@ -70,24 +69,26 @@ public abstract class Account {
   // ======================================== MAPPING ========================================
   @OneToMany(mappedBy = "targetAccount", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
+  @ToString.Exclude
   private List<Deposit> depositList = new ArrayList<>();
 
   @OneToMany(mappedBy = "account", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
+  @ToString.Exclude
   private List<LocalTransaction> transferSentList = new ArrayList<>();
 
   @OneToMany(mappedBy = "targetAccount", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
+  @ToString.Exclude
   private List<LocalTransaction> transferReceivedList = new ArrayList<>();
 
   @OneToMany(mappedBy = "targetAccount", cascade = {})
   @JsonIgnoreProperties(value = {}, allowSetters = true)
+  @ToString.Exclude
   private List<ThirdPartyTransaction> thirdPartyTransactionList = new ArrayList<>();
 
 
   // ======================================== CONSTRUCTORS ========================================
-
-
   public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
@@ -103,20 +104,8 @@ public abstract class Account {
     this.creationDate = dateTimeNow();
   }
 
-  // ======================================== METHODS ========================================
 
   // ======================================== OVERRIDE METHODS ========================================
 
 
-//  @Override
-//  public String toString() {
-//    return "Account{" +
-//        "id=" + id +
-//        ", balance=" + balance.toString() +
-//        ", primaryOwner=" + primaryOwner.getId() + ": " + primaryOwner.getName() +
-//        (secondaryOwner == null ? "" : ", secondaryOwner=" + secondaryOwner.getId() + ": " + secondaryOwner.getName()) +
-//        ", penaltyFee=" + penaltyFee +
-//        ", creationDate=" + creationDate +
-//        '}';
-//  }
 }

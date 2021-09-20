@@ -123,7 +123,7 @@ class CreditCardRepositoryTest {
 
     var updatedElement1 = creditCardRepository.findById(3L);
     assertTrue(updatedElement1.isPresent());
-    assertEquals(newBD("0.12", 4), updatedElement1.get().getInterestRate());
+    assertEquals(newBD("0.12"), updatedElement1.get().getInterestRate());
   }
 
   // ==================== Delete ====================
