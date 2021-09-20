@@ -1,14 +1,11 @@
 package com.ironhack.midterm.dao.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Role {
 
   @Id
@@ -24,11 +22,11 @@ public class Role {
   private Integer id;
 
   @NotNull
-  @NotBlank
   @Column(name = "name", unique = true)
   private String name;
 
-  @ManyToMany(mappedBy = "roles", cascade = {}, fetch = FetchType.EAGER)
+  @ToString.Exclude
+  @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
   private Set<User> users = new HashSet<>();
 
 
@@ -38,8 +36,18 @@ public class Role {
   }
 
 
-  // ======================================== METHODS ========================================
-
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Role role = (Role) o;
+    return getId().equals(role.getId()) && getName().equals(role.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getName());
+  }
 
 }

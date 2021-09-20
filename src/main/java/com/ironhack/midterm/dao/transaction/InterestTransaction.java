@@ -49,7 +49,7 @@ public class InterestTransaction extends Transaction {
     String message = "The interest amount of " + getConvertedAmount().toString() + " was successfully added to the account.";
     return new TransactionReceipt(
         getAccount(),
-        TransactionType.DEPOSIT,
+        TransactionType.INTEREST,
         getConvertedAmount(),
         getStatus(),
         message,
@@ -63,7 +63,7 @@ public class InterestTransaction extends Transaction {
     String message = "An error occurred! The interest amount of " + getConvertedAmount().toString() + " was NOT added to the account.";
     return new TransactionReceipt(
         getAccount(),
-        TransactionType.DEPOSIT,
+        TransactionType.INTEREST,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
@@ -76,7 +76,7 @@ public class InterestTransaction extends Transaction {
     setStatus(Status.REFUSED);
     return new TransactionReceipt(
         getAccount(),
-        TransactionType.DEPOSIT,
+        TransactionType.INTEREST,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,

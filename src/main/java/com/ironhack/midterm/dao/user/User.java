@@ -1,14 +1,12 @@
 package com.ironhack.midterm.dao.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.encryptedKey;
@@ -20,6 +18,7 @@ import static com.ironhack.midterm.util.EncryptedKeysUtil.encryptedKey;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public abstract class User {
 
   @Id
@@ -35,7 +34,7 @@ public abstract class User {
   private String password;
 
   @JsonIgnoreProperties(value = {"id", "users"}, allowSetters = true)
-  @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -55,9 +54,18 @@ public abstract class User {
   }
 
 
-  // ======================================== METHODS ========================================
-
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return getId().equals(user.getId()) && getUsername().equals(user.getUsername()) && getPassword().equals(user.getPassword()) && Objects.equals(getRoles(), user.getRoles()) && getName().equals(user.getName());
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getUsername(), getPassword(), getRoles(), getName());
+  }
 
 }

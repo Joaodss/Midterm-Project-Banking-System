@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.request.Request;
 import com.ironhack.midterm.model.Address;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -15,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "account_holder")
@@ -23,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class AccountHolder extends User {
 
   @NotNull
@@ -50,15 +49,18 @@ public class AccountHolder extends User {
   private Address mailingAddress;
 
   // ======================================== MAPPING ========================================
-  @OneToMany(mappedBy = "primaryOwner", cascade = {})
+  @ToString.Exclude
+  @OneToMany(mappedBy = "primaryOwner")
   @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
   private List<Account> primaryAccounts = new ArrayList<>();
 
-  @OneToMany(mappedBy = "secondaryOwner", cascade = {})
+  @ToString.Exclude
+  @OneToMany(mappedBy = "secondaryOwner")
   @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
   private List<Account> secondaryAccounts = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user", cascade = {})
+  @ToString.Exclude
+  @OneToMany(mappedBy = "user")
   @JsonIgnoreProperties(value = {"user"}, allowSetters = true)
   private List<Request> requestList = new ArrayList<>();
 
@@ -78,9 +80,19 @@ public class AccountHolder extends User {
   }
 
 
-  // ======================================== METHODS ========================================
-
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    AccountHolder that = (AccountHolder) o;
+    return getDateOfBirth().equals(that.getDateOfBirth()) && getPrimaryAddress().equals(that.getPrimaryAddress()) && Objects.equals(getMailingAddress(), that.getMailingAddress());
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getDateOfBirth(), getPrimaryAddress(), getMailingAddress());
+  }
 
 }
