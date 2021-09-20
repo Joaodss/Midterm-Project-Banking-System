@@ -34,6 +34,16 @@ public class AccountHolderServiceImpl implements AccountHolderService {
     return accountHolderRepository.findAll();
   }
 
+  public AccountHolder getByUsername(String username) throws InstanceNotFoundException {
+    var accountHolder = accountHolderRepository.findByUsername(username);
+    if (accountHolder.isPresent()) return accountHolder.get();
+    throw new InstanceNotFoundException();
+  }
+
+  public boolean isUsernamePresent(String username) {
+    return accountHolderRepository.findByUsername(username).isPresent();
+  }
+
 
   // ======================================== ADD USERS Methods ========================================
   public void newUser(AccountHolderDTO accountHolder) throws InstanceAlreadyExistsException {

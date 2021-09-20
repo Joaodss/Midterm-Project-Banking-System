@@ -1,4 +1,4 @@
-package com.ironhack.midterm.controller.user;
+package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
@@ -14,27 +14,24 @@ import java.util.List;
 public interface UserController {
 
   // ======================================== GET Methods ========================================
-  // -------------------- Global USER --------------------
+  // -------------------- Global USER [ADMIN] --------------------
   List<User> getUsers();
 
   User getUserById(long id);
 
-  User getUserByUsername(@RequestParam("username") String username);
+  User getUserByUsername(String username);
 
-  // -------------------- Admins --------------------
+  // -------------------- Admins [ADMIN] --------------------
   List<Admin> getAdmins();
 
-  // -------------------- Account Holder --------------------
+  // -------------------- Account Holder [ADMIN] --------------------
   List<AccountHolder> getAccountHolders();
 
-  // -------------------- Third Parties --------------------
+  // -------------------- Third Parties [ADMIN] --------------------
   List<ThirdParty> getAThirdParties();
 
 
   // ======================================== POST Methods ========================================
-
-
-  // ======================================== PUT Methods ========================================
   // -------------------- New Admin [ADMIN] --------------------
   void createNewAdmin(AdminDTO admin);
 
@@ -43,6 +40,9 @@ public interface UserController {
 
   // -------------------- New Third Party [ADMIN] --------------------
   void createNewThirdParty(ThirdPartyDTO thirdParty);
+
+
+  // ======================================== PUT Methods ========================================
 
 
   // ======================================== PATCH Methods ========================================

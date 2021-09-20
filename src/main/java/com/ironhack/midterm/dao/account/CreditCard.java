@@ -11,10 +11,9 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import static com.ironhack.midterm.util.MoneyUtil.newBD;
-import static com.ironhack.midterm.util.MoneyUtil.newMoney;
+import static com.ironhack.midterm.util.MoneyUtil.*;
 
 @Entity
 @Table(name = "credit_card_account")
@@ -40,7 +39,7 @@ public class CreditCard extends Account {
 
   @NotNull
   @Column(name = "last_interest_update")
-  private LocalDateTime lastInterestUpdate;
+  private LocalDate lastInterestUpdate;
 
 
   // ======================================== CONSTRUCTORS ========================================
@@ -48,18 +47,23 @@ public class CreditCard extends Account {
     super(balance, primaryOwner, secondaryOwner);
     this.creditLimit = newMoney("100");
     this.interestRate = newBD("0.2");
-    this.lastInterestUpdate = super.getCreationDate();
+    this.lastInterestUpdate = super.getCreationDate().toLocalDate();
   }
 
   public CreditCard(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
     this.creditLimit = newMoney("100");
     this.interestRate = newBD("0.2");
-    this.lastInterestUpdate = super.getCreationDate();
+    this.lastInterestUpdate = super.getCreationDate().toLocalDate();
   }
 
 
   // ======================================== METHODS ========================================
+  public void updateCurrencyValues() {
+    setPenaltyFee(convertCurrency(getBalance(), getPenaltyFee()));
+    setCreditLimit(convertCurrency(getBalance(), getCreditLimit()));
+  }
+
 
   // ======================================== OVERRIDE METHODS ========================================
 

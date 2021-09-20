@@ -1,6 +1,6 @@
-package com.ironhack.midterm.controller.user.impl;
+package com.ironhack.midterm.controller.impl;
 
-import com.ironhack.midterm.controller.user.UserController;
+import com.ironhack.midterm.controller.UserController;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.ThirdParty;

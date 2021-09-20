@@ -175,5 +175,12 @@ class AccountHolderRepositoryTest {
 
   // ======================================== Custom Queries Testing ========================================
 
+  @Test
+  @Order(7)
+  void testGetUsername_findByUsername_returnAccountHolderWithCorrectUsername() {
+    var element1 = accountHolderRepository.findByUsername("joaodss");
+    assertTrue(element1.isPresent());
+    assertEquals("joaodss", element1.get().getUsername());
+  }
 
 }

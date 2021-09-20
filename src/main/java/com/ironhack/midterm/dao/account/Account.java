@@ -47,12 +47,12 @@ public abstract class Account {
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "primary_owner_id")
-  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
+  @JsonIgnoreProperties(value = {"username", "password", "roles", "primaryAddress", "mailingAddress", "primaryAccounts", "secondaryAccounts", "requestList"}, allowSetters = true)
   private AccountHolder primaryOwner;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "secondary_owner_id")
-  @JsonIgnoreProperties(value = {"username", "password", "primaryAccounts", "secondaryAccounts"}, allowSetters = true)
+  @JsonIgnoreProperties(value = {"username", "password", "roles", "primaryAddress", "mailingAddress", "primaryAccounts", "secondaryAccounts", "requestList"}, allowSetters = true)
   private AccountHolder secondaryOwner;
 
   @NotNull
@@ -86,6 +86,8 @@ public abstract class Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
+
+
   public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;

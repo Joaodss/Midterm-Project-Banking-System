@@ -4,6 +4,7 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountHolderDTO;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 public interface AccountHolderService {
@@ -11,8 +12,13 @@ public interface AccountHolderService {
   // ======================================== GET USERS Methods ========================================
   List<AccountHolder> getAll();
 
+  AccountHolder getByUsername(String username) throws InstanceNotFoundException;
+
+  boolean isUsernamePresent(String username);
+
 
   // ======================================== ADD USERS Methods ========================================
+
   void newUser(AccountHolderDTO accountHolder) throws InstanceAlreadyExistsException;
 
 
