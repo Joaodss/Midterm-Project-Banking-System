@@ -15,29 +15,29 @@ import java.time.LocalDate;
 @Setter
 public class AccountHolderDTO {
 
-  @NotBlank
+  @NotBlank(message = "The username can not be blank or empty")
   private String username;
 
-  @NotBlank
+  @NotBlank(message = "The password can not be blank or empty")
   private String password;
 
-  @NotBlank
+  @NotBlank(message = "The name can not be blank or empty")
   private String name;
 
   @NotNull
   private LocalDate dateOfBirth;
 
   @NotNull
-  @NotBlank
+  @NotBlank(message = "The primary street address can not be blank or empty")
   private String paStreetAddress;
 
-  @NotBlank
+  @NotBlank(message = "The primary postal code can not be blank or empty")
   private String paPostalCode;
 
-  @NotBlank
+  @NotBlank(message = "The primary city can not be blank or empty")
   private String paCity;
 
-  @NotBlank
+  @NotBlank(message = "The primary country can not be blank or empty")
   private String paCountry;
 
   private String maStreetAddress;
@@ -47,19 +47,5 @@ public class AccountHolderDTO {
   private String maCity;
 
   private String maCountry;
-
-
-  // ======================================== CONSTRUCTORS ========================================
-  public AccountHolderDTO(String username, String password, String name, LocalDate dateOfBirth, String paStreetAddress, String paPostalCode, String paCity, String paCountry) {
-    this.username = username;
-    this.password = password;
-    this.name = name;
-    this.dateOfBirth = dateOfBirth;
-    this.paStreetAddress = paStreetAddress;
-    this.paPostalCode = paPostalCode;
-    this.paCity = paCity;
-    this.paCountry = paCountry;
-  }
-
 
 }

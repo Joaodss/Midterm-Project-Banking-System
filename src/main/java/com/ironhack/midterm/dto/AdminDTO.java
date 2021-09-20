@@ -13,13 +13,13 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class AdminDTO {
 
-  @NotBlank
+  @NotBlank(message = "The username can not be blank or empty")
   private String username;
 
-  @NotBlank
+  @NotBlank(message = "The password can not be blank or empty")
   private String password;
 
-  @NotBlank
+  @NotBlank(message = "The name can not be blank or empty")
   private String name;
 
 }

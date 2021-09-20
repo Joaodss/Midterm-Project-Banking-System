@@ -37,5 +37,4 @@ public class AccountDTO {
 
   private String secondaryOwnerUsername;
 
-
 }
