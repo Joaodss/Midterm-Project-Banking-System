@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.GET, "/api/users/new").permitAll()
+        .mvcMatchers(HttpMethod.GET, "/api/accounts").hasAnyRole("ADMIN", "USER")
         .anyRequest().permitAll();
   }
 

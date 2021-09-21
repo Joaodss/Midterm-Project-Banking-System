@@ -3,13 +3,16 @@ package com.ironhack.midterm.controller.impl;
 import com.ironhack.midterm.controller.AccountController;
 import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dto.AccountDTO;
+import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.service.account.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceNotFoundException;
+import javax.security.auth.login.LoginException;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -35,16 +38,64 @@ public class AccountControllerImpl implements AccountController {
 
 
   // ======================================== GET Methods ========================================
-  // -------------------- All Accounts [ADMIN] --------------------
+  // -------------------- All Accounts [ADMIN] / User Specific Accounts [USER] --------------------
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<Account> getAccounts() {
+  public List<Account> getAccounts(Authentication auth) {
     try {
-      return accountService.getAll();
+      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
+        return accountService.getAll();
+      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
+        return accountService.getAllByUsername(auth.getName());
+      }
+      throw new LoginException("Invalid user logg in.");
+    } catch (LoginException e1) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // -------------------- Account by Id [ADMIN] / User Specific Account by Id [USER] --------------------
+  @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Account getAccountById(Authentication auth, @PathVariable("id") long id) {
+    try {
+      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
+        return accountService.getById(id);
+      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
+        return accountService.getByUsernameAndId(auth.getName(), id);
+      }
+      throw new LoginException("Invalid user logg in.");
+    } catch (LoginException e1) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+    } catch (InstanceNotFoundException e2) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // -------------------- Account Balance by Id [ADMIN] / User Specific Account Balance by Id [USER] --------------------
+  @GetMapping("/{id}/balance")
+  @ResponseStatus(HttpStatus.OK)
+  public Money getAccountBalanceById(Authentication auth, @PathVariable("id") long id) {
+    try {
+      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
+        return accountService.getBalanceById(id);
+      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
+        return accountService.getBalanceByUsernameAndId(auth.getName(), id);
+      }
+      throw new LoginException("Invalid user logg in.");
+    } catch (LoginException e1) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+    } catch (InstanceNotFoundException e2) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 
   // -------------------- All Checking Accounts [ADMIN] --------------------
   @GetMapping("/checking_accounts")
@@ -85,19 +136,6 @@ public class AccountControllerImpl implements AccountController {
   public List<CreditCard> getCreditCards() {
     try {
       return creditCardService.getAll();
-    } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  // -------------------- Accounts by Id [ADMIN] --------------------
-  @GetMapping("/{id}")
-  @ResponseStatus(HttpStatus.OK)
-  public Account getAccountById(@PathVariable("id") long id) {
-    try {
-      return accountService.getById(id);
-    } catch (InstanceNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }

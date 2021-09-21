@@ -2,6 +2,8 @@ package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dto.AccountDTO;
+import com.ironhack.midterm.model.Money;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -9,7 +11,11 @@ public interface AccountController {
 
   // ======================================== GET Methods ========================================
   // -------------------- All Users [ADMIN] --------------------
-  List<Account> getAccounts();
+  List<Account> getAccounts(Authentication auth);
+
+  Account getAccountById(Authentication auth, long id);
+
+  Money getAccountBalanceById(Authentication auth, long id);
 
   List<CheckingAccount> getCheckingAccounts();
 
@@ -18,8 +24,6 @@ public interface AccountController {
   List<SavingsAccount> getSavingsAccounts();
 
   List<CreditCard> getCreditCards();
-
-  Account getAccountById(long id);
 
 
   // ======================================== POST Methods ========================================
