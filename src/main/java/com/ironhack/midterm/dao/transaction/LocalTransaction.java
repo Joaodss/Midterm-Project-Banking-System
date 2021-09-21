@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 
 import static com.ironhack.midterm.util.MoneyUtil.negativeMoney;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
-import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "local_transaction")
@@ -28,24 +27,6 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 public class LocalTransaction extends Transaction {
 
   @NotNull
-  @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "owner_account_id")
-  private Account account;
-
-  @NotNull
-  @JsonIncludeProperties(value = {"id", "name"})
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "owner_id")
-  private AccountHolder owner;
-
-  @NotNull
-  @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "target_account_id")
-  private Account targetAccount;
-
-  @NotNull
   @JsonIncludeProperties(value = {"id", "name"})
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "target_owner_id")
@@ -53,19 +34,13 @@ public class LocalTransaction extends Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public LocalTransaction(Money baseAmount, Money convertedAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
-    super(baseAmount, convertedAmount);
-    this.account = account;
-    this.owner = owner;
-    this.targetAccount = targetAccount;
+  public LocalTransaction(Money baseAmount, Account account, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, account, targetAccount);
     this.targetOwner = targetOwner;
   }
 
-  public LocalTransaction(Money baseAmount, Account account, AccountHolder owner, Account targetAccount, AccountHolder targetOwner) {
-    super(baseAmount);
-    this.account = account;
-    this.owner = owner;
-    this.targetAccount = targetAccount;
+  public LocalTransaction(Money baseAmount, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, targetAccount);
     this.targetOwner = targetOwner;
   }
 
@@ -73,14 +48,13 @@ public class LocalTransaction extends Transaction {
   // ======================================== METHODS ========================================
   public TransactionReceipt acceptAndGenerateReceiverReceipt() {
     setStatus(Status.ACCEPTED);
-    String message = "The amount of " + getConvertedAmount().toString() + " was successfully transferred to this account.";
     return new TransactionReceipt(
         getTargetAccount(),
         getAccount(),
         TransactionType.RECEIVE_LOCAL,
         getConvertedAmount(),
         getStatus(),
-        message,
+        "The amount of " + getConvertedAmount().toString() + " was successfully transferred to this account.",
         getOperationDate(),
         this
     );
@@ -88,14 +62,13 @@ public class LocalTransaction extends Transaction {
 
   public TransactionReceipt acceptAndGenerateSenderReceipt() {
     setStatus(Status.ACCEPTED);
-    String message = "The amount of " + getConvertedAmount().toString() + " was successfully transferred from this account.";
     return new TransactionReceipt(
         getAccount(),
         getTargetAccount(),
         TransactionType.SEND_LOCAL,
         negativeMoney(getConvertedAmount()),
         getStatus(),
-        message,
+        "The amount of " + getConvertedAmount().toString() + " was successfully transferred from this account.",
         getOperationDate(),
         this
     );
@@ -103,14 +76,13 @@ public class LocalTransaction extends Transaction {
 
   public TransactionReceipt refuseAndGenerateReceiverReceipt() {
     setStatus(Status.REFUSED);
-    String message = "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred to this account.";
     return new TransactionReceipt(
         getTargetAccount(),
         getAccount(),
         TransactionType.RECEIVE_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
-        message,
+        "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred to this account.",
         getOperationDate(),
         this
     );
@@ -118,14 +90,13 @@ public class LocalTransaction extends Transaction {
 
   public TransactionReceipt refuseAndGenerateSenderReceipt() {
     setStatus(Status.REFUSED);
-    String message = "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred from this account.";
     return new TransactionReceipt(
         getAccount(),
         getTargetAccount(),
         TransactionType.SEND_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
-        message,
+        "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred from this account.",
         getOperationDate(),
         this
     );
@@ -158,7 +129,6 @@ public class LocalTransaction extends Transaction {
         this
     );
   }
-
 
 
   // ======================================== OVERRIDE METHODS ========================================

@@ -1,6 +1,7 @@
 package com.ironhack.midterm.dao.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ironhack.midterm.dao.transaction.Deposit;
 import com.ironhack.midterm.dao.transaction.LocalTransaction;
 import com.ironhack.midterm.dao.transaction.ThirdPartyTransaction;
@@ -26,6 +27,7 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @Getter
 @Setter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class Account {
 
   @Id

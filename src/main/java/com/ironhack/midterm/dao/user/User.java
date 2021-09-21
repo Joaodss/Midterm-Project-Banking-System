@@ -1,6 +1,7 @@
 package com.ironhack.midterm.dao.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ import static com.ironhack.midterm.util.EncryptedKeysUtil.encryptedKey;
 @Getter
 @Setter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class User {
 
   @Id

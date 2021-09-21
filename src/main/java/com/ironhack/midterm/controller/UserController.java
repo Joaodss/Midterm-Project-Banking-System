@@ -7,7 +7,7 @@ import com.ironhack.midterm.dao.user.User;
 import com.ironhack.midterm.dto.AccountHolderDTO;
 import com.ironhack.midterm.dto.AdminDTO;
 import com.ironhack.midterm.dto.ThirdPartyDTO;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface UserController {
 
   User getUserById(long id);
 
-  User getUserByUsername(String username);
+  User getUserByUsername(Authentication auth, String username);
 
   // -------------------- Admins [ADMIN] --------------------
   List<Admin> getAdmins();

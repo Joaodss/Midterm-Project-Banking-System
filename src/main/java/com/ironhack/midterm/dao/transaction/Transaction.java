@@ -1,5 +1,8 @@
 package com.ironhack.midterm.dao.transaction;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
@@ -13,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ironhack.midterm.util.MoneyUtil.convertCurrency;
 import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Entity
@@ -22,6 +26,7 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class Transaction {
 
   @Id
@@ -39,12 +44,24 @@ public abstract class Transaction {
   private Money baseAmount;
 
   @Valid
+  @NotNull
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "converted_amount", nullable = false)),
       @AttributeOverride(name = "currency", column = @Column(name = "converted_currency", nullable = false))
   })
   private Money convertedAmount;
+
+  @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "account_id")
+  private Account account;
+
+  @NotNull
+  @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "target_account_id")
+  private Account targetAccount;
 
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -60,15 +77,19 @@ public abstract class Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public Transaction(Money baseAmount, Money convertedAmount) {
+  public Transaction(Money baseAmount, Account account, Account targetAccount) {
     this.baseAmount = baseAmount;
-    this.convertedAmount = convertedAmount;
+    this.convertedAmount = convertCurrency(account.getBalance(), baseAmount);
+    this.account = account;
+    this.targetAccount = targetAccount;
     this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();
   }
 
-  public Transaction(Money baseAmount) {
+  public Transaction(Money baseAmount, Account targetAccount) {
     this.baseAmount = baseAmount;
+    this.convertedAmount = convertCurrency(account.getBalance(), baseAmount);
+    this.targetAccount = targetAccount;
     this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();
   }

@@ -14,11 +14,13 @@ import com.ironhack.midterm.service.user.ThirdPartyService;
 import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
+import javax.security.auth.login.LoginException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -65,10 +67,15 @@ public class UserControllerImpl implements UserController {
 
   @GetMapping(params = "username")
   @ResponseStatus(HttpStatus.OK)
-  public User getUserByUsername(@RequestParam("username") String username) {
+  public User getUserByUsername(Authentication auth, @RequestParam("username") String username) {
     try {
-      return userService.getByUsername(username);
-    } catch (InstanceNotFoundException e1) {
+      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) || auth.getName().equals(username)) {
+        return userService.getByUsername(username);
+      }
+      throw new LoginException("Invalid user logg in.");
+    } catch (LoginException e1) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+    } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
