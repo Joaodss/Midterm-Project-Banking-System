@@ -54,8 +54,8 @@ public abstract class Transaction {
 
   @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "account_id")
-  private Account account;
+  @JoinColumn(name = "base_account_id")
+  private Account baseAccount;
 
   @NotNull
   @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
@@ -77,10 +77,10 @@ public abstract class Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public Transaction(Money baseAmount, Account account, Account targetAccount) {
+  public Transaction(Money baseAmount, Account baseAccount, Account targetAccount) {
     this.baseAmount = baseAmount;
-    this.convertedAmount = convertCurrency(account.getBalance(), baseAmount);
-    this.account = account;
+    this.convertedAmount = convertCurrency(baseAccount.getBalance(), baseAmount);
+    this.baseAccount = baseAccount;
     this.targetAccount = targetAccount;
     this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();
@@ -88,7 +88,7 @@ public abstract class Transaction {
 
   public Transaction(Money baseAmount, Account targetAccount) {
     this.baseAmount = baseAmount;
-    this.convertedAmount = convertCurrency(account.getBalance(), baseAmount);
+    this.convertedAmount = convertCurrency(baseAccount.getBalance(), baseAmount);
     this.targetAccount = targetAccount;
     this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();

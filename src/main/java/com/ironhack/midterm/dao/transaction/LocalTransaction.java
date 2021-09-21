@@ -50,7 +50,7 @@ public class LocalTransaction extends Transaction {
     setStatus(Status.ACCEPTED);
     return new TransactionReceipt(
         getTargetAccount(),
-        getAccount(),
+        getBaseAccount(),
         TransactionType.RECEIVE_LOCAL,
         getConvertedAmount(),
         getStatus(),
@@ -63,7 +63,7 @@ public class LocalTransaction extends Transaction {
   public TransactionReceipt acceptAndGenerateSenderReceipt() {
     setStatus(Status.ACCEPTED);
     return new TransactionReceipt(
-        getAccount(),
+        getBaseAccount(),
         getTargetAccount(),
         TransactionType.SEND_LOCAL,
         negativeMoney(getConvertedAmount()),
@@ -78,7 +78,7 @@ public class LocalTransaction extends Transaction {
     setStatus(Status.REFUSED);
     return new TransactionReceipt(
         getTargetAccount(),
-        getAccount(),
+        getBaseAccount(),
         TransactionType.RECEIVE_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
@@ -91,7 +91,7 @@ public class LocalTransaction extends Transaction {
   public TransactionReceipt refuseAndGenerateSenderReceipt() {
     setStatus(Status.REFUSED);
     return new TransactionReceipt(
-        getAccount(),
+        getBaseAccount(),
         getTargetAccount(),
         TransactionType.SEND_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
@@ -106,7 +106,7 @@ public class LocalTransaction extends Transaction {
     setStatus(Status.REFUSED);
     return new TransactionReceipt(
         getTargetAccount(),
-        getAccount(),
+        getBaseAccount(),
         TransactionType.RECEIVE_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
@@ -119,7 +119,7 @@ public class LocalTransaction extends Transaction {
   public TransactionReceipt refuseAndGenerateSenderReceipt(String message) {
     setStatus(Status.REFUSED);
     return new TransactionReceipt(
-        getAccount(),
+        getBaseAccount(),
         getTargetAccount(),
         TransactionType.SEND_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),

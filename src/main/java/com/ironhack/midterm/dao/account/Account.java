@@ -2,9 +2,7 @@ package com.ironhack.midterm.dao.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ironhack.midterm.dao.transaction.Deposit;
-import com.ironhack.midterm.dao.transaction.LocalTransaction;
-import com.ironhack.midterm.dao.transaction.ThirdPartyTransaction;
+import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Money;
 import lombok.*;
@@ -14,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
@@ -69,25 +68,16 @@ public abstract class Account {
   private LocalDateTime creationDate;
 
   // ======================================== MAPPING ========================================
-  @OneToMany(mappedBy = "targetAccount", cascade = {})
-  @JsonIgnoreProperties(value = {}, allowSetters = true)
-  @ToString.Exclude
-  private List<Deposit> depositList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "account", cascade = {})
-  @JsonIgnoreProperties(value = {}, allowSetters = true)
+  @OneToMany(mappedBy = "targetAccount")
+  @JsonIgnoreProperties(value = {"receipts"}, allowSetters = true)
   @ToString.Exclude
-  private List<LocalTransaction> transferSentList = new ArrayList<>();
+  private List<Transaction> incomingTransactions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "targetAccount", cascade = {})
-  @JsonIgnoreProperties(value = {}, allowSetters = true)
+  @OneToMany(mappedBy = "baseAccount")
+  @JsonIgnoreProperties(value = {"receipts"}, allowSetters = true)
   @ToString.Exclude
-  private List<LocalTransaction> transferReceivedList = new ArrayList<>();
-
-  @OneToMany(mappedBy = "targetAccount", cascade = {})
-  @JsonIgnoreProperties(value = {}, allowSetters = true)
-  @ToString.Exclude
-  private List<ThirdPartyTransaction> thirdPartyTransactionList = new ArrayList<>();
+  private List<Transaction> outgoingTransactions = new ArrayList<>();
 
 
   // ======================================== CONSTRUCTORS ========================================
@@ -104,6 +94,16 @@ public abstract class Account {
     this.primaryOwner = primaryOwner;
     this.penaltyFee = newMoney("40");
     this.creationDate = dateTimeNow();
+  }
+
+
+  // ======================================== METHODS ========================================
+  public List<Transaction> getAllTransactionsOrdered(List<Transaction> incomingTransactions, List<Transaction> outgoingTransactions) {
+    List<Transaction> allTransactions = new ArrayList<>();
+    allTransactions.addAll(incomingTransactions);
+    allTransactions.addAll(outgoingTransactions);
+    allTransactions.sort(Comparator.comparing(Transaction::getOperationDate).reversed());
+    return allTransactions;
   }
 
 

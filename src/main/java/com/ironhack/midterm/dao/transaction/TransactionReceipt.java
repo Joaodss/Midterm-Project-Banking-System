@@ -66,6 +66,7 @@ public class TransactionReceipt {
   @Column(name = "operation_date")
   private LocalDateTime operationDate;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "transaction_id")
   private Transaction transaction;
