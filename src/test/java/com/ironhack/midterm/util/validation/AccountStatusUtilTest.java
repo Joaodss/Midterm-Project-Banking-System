@@ -7,8 +7,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.ironhack.midterm.util.validation.StatusUtil.isValidStatusFromString;
-import static com.ironhack.midterm.util.validation.StatusUtil.statusFromString;
+import static com.ironhack.midterm.util.EnumsUtil.isValidStatusFromString;
+import static com.ironhack.midterm.util.EnumsUtil.statusFromString;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

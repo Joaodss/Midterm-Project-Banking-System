@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.management.InstanceNotFoundException;
 import java.util.Currency;
 
-import static com.ironhack.midterm.util.TransactionPurposeUtil.transactionPurposeFromString;
+import static com.ironhack.midterm.util.EnumsUtil.transactionPurposeFromString;
 
 @Service
 public class ThirdPartyTransactionServiceImpl implements ThirdPartyTransactionService {
