@@ -52,7 +52,7 @@ public class ThirdPartyTransaction extends Transaction {
   // ======================================== METHODS ========================================
   public TransactionReceipt acceptAndGenerateReceipt() {
     setStatus(Status.ACCEPTED);
-    if (transactionPurpose == TransactionPurpose.RECEIVE) {
+    if (transactionPurpose == TransactionPurpose.SEND) {
       return new TransactionReceipt(
           getTargetAccount(),
           TransactionType.RECEIVE_THIRD_PARTY,
@@ -77,7 +77,7 @@ public class ThirdPartyTransaction extends Transaction {
 
   public TransactionReceipt refuseAndGenerateReceipt() {
     setStatus(Status.REFUSED);
-    if (transactionPurpose == TransactionPurpose.RECEIVE) {
+    if (transactionPurpose == TransactionPurpose.SEND) {
       return new TransactionReceipt(
           getTargetAccount(),
           TransactionType.RECEIVE_THIRD_PARTY,
@@ -102,7 +102,7 @@ public class ThirdPartyTransaction extends Transaction {
 
   public TransactionReceipt refuseAndGenerateReceipt(String message) {
     setStatus(Status.REFUSED);
-    if (transactionPurpose == TransactionPurpose.RECEIVE) {
+    if (transactionPurpose == TransactionPurpose.SEND) {
       return new TransactionReceipt(
           getTargetAccount(),
           TransactionType.RECEIVE_THIRD_PARTY,

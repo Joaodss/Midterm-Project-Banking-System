@@ -1,8 +1,6 @@
 package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.account.*;
-import com.ironhack.midterm.dao.transaction.Transaction;
-import com.ironhack.midterm.dao.transaction.TransactionReceipt;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.model.Money;
 import org.springframework.security.core.Authentication;
@@ -32,27 +30,6 @@ public interface AccountController {
 
   // -------------------- All Credit Cards [ADMIN] --------------------
   List<CreditCard> getCreditCards();
-
-  // ======================================== GET TRANSACTION Methods ========================================
-  // -------------------- Account Specific Transactions [ADMIN / Specific USER] --------------------
-  List<Transaction> getTransactions(Authentication auth, long id);
-
-  // -------------------- User Specific Transactions by Date Range [ADMIN / Specific USER] --------------------
-//  List<Transaction> getTransactionsByDateRange(Authentication auth, long id, Optional<String> startDate, Optional<String> endDate);
-
-  // -------------------- User Specific Transactions by Id [ADMIN / Specific USER] --------------------
-  Transaction getTransactionsById(Authentication auth, long transactionId);
-
-
-  // ======================================== GET RECEIPT Methods ========================================
-  // -------------------- Account Specific Transactions [ADMIN / Specific USER] --------------------
-  List<TransactionReceipt> getReceipts(Authentication auth, long id);
-
-  // -------------------- User Specific Transactions by Date Range [ADMIN / Specific USER] --------------------
-//  List<TransactionReceipt> getReceiptsByTransactionsDateRange(Authentication auth, long id, Optional<String> startDate, Optional<String> endDate);
-
-  // -------------------- User Specific Receipt by Id [ADMIN / Specific USER] --------------------
-  TransactionReceipt getReceiptsByTransactionId(Authentication auth, long receiptId);
 
 
   // ======================================== POST Methods ========================================
