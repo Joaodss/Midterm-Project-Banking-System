@@ -70,4 +70,23 @@ public class MoneyUtil {
     return new Money(money.getAmount().negate(), money.getCurrency());
   }
 
+  // =================================== Compare Balance ===================================
+  public static int compareMoney(Money money1, Money money2) {
+    Money convertedMoney2 = convertCurrency(money1, money2);
+    return money1.getAmount().compareTo(convertedMoney2.getAmount());
+  }
+
+  // =================================== Calculate Balance (Subtraction)===================================
+  public static Money subtractMoney(Money baseMoney, Money moneyToSubtract) {
+    Money convertedMoneyToSubtract = convertCurrency(baseMoney, moneyToSubtract);
+    return new Money(baseMoney.getAmount().subtract(convertedMoneyToSubtract.getAmount()), baseMoney.getCurrency());
+  }
+
+  // =================================== Calculate Balance (Addition)===================================
+  public static Money addMoney(Money baseMoney, Money moneyToAdd) {
+    Money convertedMoneyToAdd = convertCurrency(baseMoney, moneyToAdd);
+    return new Money(baseMoney.getAmount().subtract(convertedMoneyToAdd.getAmount()), baseMoney.getCurrency());
+  }
+
+
 }

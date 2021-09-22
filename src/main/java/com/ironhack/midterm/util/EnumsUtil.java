@@ -2,6 +2,7 @@ package com.ironhack.midterm.util;
 
 import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.enums.TransactionPurpose;
+import com.ironhack.midterm.enums.TransactionType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -43,6 +44,24 @@ public class EnumsUtil {
         return tp;
     }
     throw new IllegalArgumentException("TransactionPurpose " + stringTransactionPurpose + " does not exist.");
+  }
+
+  // ============================== Valid TransactionType from String (exists) ==============================
+  public static boolean isValidTransactionTypeFromString(String stringTransactionType) {
+    for (TransactionType tt : TransactionType.values()) {
+      if (tt.name().equalsIgnoreCase(stringTransactionType))
+        return true;
+    }
+    return false;
+  }
+
+  // =================================== Get TransactionType from String ===================================
+  public static TransactionType transactionTypeFromString(String stringTransactionType) {
+    for (TransactionType tt : TransactionType.values()) {
+      if (tt.name().equalsIgnoreCase(stringTransactionType))
+        return tt;
+    }
+    throw new IllegalArgumentException("TransactionPurpose " + stringTransactionType + " does not exist.");
   }
 
 }

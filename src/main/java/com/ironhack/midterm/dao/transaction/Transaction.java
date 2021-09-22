@@ -79,7 +79,7 @@ public abstract class Transaction {
   // ======================================== CONSTRUCTORS ========================================
   public Transaction(Money baseAmount, Account baseAccount, Account targetAccount) {
     this.baseAmount = baseAmount;
-    this.convertedAmount = convertCurrency(baseAccount.getBalance(), baseAmount);
+    this.convertedAmount = convertCurrency(targetAccount.getBalance(), baseAmount);
     this.baseAccount = baseAccount;
     this.targetAccount = targetAccount;
     this.status = Status.PROCESSING;
@@ -88,7 +88,7 @@ public abstract class Transaction {
 
   public Transaction(Money baseAmount, Account targetAccount) {
     this.baseAmount = baseAmount;
-    this.convertedAmount = convertCurrency(baseAccount.getBalance(), baseAmount);
+    this.convertedAmount = convertCurrency(targetAccount.getBalance(), baseAmount);
     this.targetAccount = targetAccount;
     this.status = Status.PROCESSING;
     this.operationDate = dateTimeNow();

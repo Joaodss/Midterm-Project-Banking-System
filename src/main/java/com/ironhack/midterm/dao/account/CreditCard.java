@@ -47,14 +47,14 @@ public class CreditCard extends Account {
     super(balance, primaryOwner, secondaryOwner);
     this.creditLimit = newMoney("100");
     this.interestRate = newBD("0.2");
-    this.lastInterestUpdate = super.getCreationDate().toLocalDate();
+    this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
   }
 
   public CreditCard(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
     this.creditLimit = newMoney("100");
     this.interestRate = newBD("0.2");
-    this.lastInterestUpdate = super.getCreationDate().toLocalDate();
+    this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
   }
 
 

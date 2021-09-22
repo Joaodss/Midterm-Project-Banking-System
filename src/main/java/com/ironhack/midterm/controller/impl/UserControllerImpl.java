@@ -53,7 +53,7 @@ public class UserControllerImpl implements UserController {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/id/{id}")
   @ResponseStatus(HttpStatus.OK)
   public User getUserById(@PathVariable("id") long id) {
     try {
@@ -65,9 +65,9 @@ public class UserControllerImpl implements UserController {
     }
   }
 
-  @GetMapping(params = "username")
+  @GetMapping(params = "{username}")
   @ResponseStatus(HttpStatus.OK)
-  public User getUserByUsername(Authentication auth, @RequestParam("username") String username) {
+  public User getUserByUsername(Authentication auth, @PathVariable("username") String username) {
     try {
       if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) || auth.getName().equals(username)) {
         return userService.getByUsername(username);

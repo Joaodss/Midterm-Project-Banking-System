@@ -70,7 +70,7 @@ public class AccountControllerImpl implements AccountController {
     } catch (LoginException e1) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
     } catch (InstanceNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found or not associated with your account.");
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }

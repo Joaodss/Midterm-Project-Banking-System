@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
 import static com.ironhack.midterm.util.MoneyUtil.*;
@@ -46,7 +46,7 @@ public class SavingsAccount extends Account {
 
   @NotNull
   @Column(name = "last_interest_update")
-  private LocalDateTime lastInterestUpdate;
+  private LocalDate lastInterestUpdate;
 
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -59,7 +59,7 @@ public class SavingsAccount extends Account {
     super(balance, primaryOwner, secondaryOwner);
     this.minimumBalance = newMoney("1000");
     this.interestRate = newBD("0.0025");
-    this.lastInterestUpdate = getCreationDate();
+    this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
   }
@@ -68,7 +68,7 @@ public class SavingsAccount extends Account {
     super(balance, primaryOwner);
     this.minimumBalance = newMoney("1000");
     this.interestRate = newBD("0.0025");
-    this.lastInterestUpdate = getCreationDate();
+    this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
   }

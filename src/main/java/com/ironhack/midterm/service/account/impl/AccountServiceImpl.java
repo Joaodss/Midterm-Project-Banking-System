@@ -1,6 +1,10 @@
 package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.Account;
+import com.ironhack.midterm.dao.account.CheckingAccount;
+import com.ironhack.midterm.dao.account.SavingsAccount;
+import com.ironhack.midterm.dao.account.StudentCheckingAccount;
+import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.account.AccountRepository;
 import com.ironhack.midterm.service.account.AccountService;
@@ -48,6 +52,33 @@ public class AccountServiceImpl implements AccountService {
     var account = accountRepository.findByUsernameAndIdJoined(username, id);
     if (account.isPresent()) return account.get().getBalance();
     throw new InstanceNotFoundException();
+  }
+
+
+  public void freezeAccount(long id) throws InstanceNotFoundException {
+    var account = getById(id);
+    if (account.getClass() == CheckingAccount.class)
+      ((CheckingAccount) account).setAccountStatus(AccountStatus.FROZEN);
+    if (account.getClass() == StudentCheckingAccount.class)
+      ((StudentCheckingAccount) account).setAccountStatus(AccountStatus.FROZEN);
+    if (account.getClass() == SavingsAccount.class)
+      ((SavingsAccount) account).setAccountStatus(AccountStatus.FROZEN);
+  }
+
+  public void unFreezeAccount(long id) throws InstanceNotFoundException {
+    var account = getById(id);
+    if (account.getClass() == CheckingAccount.class)
+      ((CheckingAccount) account).setAccountStatus(AccountStatus.ACTIVE);
+    if (account.getClass() == StudentCheckingAccount.class)
+      ((StudentCheckingAccount) account).setAccountStatus(AccountStatus.ACTIVE);
+    if (account.getClass() == SavingsAccount.class)
+      ((SavingsAccount) account).setAccountStatus(AccountStatus.ACTIVE);
+  }
+
+
+  // ============================== Save Account ==============================
+  public void save(Account account) {
+    accountRepository.save(account);
   }
 
 

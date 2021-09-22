@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
 import static com.ironhack.midterm.util.MoneyUtil.convertCurrency;
@@ -50,6 +51,10 @@ public class CheckingAccount extends Account {
   private Money monthlyMaintenanceFee;
 
   @NotNull
+  @Column(name = "last_maintenance_fee")
+  private LocalDate lastMaintenanceFee;
+
+  @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private AccountStatus accountStatus;
@@ -60,6 +65,7 @@ public class CheckingAccount extends Account {
     super(balance, primaryOwner, secondaryOwner);
     this.minimumBalance = newMoney("250");
     this.monthlyMaintenanceFee = newMoney("12");
+    this.lastMaintenanceFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
   }
@@ -68,6 +74,7 @@ public class CheckingAccount extends Account {
     super(balance, primaryOwner);
     this.minimumBalance = newMoney("250");
     this.monthlyMaintenanceFee = newMoney("12");
+    this.lastMaintenanceFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
   }

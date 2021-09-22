@@ -10,6 +10,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -64,6 +65,10 @@ public abstract class Account {
   private Money penaltyFee;
 
   @NotNull
+  @Column(name = "last_penalty_fee")
+  private LocalDate lastPenaltyFee;
+
+  @NotNull
   @Column(name = "creation_date")
   private LocalDateTime creationDate;
 
@@ -87,6 +92,7 @@ public abstract class Account {
     this.secondaryOwner = secondaryOwner;
     this.penaltyFee = newMoney("40");
     this.creationDate = dateTimeNow();
+    this.lastPenaltyFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
   }
 
   public Account(Money balance, AccountHolder primaryOwner) {
@@ -94,11 +100,12 @@ public abstract class Account {
     this.primaryOwner = primaryOwner;
     this.penaltyFee = newMoney("40");
     this.creationDate = dateTimeNow();
+    this.lastPenaltyFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
   }
 
 
   // ======================================== METHODS ========================================
-  public List<Transaction> getAllTransactionsOrdered(List<Transaction> incomingTransactions, List<Transaction> outgoingTransactions) {
+  public List<Transaction> getAllTransactionsOrdered() {
     List<Transaction> allTransactions = new ArrayList<>();
     allTransactions.addAll(incomingTransactions);
     allTransactions.addAll(outgoingTransactions);

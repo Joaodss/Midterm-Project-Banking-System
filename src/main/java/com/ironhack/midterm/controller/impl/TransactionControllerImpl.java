@@ -2,15 +2,13 @@ package com.ironhack.midterm.controller.impl;
 
 import com.ironhack.midterm.controller.TransactionController;
 import com.ironhack.midterm.dao.account.Account;
-import com.ironhack.midterm.dao.transaction.Transaction;
-import com.ironhack.midterm.dao.transaction.TransactionReceipt;
+import com.ironhack.midterm.dao.transaction.*;
+import com.ironhack.midterm.dto.InternalTransactionsDTO;
 import com.ironhack.midterm.dto.LocalTransactionDTO;
-import com.ironhack.midterm.dto.ThirdPartyTransactionDTO;
+import com.ironhack.midterm.enums.TransactionType;
+import com.ironhack.midterm.service.AccountManagerServiceImpl;
 import com.ironhack.midterm.service.account.AccountService;
-import com.ironhack.midterm.service.transaction.LocalTransactionService;
-import com.ironhack.midterm.service.transaction.ThirdPartyTransactionService;
-import com.ironhack.midterm.service.transaction.TransactionReceiptService;
-import com.ironhack.midterm.service.transaction.TransactionService;
+import com.ironhack.midterm.service.transaction.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -23,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.ironhack.midterm.util.AuthorisationUtil.isAccountOwnerOrAdmin;
+import static com.ironhack.midterm.util.EnumsUtil.transactionTypeFromString;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -42,6 +41,18 @@ public class TransactionControllerImpl implements TransactionController {
 
   @Autowired
   private ThirdPartyTransactionService thirdPartyTransactionService;
+
+  @Autowired
+  private InterestTransactionService interestTransactionService;
+
+  @Autowired
+  private MaintenanceFeeTransactionService maintenanceFeeTransactionService;
+
+  @Autowired
+  private PenaltyFeeTransactionService penaltyFeeTransactionService;
+
+  @Autowired
+  private AccountManagerServiceImpl accountManagerService;
 
 
   // ======================================== GET TRANSACTION Methods ========================================
@@ -131,13 +142,14 @@ public class TransactionControllerImpl implements TransactionController {
 
   // ======================================== POST ACCOUNT Methods ========================================
   // -------------------- Add Account Specific Local Transaction [ADMIN / Specific USER] --------------------
-  @PostMapping("/{account_id}/transactions/new")
+  @PostMapping("/{account_id}/transactions/new_local_transaction")
   @ResponseStatus(HttpStatus.CREATED)
   public void createLocalTransaction(Authentication auth, @PathVariable("account_id") long id, @RequestBody @Valid LocalTransactionDTO localTransaction) {
     try {
       Account account = accountService.getById(id);
       if (isAccountOwnerOrAdmin(auth, account)) {
-        localTransactionService.newTransaction(id, localTransaction);
+        LocalTransaction transaction = localTransactionService.newTransaction(id, localTransaction);
+        localTransactionService.validateLocalTransaction(transaction);
       }
     } catch (InstanceNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
@@ -155,6 +167,32 @@ public class TransactionControllerImpl implements TransactionController {
 //
 //
 //  }
+
+
+  @PostMapping("/{account_id}/transactions/new_internal_transaction")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid InternalTransactionsDTO internalTransactions) {
+    try {
+      accountService.getById(id);
+      TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());
+      if (transactionType == TransactionType.INTEREST) {
+        InterestTransaction transaction = interestTransactionService.newTransaction(id);
+        interestTransactionService.validateInterestTransaction(transaction);
+      } else if (transactionType == TransactionType.MAINTENANCE_FEE) {
+        MaintenanceFeeTransaction transaction = maintenanceFeeTransactionService.newTransaction(id);
+        maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
+      } else if (transactionType == TransactionType.PENALTY_FEE) {
+        PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(id);
+        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+      }
+    } catch (InstanceNotFoundException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
+    } catch (IllegalArgumentException e2) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   // ======================================== PUT Methods ========================================
 

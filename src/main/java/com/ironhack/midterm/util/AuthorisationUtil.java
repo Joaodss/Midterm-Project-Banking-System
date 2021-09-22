@@ -1,11 +1,14 @@
 package com.ironhack.midterm.util;
 
 import com.ironhack.midterm.dao.account.Account;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorisationUtil {
 
   public static boolean isAccountOwnerOrAdmin(Authentication auth, Account account){
