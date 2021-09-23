@@ -171,7 +171,7 @@ public class TransactionControllerImpl implements TransactionController {
 
   @PostMapping("/{account_id}/transactions/new_internal_transaction")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid InternalTransactionsDTO internalTransactions) {
+  public void createInternalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid InternalTransactionsDTO internalTransactions) {
     try {
       accountService.getById(id);
       TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());

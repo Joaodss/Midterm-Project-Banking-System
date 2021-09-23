@@ -1,5 +1,6 @@
 package com.ironhack.midterm.dao.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
@@ -73,6 +74,7 @@ public abstract class Transaction {
   private LocalDateTime operationDate;
 
   @OneToMany(mappedBy = "transaction", cascade = {CascadeType.REMOVE})
+  @JsonIgnore
   private List<TransactionReceipt> receipts;
 
 

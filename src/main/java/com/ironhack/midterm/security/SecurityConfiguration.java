@@ -1,5 +1,6 @@
 package com.ironhack.midterm.security;
 
+import com.ironhack.midterm.security.service.ApiGuardService;
 import com.ironhack.midterm.security.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,10 +23,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private CustomUserDetailService customUserDetailService;
 
+  @Autowired
+  private ApiGuardService apiGuardService;
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
+  @Bean
+  public ApiGuardService apiGuard() {
+    return new ApiGuardService();
+  }
+
 
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth
@@ -38,9 +48,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.httpBasic();
     http.csrf().disable();
     http.authorizeRequests()
-        .mvcMatchers(HttpMethod.GET, "/api/users/new").permitAll()
-        .mvcMatchers(HttpMethod.GET, "/api/accounts").hasAnyRole("ADMIN", "USER")
-        .anyRequest().permitAll();
+
+        // GET /users
+        .mvcMatchers(HttpMethod.GET, "/api/users/{username}")
+        .access("@apiGuard.checkUsernameOrIfAdmin(authentication, #username)")
+        .mvcMatchers(HttpMethod.GET, "/api/users/", "/api/users/**").hasRole("ADMIN")
+
+        // POST /users
+        .mvcMatchers(HttpMethod.POST, "/api/users/new").permitAll()
+        .mvcMatchers(HttpMethod.POST, "/api/users/new_admin").permitAll() // ********** temporary **********
+        .mvcMatchers(HttpMethod.POST, "/api/users/**").hasRole("ADMIN")
+
+
+        // GET /accounts
+        .mvcMatchers(HttpMethod.GET, "/api/accounts/").hasAnyRole("ADMIN", "USER")
+        .mvcMatchers(HttpMethod.GET, "/api/accounts/{accountId}", "/api/accounts/{accountId}/**")
+        .access("@apiGuard.checkUsernameFromAccountIdOrIfAdmin(authentication, #accountId)")
+        .mvcMatchers(HttpMethod.GET, "/api/accounts/**").hasRole("ADMIN")
+
+        // POST /accounts
+        .mvcMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("ADMIN")
+
+
+        .anyRequest().authenticated();
   }
 
 }
+

@@ -35,7 +35,7 @@ public class CreditCardServiceImpl implements CreditCardService {
 
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  public void newUser(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException {
+  public void newAccount(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.getAccountHolders(creditCard, accountHolderService, userService);
 

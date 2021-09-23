@@ -1,6 +1,7 @@
 package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.enums.AccountType;
 import com.ironhack.midterm.model.Money;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class StudentCheckingAccount extends CheckingAccount {
   // ======================================== CONSTRUCTORS ========================================
   public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
+    super.setAccountType(AccountType.STUDENT_CHECKING_ACCOUNT);
     setMinimumBalance(newMoney("0"));
     setMonthlyMaintenanceFee(newMoney("0"));
     setPenaltyFee(newMoney("0"));
@@ -32,6 +34,7 @@ public class StudentCheckingAccount extends CheckingAccount {
 
   public StudentCheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
+    super.setAccountType(AccountType.STUDENT_CHECKING_ACCOUNT);
     setMinimumBalance(newMoney("0"));
     setMonthlyMaintenanceFee(newMoney("0"));
     setPenaltyFee(newMoney("0"));

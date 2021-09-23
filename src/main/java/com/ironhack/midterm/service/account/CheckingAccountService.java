@@ -14,7 +14,7 @@ public interface CheckingAccountService {
 
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  void newUser(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException;
+  void newAccount(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException;
 
 
 }

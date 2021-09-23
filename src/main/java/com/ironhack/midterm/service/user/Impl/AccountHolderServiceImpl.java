@@ -52,11 +52,14 @@ public class AccountHolderServiceImpl implements AccountHolderService {
     if (userService.isUsernamePresent(accountHolder.getUsername())) throw new InstanceAlreadyExistsException();
 
     Address pa = new Address(
-        accountHolder.getPaStreetAddress(), accountHolder.getPaPostalCode(), accountHolder.getPaCity(), accountHolder.getPaCountry());
-    Address ma = new Address(
-        accountHolder.getMaStreetAddress(), accountHolder.getMaPostalCode(), accountHolder.getMaCity(), accountHolder.getMaCountry());
+        accountHolder.getPaStreetAddress().trim(), accountHolder.getPaPostalCode().trim(), accountHolder.getPaCity().trim(), accountHolder.getPaCountry().trim());
+
+    Address ma = null;
+    if (accountHolder.getMaStreetAddress() != null || accountHolder.getMaPostalCode() != null || accountHolder.getMaCity() != null || accountHolder.getMaCountry() != null)
+      ma = new Address(accountHolder.getMaStreetAddress().trim(), accountHolder.getMaPostalCode().trim(), accountHolder.getMaCity().trim(), accountHolder.getMaCountry().trim());
+
     AccountHolder ah = new AccountHolder(
-        accountHolder.getUsername(), accountHolder.getPassword(), accountHolder.getName(), accountHolder.getDateOfBirth(), pa, ma);
+        accountHolder.getUsername().trim(), accountHolder.getPassword().trim(), accountHolder.getName().trim(), accountHolder.getDateOfBirth(), pa, ma);
 
     // Set "USER" role
     Optional<Role> userRole = roleService.getRoleByName("USER");

@@ -61,14 +61,14 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Account getAccountById(Authentication auth, @PathVariable("account_id") long id) {
     try {
-      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
+//      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
         return accountService.getById(id);
-      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-        return accountService.getByUsernameAndId(auth.getName(), id);
-      }
-      throw new LoginException("Invalid user logg in.");
-    } catch (LoginException e1) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+//      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
+//        return accountService.getByUsernameAndId(auth.getName(), id);
+//      }
+//      throw new LoginException("Invalid user logg in.");
+//    } catch (LoginException e1) {
+//      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found or not associated with your account.");
     } catch (Exception e) {
@@ -81,14 +81,14 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Money getAccountBalanceById(Authentication auth, @PathVariable("account_id") long id) {
     try {
-      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
+//      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
         return accountService.getBalanceById(id);
-      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-        return accountService.getBalanceByUsernameAndId(auth.getName(), id);
-      }
-      throw new LoginException("Invalid user logg in.");
-    } catch (LoginException e1) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+//      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
+//        return accountService.getBalanceByUsernameAndId(auth.getName(), id);
+//      }
+//      throw new LoginException("Invalid user logg in.");
+//    } catch (LoginException e1) {
+//      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     } catch (Exception e) {
@@ -148,7 +148,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createCheckingAccount(@RequestBody @Valid AccountDTO checkingAccount) {
     try {
-      checkingAccountService.newUser(checkingAccount);
+      checkingAccountService.newAccount(checkingAccount);
     } catch (InstanceNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
     } catch (IllegalArgumentException e2) {
@@ -165,7 +165,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createSavingsAccount(@RequestBody @Valid AccountDTO savingsAccount) {
     try {
-      savingsAccountService.newUser(savingsAccount);
+      savingsAccountService.newAccount(savingsAccount);
     } catch (InstanceNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
     } catch (IllegalArgumentException e2) {
@@ -182,7 +182,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createCreditCard(@RequestBody @Valid AccountDTO creditCard) {
     try {
-      creditCardService.newUser(creditCard);
+      creditCardService.newAccount(creditCard);
     } catch (InstanceNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
     } catch (IllegalArgumentException e2) {

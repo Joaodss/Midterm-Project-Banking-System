@@ -14,7 +14,7 @@ public interface SavingsAccountService {
 
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  void newUser(AccountDTO savingsAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException;
+  void newAccount(AccountDTO savingsAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException;
 
 
 }

@@ -61,6 +61,7 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
     } else {
       transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to add interest rate."));
     }
+    accountService.save(transaction.getTargetAccount());
   }
 
   // ======================================== PROCESS TRANSACTION Methods ========================================

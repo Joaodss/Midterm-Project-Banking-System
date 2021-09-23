@@ -1,9 +1,11 @@
 package com.ironhack.midterm.dao.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.enums.AccountType;
 import com.ironhack.midterm.model.Money;
 import lombok.*;
 
@@ -35,6 +37,12 @@ public abstract class Account {
   @Column(name = "id")
   private Long id;
 
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type")
+  private AccountType accountType;
+
+
   @Valid
   @NotNull
   @Embedded
@@ -47,12 +55,12 @@ public abstract class Account {
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "primary_owner_id")
-  @JsonIgnoreProperties(value = {"username", "password", "roles", "primaryAddress", "mailingAddress", "primaryAccounts", "secondaryAccounts", "requestList"}, allowSetters = true)
+  @JsonIncludeProperties(value = {"id", "name"})
   private AccountHolder primaryOwner;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "secondary_owner_id")
-  @JsonIgnoreProperties(value = {"username", "password", "roles", "primaryAddress", "mailingAddress", "primaryAccounts", "secondaryAccounts", "requestList"}, allowSetters = true)
+  @JsonIncludeProperties(value = {"id", "name"})
   private AccountHolder secondaryOwner;
 
   @Valid
@@ -75,12 +83,12 @@ public abstract class Account {
   // ======================================== MAPPING ========================================
 
   @OneToMany(mappedBy = "targetAccount")
-  @JsonIgnoreProperties(value = {"receipts"}, allowSetters = true)
+  @JsonIgnore
   @ToString.Exclude
   private List<Transaction> incomingTransactions = new ArrayList<>();
 
   @OneToMany(mappedBy = "baseAccount")
-  @JsonIgnoreProperties(value = {"receipts"}, allowSetters = true)
+  @JsonIgnore
   @ToString.Exclude
   private List<Transaction> outgoingTransactions = new ArrayList<>();
 

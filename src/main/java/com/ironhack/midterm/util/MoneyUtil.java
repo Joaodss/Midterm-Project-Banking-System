@@ -85,7 +85,7 @@ public class MoneyUtil {
   // =================================== Calculate Balance (Addition)===================================
   public static Money addMoney(Money baseMoney, Money moneyToAdd) {
     Money convertedMoneyToAdd = convertCurrency(baseMoney, moneyToAdd);
-    return new Money(baseMoney.getAmount().subtract(convertedMoneyToAdd.getAmount()), baseMoney.getCurrency());
+    return new Money(baseMoney.getAmount().add(convertedMoneyToAdd.getAmount()), baseMoney.getCurrency());
   }
 
 

@@ -62,6 +62,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
       validateMaintenanceFeeTransaction(newTransaction);
       accountService.freezeAccount(transaction.getTargetAccount().getId());
     }
+    accountService.save(transaction.getTargetAccount());
   }
 
 

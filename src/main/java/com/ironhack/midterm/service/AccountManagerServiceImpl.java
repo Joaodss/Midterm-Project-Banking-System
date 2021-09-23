@@ -93,11 +93,10 @@ public class AccountManagerServiceImpl {
   }
 
 
-
   public void validateThirdPartyTransaction(ThirdPartyTransaction transaction) throws InstanceNotFoundException {
     if (transaction.getTransactionPurpose() == TransactionPurpose.REQUEST &&
-        !isTransactionTimeNotFraudulent(transaction.getBaseAccount(), transaction) &&
-        !isTransactionDailyAmountNotFraudulent(transaction.getBaseAccount(), transaction)) {
+        !isTransactionTimeFraudulent(transaction.getBaseAccount(), transaction) &&
+        !isTransactionDailyAmountFraudulent(transaction.getBaseAccount(), transaction)) {
       accountService.freezeAccount(transaction.getBaseAccount().getId());
       transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Fraudulent behaviour detected! Base account was frozen."));
     } else if (isTransactionAmountValid(transaction) && isAccountsNotFrozen(transaction)) {
@@ -157,32 +156,29 @@ public class AccountManagerServiceImpl {
   // ============================== Fraud Detection ==============================
   // -------------------- Check if transaction timing is fraudulent --------------------
   // (delta_t > 1s)
-  public boolean isTransactionTimeNotFraudulent(Account account, Transaction transaction) {
+  public boolean isTransactionTimeFraudulent(Account account, Transaction transaction) {
     List<Transaction> transactionList = account.getAllTransactionsOrdered();
-    if (transactionList.isEmpty()) return true;
-    return transactionList.get(0).getOperationDate().isBefore(transaction.getOperationDate().minusSeconds(1));
+    if (transactionList.size() == 1) return false;
+    return transactionList.get(1).getOperationDate().plusSeconds(1).isAfter(transaction.getOperationDate());
   }
 
   // -------------------- Check if transaction daily amount is fraudulent --------------------
   // (daily amount > 1000 or max daily amount > 150%)
-  public boolean isTransactionDailyAmountNotFraudulent(Account account, Transaction transaction) {
-    Money totalDayTransaction = convertCurrency(account.getBalance(), transaction.getBaseAmount());
-    Entry<LocalDate, Money> lastDayTransactions = lastDailyTransactions(account);
-    if (lastDayTransactions.getKey() == transaction.getOperationDate().toLocalDate())
-      totalDayTransaction = addMoney(totalDayTransaction, lastDayTransactions.getValue());
+  public boolean isTransactionDailyAmountFraudulent(Account account, Transaction transaction) {
+    Money totalDayTransaction = lastDailyTransactions(account);
 
     Money dailyMax = dailyMax(account);
     Money initialMaxTransaction = convertCurrency(newMoney("1000"), account.getBalance());
     Money dailyMaxTransaction = new Money(dailyMax.getAmount().multiply(new BigDecimal("1.5")), account.getBalance().getCurrency());
 
-    return compareMoney(dailyMaxTransaction, totalDayTransaction) >= 0 &&
-        compareMoney(initialMaxTransaction, totalDayTransaction) >= 0;
+    return compareMoney(totalDayTransaction, dailyMaxTransaction) > 0 &&
+        compareMoney(totalDayTransaction, initialMaxTransaction) > 0;
   }
 
-  public Entry<LocalDate, Money> lastDailyTransactions(Account account) {
+  public Money lastDailyTransactions(Account account) {
     HashMap<LocalDate, Money> dailyTransactions = dailyTransactions(account);
     Optional<Entry<LocalDate, Money>> lastDailyMoney = dailyTransactions.entrySet().stream().max(Entry.comparingByKey());
-    return lastDailyMoney.orElse(null);
+    return lastDailyMoney.map(Entry::getValue).orElse(null);
   }
 
   public Money dailyMax(Account account) {

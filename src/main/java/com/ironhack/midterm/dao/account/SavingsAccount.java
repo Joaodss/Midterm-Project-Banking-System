@@ -2,6 +2,7 @@ package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.AccountStatus;
+import com.ironhack.midterm.enums.AccountType;
 import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -57,6 +58,7 @@ public class SavingsAccount extends Account {
   // ======================================== CONSTRUCTORS ========================================
   public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
+    super.setAccountType(AccountType.SAVINGS_ACCOUNT);
     this.minimumBalance = newMoney("1000");
     this.interestRate = newBD("0.0025");
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
@@ -66,6 +68,7 @@ public class SavingsAccount extends Account {
 
   public SavingsAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
+    super.setAccountType(AccountType.SAVINGS_ACCOUNT);
     this.minimumBalance = newMoney("1000");
     this.interestRate = newBD("0.0025");
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);

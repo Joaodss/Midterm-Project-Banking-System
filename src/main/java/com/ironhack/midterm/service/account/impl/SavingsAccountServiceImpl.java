@@ -35,7 +35,7 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
   }
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  public void newUser(AccountDTO savingsAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
+  public void newAccount(AccountDTO savingsAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.getAccountHolders(savingsAccount, accountHolderService, userService);
 

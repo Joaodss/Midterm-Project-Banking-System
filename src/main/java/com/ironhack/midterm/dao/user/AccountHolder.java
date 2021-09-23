@@ -1,6 +1,6 @@
 package com.ironhack.midterm.dao.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.request.Request;
 import com.ironhack.midterm.model.Address;
@@ -50,18 +50,18 @@ public class AccountHolder extends User {
 
   // ======================================== MAPPING ========================================
   @ToString.Exclude
+  @JsonIncludeProperties(value = {"id", "accountType", "balance"})
   @OneToMany(mappedBy = "primaryOwner")
-  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
   private List<Account> primaryAccounts = new ArrayList<>();
 
   @ToString.Exclude
+  @JsonIncludeProperties(value = {"id", "accountType", "balance"})
   @OneToMany(mappedBy = "secondaryOwner")
-  @JsonIgnoreProperties(value = {"primaryOwner", "secondaryOwner"}, allowSetters = true)
   private List<Account> secondaryAccounts = new ArrayList<>();
 
   @ToString.Exclude
+  @JsonIncludeProperties(value = {"id"})
   @OneToMany(mappedBy = "user")
-  @JsonIgnoreProperties(value = {"user"}, allowSetters = true)
   private List<Request> requestList = new ArrayList<>();
 
 

@@ -1,6 +1,7 @@
 package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.enums.AccountType;
 import com.ironhack.midterm.model.Money;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +46,7 @@ public class CreditCard extends Account {
   // ======================================== CONSTRUCTORS ========================================
   public CreditCard(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     super(balance, primaryOwner, secondaryOwner);
+    super.setAccountType(AccountType.CREDIT_CARD);
     this.creditLimit = newMoney("100");
     this.interestRate = newBD("0.2");
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
@@ -52,6 +54,7 @@ public class CreditCard extends Account {
 
   public CreditCard(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
+    super.setAccountType(AccountType.CREDIT_CARD);
     this.creditLimit = newMoney("100");
     this.interestRate = newBD("0.2");
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);

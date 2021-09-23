@@ -69,6 +69,7 @@ public class TransactionReceipt {
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "transaction_id")
+  @JsonIncludeProperties(value = {"id"})
   private Transaction transaction;
 
 

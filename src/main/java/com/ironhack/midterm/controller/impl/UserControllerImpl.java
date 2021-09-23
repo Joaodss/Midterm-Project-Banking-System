@@ -65,16 +65,11 @@ public class UserControllerImpl implements UserController {
     }
   }
 
-  @GetMapping(params = "{username}")
+  @GetMapping("/{username}")
   @ResponseStatus(HttpStatus.OK)
   public User getUserByUsername(Authentication auth, @PathVariable("username") String username) {
     try {
-      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")) || auth.getName().equals(username)) {
-        return userService.getByUsername(username);
-      }
-      throw new LoginException("Invalid user logg in.");
-    } catch (LoginException e1) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+      return userService.getByUsername(username);
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {

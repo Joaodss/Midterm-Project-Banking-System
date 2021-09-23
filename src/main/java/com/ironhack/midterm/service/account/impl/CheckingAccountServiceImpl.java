@@ -44,7 +44,7 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
   }
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  public void newUser(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
+  public void newAccount(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.getAccountHolders(checkingAccount, accountHolderService, userService);
 

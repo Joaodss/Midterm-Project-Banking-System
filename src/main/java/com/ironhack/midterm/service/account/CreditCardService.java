@@ -13,7 +13,7 @@ public interface CreditCardService {
 
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  void newUser(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException;
+  void newAccount(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException;
 
 
 }

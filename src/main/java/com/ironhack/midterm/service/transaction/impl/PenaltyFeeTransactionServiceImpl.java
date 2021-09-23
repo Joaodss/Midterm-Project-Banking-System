@@ -57,6 +57,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
       validatePenaltyFeeTransaction(newTransaction);
       accountService.freezeAccount(transaction.getTargetAccount().getId());
     }
+    accountService.save(transaction.getTargetAccount());
   }
 
 

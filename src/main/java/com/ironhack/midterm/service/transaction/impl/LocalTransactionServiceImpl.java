@@ -40,12 +40,12 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
   public LocalTransaction newTransaction(long accountId, LocalTransactionDTO localTransaction) throws InstanceNotFoundException, IllegalArgumentException {
     Account ownerAccount = accountService.getById(accountId);
     Account targetAccount = accountService.getById(localTransaction.getTargetAccountId());
-    AccountHolder accountOwner;
+    AccountHolder targetOwner;
 
     if (compareUserNames(targetAccount.getPrimaryOwner().getName(), localTransaction.getTargetOwnerName())) {
-      accountOwner = ownerAccount.getPrimaryOwner();
+      targetOwner = targetAccount.getPrimaryOwner();
     } else if (targetAccount.getSecondaryOwner() != null && compareUserNames(targetAccount.getSecondaryOwner().getName(), localTransaction.getTargetOwnerName())) {
-      accountOwner = ownerAccount.getSecondaryOwner();
+      targetOwner = targetAccount.getSecondaryOwner();
     } else {
       throw new IllegalArgumentException("Target owner name does not correspond to target account");
     }
@@ -55,17 +55,17 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
             new Money(localTransaction.getTransferValue(), Currency.getInstance(localTransaction.getCurrency())),
             ownerAccount,
             targetAccount,
-            accountOwner
+            targetOwner
         )
     );
   }
 
   public void validateLocalTransaction(LocalTransaction transaction) throws InstanceNotFoundException {
-    if (!accountManagerService.isTransactionTimeNotFraudulent(transaction.getBaseAccount(), transaction) &&
-        !accountManagerService.isTransactionDailyAmountNotFraudulent(transaction.getBaseAccount(), transaction)) {
-      accountService.freezeAccount(transaction.getTargetAccount().getId());
+    if (accountManagerService.isTransactionTimeFraudulent(transaction.getBaseAccount(), transaction) ||
+        accountManagerService.isTransactionDailyAmountFraudulent(transaction.getBaseAccount(), transaction)) {
       transactionReceiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
       transactionReceiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Fraudulent behaviour detected! Base account was frozen."));
+      accountService.freezeAccount(transaction.getBaseAccount().getId());
 
     } else if (accountManagerService.isTransactionAmountValid(transaction) &&
         accountManagerService.isAccountsNotFrozen(transaction)) {
@@ -81,6 +81,9 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
       transactionReceiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
       transactionReceiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Invalid amount to transfer."));
     }
+    accountService.save(transaction.getBaseAccount());
+    accountService.save(transaction.getTargetAccount());
+
   }
 
 
