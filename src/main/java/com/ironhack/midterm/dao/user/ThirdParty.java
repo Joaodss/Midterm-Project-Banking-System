@@ -30,6 +30,7 @@ public class ThirdParty extends User {
   // ======================================== CONSTRUCTORS ========================================
   public ThirdParty(String username, String password, String name) {
     super(username, password, name);
+    // Generates encrypted key from username and randomly generated key. If fails, uses username and password.
     try {
       this.hashedKey = encryptedKey(username + generateSecretKey());
     } catch (Exception e) {

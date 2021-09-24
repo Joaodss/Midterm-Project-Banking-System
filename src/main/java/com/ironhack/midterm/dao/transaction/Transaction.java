@@ -76,10 +76,13 @@ public abstract class Transaction {
 
   @JsonIgnore
   @OneToMany(mappedBy = "transaction", cascade = {CascadeType.REMOVE})
-  private List<TransactionReceipt> receipts;
+  private List<Receipt> receipts;
 
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with target and base accounts.
+  // Set convert amount to adjust to the target account's balance currency, set status(processing),
+  // and set operation date(now)
   public Transaction(Money baseAmount, Account baseAccount, Account targetAccount) {
     this.baseAmount = baseAmount;
     this.convertedAmount = convertCurrency(targetAccount.getBalance(), baseAmount);
@@ -89,6 +92,9 @@ public abstract class Transaction {
     this.operationDate = dateTimeNow();
   }
 
+  // Constructor only with target account.
+  // Set convert amount to adjust to the target account's balance currency, set status(processing),
+  // and set operation date(now)
   public Transaction(Money baseAmount, Account targetAccount) {
     this.baseAmount = baseAmount;
     this.convertedAmount = convertCurrency(targetAccount.getBalance(), baseAmount);

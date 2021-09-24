@@ -48,30 +48,8 @@ public class Money {
     this(amount, EUR, DEFAULT_ROUNDING);
   }
 
-
-  // ======================================== Methods ========================================
-  public BigDecimal increaseAmount(Money money) {
-    setAmount(this.amount.add(money.amount));
-    return this.amount;
-  }
-
-  public BigDecimal increaseAmount(BigDecimal addAmount) {
-    setAmount(this.amount.add(addAmount));
-    return this.amount;
-  }
-
-  public BigDecimal decreaseAmount(Money money) {
-    setAmount(this.amount.subtract(money.getAmount()));
-    return this.amount;
-  }
-
-  public BigDecimal decreaseAmount(BigDecimal addAmount) {
-    setAmount(this.amount.subtract(addAmount));
-    return this.amount;
-  }
-
-
   // ======================================== Override Methods ========================================
+  @Override
   public String toString() {
     return getCurrency().getSymbol() + " " + getAmount();
   }
@@ -88,6 +66,5 @@ public class Money {
   public int hashCode() {
     return Objects.hash(getCurrency(), getAmount());
   }
-
 
 }

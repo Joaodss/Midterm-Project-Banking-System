@@ -1,7 +1,6 @@
 package com.ironhack.midterm.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
@@ -32,21 +31,14 @@ public class Address {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+    if (o == null || getClass() != o.getClass()) return false;
     Address address = (Address) o;
-    return Objects.equals(streetAddress, address.streetAddress)
-        && Objects.equals(postalCode, address.postalCode)
-        && Objects.equals(city, address.city)
-        && Objects.equals(country, address.country);
+    return getStreetAddress().equals(address.getStreetAddress()) && getPostalCode().equals(address.getPostalCode()) && getCity().equals(address.getCity()) && getCountry().equals(address.getCountry());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(streetAddress,
-        postalCode,
-        city,
-        country);
+    return Objects.hash(getStreetAddress(), getPostalCode(), getCity(), getCountry());
   }
-
 
 }

@@ -56,6 +56,9 @@ public class SavingsAccount extends Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with primary and secondary owners.
+  // Set default values for minimumBalance(1000 €), interestRate(0.0025), lastInterestUpdate(start of next month),
+  // accountStatus(active), and generate secretKey(random key).
   public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.SAVINGS_ACCOUNT);
@@ -66,6 +69,9 @@ public class SavingsAccount extends Account {
     this.secretKey = generateSecretKey();
   }
 
+  // Constructor only with primary owner.
+  // Set default values for minimumBalance(1000 €), interestRate(0.0025), lastInterestUpdate(start of next month),
+  // accountStatus(active), and generate secretKey(random key).
   public SavingsAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.SAVINGS_ACCOUNT);
@@ -78,6 +84,7 @@ public class SavingsAccount extends Account {
 
 
   // ======================================== METHODS ========================================
+  // Converts all money values to have the same currency as the account's balance.
   public void updateCurrencyValues() {
     setPenaltyFee(convertCurrency(getBalance(), getPenaltyFee()));
     setMinimumBalance(convertCurrency(getBalance(), getMinimumBalance()));

@@ -30,9 +30,10 @@ public class InterestTransaction extends Transaction {
   }
 
   // ======================================== METHODS ========================================
-  public TransactionReceipt acceptAndGenerateReceipt() {
+  // Approve transaction and create a receipt.
+  public Receipt acceptAndGenerateReceipt() {
     setStatus(Status.ACCEPTED);
-    return new TransactionReceipt(
+    return new Receipt(
         getTargetAccount(),
         TransactionType.INTEREST,
         getConvertedAmount(),
@@ -43,9 +44,10 @@ public class InterestTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt refuseAndGenerateReceipt() {
+  // Refuse transaction and create a receipt.
+  public Receipt refuseAndGenerateReceipt() {
     setStatus(Status.REFUSED);
-    return new TransactionReceipt(
+    return new Receipt(
         getTargetAccount(),
         TransactionType.INTEREST,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
@@ -56,9 +58,10 @@ public class InterestTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt refuseAndGenerateReceipt(String message) {
+  // Refuse transaction and create a receipt (custom message).
+  public Receipt refuseAndGenerateReceipt(String message) {
     setStatus(Status.REFUSED);
-    return new TransactionReceipt(
+    return new Receipt(
         getTargetAccount(),
         TransactionType.INTEREST,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),

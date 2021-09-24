@@ -46,10 +46,11 @@ public class ThirdPartyTransaction extends Transaction {
 
 
   // ======================================== METHODS ========================================
-  public TransactionReceipt acceptAndGenerateReceipt() {
+  // Approve transaction and create a receipt.
+  public Receipt acceptAndGenerateReceipt() {
     setStatus(Status.ACCEPTED);
     if (transactionPurpose == TransactionPurpose.SEND) {
-      return new TransactionReceipt(
+      return new Receipt(
           getTargetAccount(),
           TransactionType.RECEIVE_FROM_THIRD_PARTY,
           getConvertedAmount(),
@@ -59,7 +60,7 @@ public class ThirdPartyTransaction extends Transaction {
           this
       );
     } else {
-      return new TransactionReceipt(
+      return new Receipt(
           getTargetAccount(),
           TransactionType.SEND_TO_THIRD_PARTY,
           negativeMoney(getConvertedAmount()),
@@ -71,10 +72,11 @@ public class ThirdPartyTransaction extends Transaction {
     }
   }
 
-  public TransactionReceipt refuseAndGenerateReceipt() {
+  // Refuse transaction and create a receipt.
+  public Receipt refuseAndGenerateReceipt() {
     setStatus(Status.REFUSED);
     if (transactionPurpose == TransactionPurpose.SEND) {
-      return new TransactionReceipt(
+      return new Receipt(
           getTargetAccount(),
           TransactionType.RECEIVE_FROM_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
@@ -84,7 +86,7 @@ public class ThirdPartyTransaction extends Transaction {
           this
       );
     } else {
-      return new TransactionReceipt(
+      return new Receipt(
           getTargetAccount(),
           TransactionType.SEND_TO_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
@@ -96,10 +98,11 @@ public class ThirdPartyTransaction extends Transaction {
     }
   }
 
-  public TransactionReceipt refuseAndGenerateReceipt(String message) {
+  // Refuse transaction and create a receipt (custom message).
+  public Receipt refuseAndGenerateReceipt(String message) {
     setStatus(Status.REFUSED);
     if (transactionPurpose == TransactionPurpose.SEND) {
-      return new TransactionReceipt(
+      return new Receipt(
           getTargetAccount(),
           TransactionType.RECEIVE_FROM_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
@@ -109,7 +112,7 @@ public class ThirdPartyTransaction extends Transaction {
           this
       );
     } else {
-      return new TransactionReceipt(
+      return new Receipt(
           getTargetAccount(),
           TransactionType.SEND_TO_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),

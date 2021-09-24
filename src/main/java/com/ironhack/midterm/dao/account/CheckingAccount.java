@@ -61,6 +61,9 @@ public class CheckingAccount extends Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with primary and secondary owners.
+  // Set default values for minimumBalance(250 €), monthlyMaintenanceFee(12 €), lastMaintenanceFee(start of next month),
+  // accountStatus(active), and generate secretKey(random key).
   public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.CHECKING_ACCOUNT);
@@ -71,6 +74,9 @@ public class CheckingAccount extends Account {
     this.secretKey = generateSecretKey();
   }
 
+  // Constructor only with primary owner.
+  // Set default values for minimumBalance(250 €), monthlyMaintenanceFee(12 €), lastMaintenanceFee(start of next month),
+  // accountStatus(active), and generate secretKey(random key).
   public CheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.CHECKING_ACCOUNT);
@@ -83,6 +89,7 @@ public class CheckingAccount extends Account {
 
 
   // ======================================== METHODS ========================================
+  // Converts all money values to have the same currency as the account's balance.
   public void updateCurrencyValues() {
     setPenaltyFee(convertCurrency(getBalance(), getPenaltyFee()));
     setMinimumBalance(convertCurrency(getBalance(), getMinimumBalance()));

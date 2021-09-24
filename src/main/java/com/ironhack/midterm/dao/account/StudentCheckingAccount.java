@@ -25,6 +25,8 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 public class StudentCheckingAccount extends CheckingAccount {
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with primary and secondary owners.
+  // Set default values for minimumBalance(0 €), monthlyMaintenanceFee(0 €), and penaltyFee(0 €).
   public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.STUDENT_CHECKING_ACCOUNT);
@@ -33,6 +35,8 @@ public class StudentCheckingAccount extends CheckingAccount {
     setPenaltyFee(newMoney("0.00"));
   }
 
+  // Constructor only with primary owner.
+  // Set default values for minimumBalance(0 €), monthlyMaintenanceFee(0 €), and penaltyFee(0 €).
   public StudentCheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.STUDENT_CHECKING_ACCOUNT);
@@ -43,11 +47,12 @@ public class StudentCheckingAccount extends CheckingAccount {
 
 
   // ======================================== METHODS ========================================
+  // Converts all money values to have the same currency as the account's balance. They remain 0.
   @Override
   public void updateCurrencyValues() {
-    setPenaltyFee(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
-    setMinimumBalance(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
-    setMonthlyMaintenanceFee(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
+    setPenaltyFee(newMoney("0.00", getBalance().getCurrency().getCurrencyCode()));
+    setMinimumBalance(newMoney("0.00", getBalance().getCurrency().getCurrencyCode()));
+    setMonthlyMaintenanceFee(newMoney("0.00", getBalance().getCurrency().getCurrencyCode()));
   }
 
 

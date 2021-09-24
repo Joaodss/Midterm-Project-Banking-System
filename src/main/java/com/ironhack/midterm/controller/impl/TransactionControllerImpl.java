@@ -101,7 +101,7 @@ public class TransactionControllerImpl implements TransactionController {
   // -------------------- User Specific Transactions by Id [ADMIN / Specific USER] --------------------
   @GetMapping("/{account_id}/transactions/{transaction_id}/receipt")
   @ResponseStatus(HttpStatus.OK)
-  public TransactionReceipt getReceiptsByTransactionId(@PathVariable("account_id") long accountId, @PathVariable("transaction_id") long transactionId) {
+  public Receipt getReceiptsByTransactionId(@PathVariable("account_id") long accountId, @PathVariable("transaction_id") long transactionId) {
     try {
       Account account = accountService.getById(accountId);
       Transaction transaction = transactionService.getById(transactionId);
@@ -110,8 +110,8 @@ public class TransactionControllerImpl implements TransactionController {
           && transaction.getTargetAccount().getId() != accountId)
         throw new IllegalArgumentException("Transaction does not exist in defined account.");
 
-      TransactionReceipt receipt = null;
-      for (TransactionReceipt tr : transaction.getReceipts()) {
+      Receipt receipt = null;
+      for (Receipt tr : transaction.getReceipts()) {
         if (tr.getPersonalAccount().getId() == accountId) receipt = tr;
       }
 

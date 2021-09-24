@@ -1,7 +1,7 @@
 package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.transaction.Transaction;
-import com.ironhack.midterm.dao.transaction.TransactionReceipt;
+import com.ironhack.midterm.dao.transaction.Receipt;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public interface TransactionController {
 
   // ======================================== GET RECEIPT Methods ========================================
   // -------------------- User Specific Receipt by Account Id [ADMIN / Specific USER] --------------------
-  TransactionReceipt getReceiptsByTransactionId(long accountId, long transactionId);
+  Receipt getReceiptsByTransactionId(long accountId, long transactionId);
 
 
   // ======================================== POST TRANSACTION Methods ========================================

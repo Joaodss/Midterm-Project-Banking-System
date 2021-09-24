@@ -62,6 +62,7 @@ public class AccountHolder extends User {
 
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with primary and mailing addresses.
   public AccountHolder(String username, String password, String name, LocalDate dateOfBirth, Address primaryAddress, Address mailingAddress) {
     super(username, password, name);
     this.dateOfBirth = dateOfBirth;
@@ -69,6 +70,7 @@ public class AccountHolder extends User {
     this.mailingAddress = mailingAddress;
   }
 
+  // Constructor only with primary address.
   public AccountHolder(String username, String password, String name, LocalDate dateOfBirth, Address primaryAddress) {
     super(username, password, name);
     this.dateOfBirth = dateOfBirth;

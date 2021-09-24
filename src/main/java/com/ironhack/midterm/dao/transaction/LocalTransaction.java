@@ -42,12 +42,13 @@ public class LocalTransaction extends Transaction {
 
 
   // ======================================== METHODS ========================================
-  public TransactionReceipt acceptAndGenerateReceiverReceipt() {
+  // Approve transaction and create a receipt for the receiver.
+  public Receipt acceptAndGenerateReceiverReceipt() {
     setStatus(Status.ACCEPTED);
-    return new TransactionReceipt(
+    return new Receipt(
         getTargetAccount(),
         getBaseAccount(),
-        TransactionType.RECEIVE_LOCAL,
+        TransactionType.RECEIVE_FROM_LOCAL,
         getConvertedAmount(),
         getStatus(),
         "The amount of " + getConvertedAmount().toString() + " was successfully transferred to this account.",
@@ -56,12 +57,13 @@ public class LocalTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt acceptAndGenerateSenderReceipt() {
+  // Approve transaction and create a receipt for the sender.
+  public Receipt acceptAndGenerateSenderReceipt() {
     setStatus(Status.ACCEPTED);
-    return new TransactionReceipt(
+    return new Receipt(
         getBaseAccount(),
         getTargetAccount(),
-        TransactionType.SEND_LOCAL,
+        TransactionType.SEND_TO_LOCAL,
         negativeMoney(getConvertedAmount()),
         getStatus(),
         "The amount of " + getConvertedAmount().toString() + " was successfully transferred from this account.",
@@ -70,12 +72,13 @@ public class LocalTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt refuseAndGenerateReceiverReceipt() {
+  // Refuse transaction and create a receipt for the receiver.
+  public Receipt refuseAndGenerateReceiverReceipt() {
     setStatus(Status.REFUSED);
-    return new TransactionReceipt(
+    return new Receipt(
         getTargetAccount(),
         getBaseAccount(),
-        TransactionType.RECEIVE_LOCAL,
+        TransactionType.RECEIVE_FROM_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred to this account.",
@@ -84,12 +87,13 @@ public class LocalTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt refuseAndGenerateSenderReceipt() {
+  // Refuse transaction and create a receipt for the sender.
+  public Receipt refuseAndGenerateSenderReceipt() {
     setStatus(Status.REFUSED);
-    return new TransactionReceipt(
+    return new Receipt(
         getBaseAccount(),
         getTargetAccount(),
-        TransactionType.SEND_LOCAL,
+        TransactionType.SEND_TO_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         "An error occurred! The amount of " + getConvertedAmount().toString() + " was NOT transferred from this account.",
@@ -98,12 +102,13 @@ public class LocalTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt refuseAndGenerateReceiverReceipt(String message) {
+  // Refuse transaction and create a receipt for the receiver (custom message).
+  public Receipt refuseAndGenerateReceiverReceipt(String message) {
     setStatus(Status.REFUSED);
-    return new TransactionReceipt(
+    return new Receipt(
         getTargetAccount(),
         getBaseAccount(),
-        TransactionType.RECEIVE_LOCAL,
+        TransactionType.RECEIVE_FROM_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,
@@ -112,12 +117,13 @@ public class LocalTransaction extends Transaction {
     );
   }
 
-  public TransactionReceipt refuseAndGenerateSenderReceipt(String message) {
+  // Refuse transaction and create a receipt for the sender (custom message).
+  public Receipt refuseAndGenerateSenderReceipt(String message) {
     setStatus(Status.REFUSED);
-    return new TransactionReceipt(
+    return new Receipt(
         getBaseAccount(),
         getTargetAccount(),
-        TransactionType.SEND_LOCAL,
+        TransactionType.SEND_TO_LOCAL,
         newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
         getStatus(),
         message,

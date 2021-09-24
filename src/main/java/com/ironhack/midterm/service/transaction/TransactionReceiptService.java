@@ -1,6 +1,6 @@
 package com.ironhack.midterm.service.transaction;
 
-import com.ironhack.midterm.dao.transaction.TransactionReceipt;
+import com.ironhack.midterm.dao.transaction.Receipt;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
@@ -9,10 +9,10 @@ import java.util.Optional;
 public interface TransactionReceiptService {
 
   // ======================================== GET Methods ========================================
-  List<TransactionReceipt> getAllByAccountId(long AccountId) throws InstanceNotFoundException;
+  List<Receipt> getAllByAccountId(long AccountId) throws InstanceNotFoundException;
 
-  List<TransactionReceipt> getByAccountIdByDateRange(long AccountId, Optional<String> startDate, Optional<String> endDate);
+  List<Receipt> getByAccountIdByDateRange(long AccountId, Optional<String> startDate, Optional<String> endDate);
 
-  TransactionReceipt getById(long transactionReceiptId) throws InstanceNotFoundException;
+  Receipt getById(long transactionReceiptId) throws InstanceNotFoundException;
 
 }

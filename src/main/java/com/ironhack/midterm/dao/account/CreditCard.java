@@ -44,6 +44,8 @@ public class CreditCard extends Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with primary and secondary owners.
+  // Set default values for creditLimit(100 €), interestRate(0.2), lastInterestUpdate(start of next month).
   public CreditCard(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.CREDIT_CARD);
@@ -52,6 +54,8 @@ public class CreditCard extends Account {
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
   }
 
+  // Constructor only with primary owner.
+  // Set default values for creditLimit(100 €), interestRate(0.2), lastInterestUpdate(start of next month).
   public CreditCard(Money balance, AccountHolder primaryOwner) {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.CREDIT_CARD);
@@ -62,6 +66,7 @@ public class CreditCard extends Account {
 
 
   // ======================================== METHODS ========================================
+  // Converts all money values to have the same currency as the account's balance.
   public void updateCurrencyValues() {
     setPenaltyFee(convertCurrency(getBalance(), getPenaltyFee()));
     setCreditLimit(convertCurrency(getBalance(), getCreditLimit()));

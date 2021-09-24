@@ -91,6 +91,8 @@ public abstract class Account {
 
 
   // ======================================== CONSTRUCTORS ========================================
+  // Constructor with primary and secondary owners.
+  // Set default values for creationDate(now), penaltyFee(40 €), and lastPenaltyFeeCheck(start of the month).
   public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
@@ -100,6 +102,8 @@ public abstract class Account {
     this.lastPenaltyFeeCheck = getCreationDate().toLocalDate().withDayOfMonth(1);
   }
 
+  // Constructor only with primary owner.
+  // Set default values for creationDate(now), penaltyFee(40 €), and lastPenaltyFeeCheck(start of the month).
   public Account(Money balance, AccountHolder primaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
@@ -110,6 +114,7 @@ public abstract class Account {
 
 
   // ======================================== METHODS ========================================
+  // Joins incomingTransactions and outgoingTransactions, and returns them ordered by date (new on top).
   public List<Transaction> getAllTransactionsOrdered() {
     List<Transaction> allTransactions = new ArrayList<>();
     allTransactions.addAll(incomingTransactions);
