@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Getter
 @Setter
-public class InternalTransactionsDTO {
+public class TransactionInternalDTO {
 
-  @NotBlank
+  @NotBlank(message = "Transaction type cannot be blank.")
   private String transactionType;
 
 }

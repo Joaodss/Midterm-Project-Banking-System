@@ -2,7 +2,7 @@ package com.ironhack.midterm.service.user;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
-import com.ironhack.midterm.dto.AccountHolderDTO;
+import com.ironhack.midterm.dto.UserAccountHolderDTO;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -20,7 +20,7 @@ public interface AccountHolderService {
 
   // ======================================== ADD USERS Methods ========================================
 
-  void newUser(AccountHolderDTO accountHolder) throws InstanceAlreadyExistsException;
+  void newUser(UserAccountHolderDTO accountHolder) throws InstanceAlreadyExistsException;
 
 
   // ======================================== UTILS Methods ========================================

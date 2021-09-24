@@ -3,7 +3,7 @@ package com.ironhack.midterm.service.transaction.impl;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.transaction.LocalTransaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
-import com.ironhack.midterm.dto.LocalTransactionDTO;
+import com.ironhack.midterm.dto.TransactionLocalDTO;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.LocalTransactionRepository;
 import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
@@ -36,7 +36,7 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
   private AccountManagerService accountManagerService;
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public LocalTransaction newTransaction(long accountId, LocalTransactionDTO localTransaction) throws InstanceNotFoundException, IllegalArgumentException {
+  public LocalTransaction newTransaction(long accountId, TransactionLocalDTO localTransaction) throws InstanceNotFoundException, IllegalArgumentException {
     Account ownerAccount = accountService.getById(accountId);
     Account targetAccount = accountService.getById(localTransaction.getTargetAccountId());
     AccountHolder targetOwner;

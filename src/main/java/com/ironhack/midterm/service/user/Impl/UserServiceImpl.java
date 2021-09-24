@@ -3,7 +3,7 @@ package com.ironhack.midterm.service.user.Impl;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.User;
 import com.ironhack.midterm.dto.UserEditDTO;
-import com.ironhack.midterm.dto.UserPasswordDTO;
+import com.ironhack.midterm.dto.UserEditPasswordDTO;
 import com.ironhack.midterm.repository.user.UserRepository;
 import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
   }
 
 
-  public void changePassword(String username, UserPasswordDTO userPassword) throws InstanceNotFoundException {
+  public void changePassword(String username, UserEditPasswordDTO userPassword) throws InstanceNotFoundException {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     User user = getByUsername(username);
 

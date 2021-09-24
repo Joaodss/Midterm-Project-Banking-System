@@ -2,7 +2,7 @@ package com.ironhack.midterm.service.user.Impl;
 
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.Role;
-import com.ironhack.midterm.dto.AdminDTO;
+import com.ironhack.midterm.dto.UserDTO;
 import com.ironhack.midterm.repository.user.AdminRepository;
 import com.ironhack.midterm.service.user.AdminService;
 import com.ironhack.midterm.service.user.RoleService;
@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
 
 
   // ======================================== ADD ADMINS Methods ========================================
-  public void newUser(AdminDTO admin) throws InstanceAlreadyExistsException {
+  public void newUser(UserDTO admin) throws InstanceAlreadyExistsException {
     // Check if username already exists
     if (userService.isUsernamePresent(admin.getUsername())) throw new InstanceAlreadyExistsException();
 

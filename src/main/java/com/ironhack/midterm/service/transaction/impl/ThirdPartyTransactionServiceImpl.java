@@ -5,7 +5,7 @@ import com.ironhack.midterm.dao.account.CheckingAccount;
 import com.ironhack.midterm.dao.account.SavingsAccount;
 import com.ironhack.midterm.dao.account.StudentCheckingAccount;
 import com.ironhack.midterm.dao.transaction.ThirdPartyTransaction;
-import com.ironhack.midterm.dto.ThirdPartyTransactionDTO;
+import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
 import com.ironhack.midterm.enums.TransactionPurpose;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.ThirdPartyTransactionRepository;
@@ -40,7 +40,7 @@ public class ThirdPartyTransactionServiceImpl implements ThirdPartyTransactionSe
 
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public ThirdPartyTransaction newTransaction(ThirdPartyTransactionDTO thirdPartyTransaction) throws InstanceNotFoundException, IllegalArgumentException {
+  public ThirdPartyTransaction newTransaction(TransactionThirdPartyDTO thirdPartyTransaction) throws InstanceNotFoundException, IllegalArgumentException {
     Account targetAccount = accountService.getById(thirdPartyTransaction.getTargetAccountId());
     boolean isValidKey;
 

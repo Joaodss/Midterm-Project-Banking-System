@@ -2,7 +2,7 @@ package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.transaction.TransactionReceipt;
-import com.ironhack.midterm.dto.LocalTransactionDTO;
+import com.ironhack.midterm.dto.TransactionLocalDTO;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface TransactionController {
 
   // ======================================== POST TRANSACTION Methods ========================================
   // -------------------- Add Account Specific Local Transaction [ADMIN / Specific USER] --------------------
-  void createLocalTransaction(long id, LocalTransactionDTO localTransaction);
+  void createLocalTransaction(long id, TransactionLocalDTO localTransaction);
 
   // -------------------- Add Account Specific Third Party Transaction [ADMIN / Specific USER] --------------------
 //  void createThirdPartyTransaction(ThirdPartyTransactionDTO localTransaction);

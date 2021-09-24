@@ -16,26 +16,24 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AccountDTO {
+public class TransactionThirdPartyDTO {
 
-  @NotNull(message = "Initial balance must be positive and not null.")
-  @PositiveOrZero(message = "Initial balance must be positive and not null.")
-  private BigDecimal initialBalance;
+  @NotNull(message = "Transfer value must be positive and not null.")
+  @PositiveOrZero(message = "Transfer value must be positive.")
+  private BigDecimal transferValue;
 
   @NotBlank(message = "The currency code must be a valid code of 3 letters, and not blank.")
   @Length(min = 3, max = 3, message = "The currency code must be a valid code of 3 letters.")
   private String currency;
 
-  @NotNull(message = "Primary owner id must be positive and not null.")
-  @Positive(message = "Primary owner id must be positive and not null.")
-  private Long primaryOwnerId;
+  @NotNull(message = "Target account id must be positive and exist. Cannot be null.")
+  @Positive(message = "Target account id must be positive and exist.")
+  private long targetAccountId;
 
-  @NotBlank(message = "Primary owner cannot be blank or empty.")
-  private String primaryOwnerUsername;
+  @NotBlank(message = "Secret key cannot be empty or blank.")
+  private String secretKey;
 
-  @Positive(message = "Secondary owner id must be positive and exist.")
-  private Long secondaryOwnerId;
-
-  private String secondaryOwnerUsername;
+  @NotBlank(message = "Transaction purpose cannot be empty or blank.")
+  private String transactionPurpose;
 
 }

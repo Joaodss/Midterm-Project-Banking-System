@@ -1,7 +1,7 @@
 package com.ironhack.midterm.service.user;
 
 import com.ironhack.midterm.dao.user.Admin;
-import com.ironhack.midterm.dto.AdminDTO;
+import com.ironhack.midterm.dto.UserDTO;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
@@ -13,6 +13,6 @@ public interface AdminService {
 
 
   // ======================================== ADD USERS Methods ========================================
-  void newUser(AdminDTO admin) throws InstanceAlreadyExistsException;
+  void newUser(UserDTO admin) throws InstanceAlreadyExistsException;
 
 }

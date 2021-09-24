@@ -11,16 +11,15 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserPasswordDTO {
+public class UserEditPasswordDTO {
 
-  @NotBlank
+  @NotBlank(message = "Current password cannot be empty.")
   private String currentPassword;
 
-  @NotBlank
+  @NotBlank(message = "New password cannot be empty or blank.")
   private String newPassword;
 
-  @NotBlank
+  @NotBlank(message = "New password cannot be empty or blank.")
   private String repeatedNewPassword;
-
 
 }

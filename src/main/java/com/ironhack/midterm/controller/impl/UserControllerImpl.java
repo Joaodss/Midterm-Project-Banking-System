@@ -111,7 +111,7 @@ public class UserControllerImpl implements UserController {
   // -------------------- New Admin [ADMIN] --------------------
   @PostMapping("/new_admin")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createNewAdmin(@RequestBody @Valid AdminDTO admin) {
+  public void createNewAdmin(@RequestBody @Valid UserDTO admin) {
     try {
       adminService.newUser(admin);
     } catch (InstanceAlreadyExistsException e1) {
@@ -124,7 +124,7 @@ public class UserControllerImpl implements UserController {
   // -------------------- New Account Holder [PUBLIC] --------------------
   @PostMapping("/new")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createNewAccountHolder(@RequestBody @Valid AccountHolderDTO accountHolder) {
+  public void createNewAccountHolder(@RequestBody @Valid UserAccountHolderDTO accountHolder) {
     try {
       accountHolderService.newUser(accountHolder);
     } catch (InstanceAlreadyExistsException e1) {
@@ -137,7 +137,7 @@ public class UserControllerImpl implements UserController {
   // -------------------- New Third Party [ADMIN] --------------------
   @PostMapping("/new_third_party")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createNewThirdParty(@RequestBody @Valid ThirdPartyDTO thirdParty) {
+  public void createNewThirdParty(@RequestBody @Valid UserDTO thirdParty) {
     try {
       thirdPartyService.newUser(thirdParty);
     } catch (InstanceAlreadyExistsException e1) {
@@ -154,7 +154,7 @@ public class UserControllerImpl implements UserController {
   // ======================================== PATCH Methods ========================================
   @PatchMapping("/{username}/change_password")
   @ResponseStatus(HttpStatus.OK)
-  public void editPassword(@PathVariable("username") String username, @RequestBody @Valid UserPasswordDTO userPassword) {
+  public void editPassword(@PathVariable("username") String username, @RequestBody @Valid UserEditPasswordDTO userPassword) {
     try {
       userService.changePassword(username, userPassword);
     } catch (IllegalArgumentException e1) {

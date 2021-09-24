@@ -13,31 +13,30 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AccountHolderDTO {
+public class UserAccountHolderDTO {
 
-  @NotBlank(message = "The username can not be blank or empty")
+  @NotBlank(message = "Username cannot be empty or blank.")
   private String username;
 
-  @NotBlank(message = "The password can not be blank or empty")
+  @NotBlank(message = "Password cannot be empty or blank.")
   private String password;
 
-  @NotBlank(message = "The name can not be blank or empty")
+  @NotBlank(message = "Name cannot be empty or blank.")
   private String name;
 
-  @NotNull
+  @NotNull(message = "Date of birth cannot be empty or blank.")
   private LocalDate dateOfBirth;
 
-  @NotNull
-  @NotBlank(message = "The primary street address can not be blank or empty")
+  @NotBlank(message = "Primary street address cannot be empty or blank.")
   private String paStreetAddress;
 
-  @NotBlank(message = "The primary postal code can not be blank or empty")
+  @NotBlank(message = "Primary address postal code cannot be empty or blank.")
   private String paPostalCode;
 
-  @NotBlank(message = "The primary city can not be blank or empty")
+  @NotBlank(message = "Primary address city cannot be empty or blank.")
   private String paCity;
 
-  @NotBlank(message = "The primary country can not be blank or empty")
+  @NotBlank(message = "Primary address country cannot be empty or blank.")
   private String paCountry;
 
   private String maStreetAddress;

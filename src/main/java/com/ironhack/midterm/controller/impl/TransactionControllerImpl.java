@@ -3,9 +3,9 @@ package com.ironhack.midterm.controller.impl;
 import com.ironhack.midterm.controller.TransactionController;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.transaction.*;
-import com.ironhack.midterm.dto.InternalTransactionsDTO;
-import com.ironhack.midterm.dto.LocalTransactionDTO;
-import com.ironhack.midterm.dto.ThirdPartyTransactionDTO;
+import com.ironhack.midterm.dto.TransactionInternalDTO;
+import com.ironhack.midterm.dto.TransactionLocalDTO;
+import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
 import com.ironhack.midterm.enums.TransactionType;
 import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
@@ -131,7 +131,7 @@ public class TransactionControllerImpl implements TransactionController {
   // -------------------- Add Account Specific Local Transaction [ADMIN / Specific USER] --------------------
   @PostMapping("/{account_id}/transactions/new_local_transaction")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid LocalTransactionDTO localTransaction) {
+  public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionLocalDTO localTransaction) {
     try {
       Account account = accountService.getById(id);
       LocalTransaction transaction = localTransactionService.newTransaction(id, localTransaction);
@@ -148,7 +148,7 @@ public class TransactionControllerImpl implements TransactionController {
   // -------------------- Add Account Specific Third Party Transaction [ADMIN / Specific USER] --------------------
   @PostMapping("/transactions/new_third_party_transaction")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createThirdPartyTransaction(@RequestHeader(value = "hashedKey") String hashedKey, @RequestBody @Valid ThirdPartyTransactionDTO thirdPartyTransaction) {
+  public void createThirdPartyTransaction(@RequestHeader(value = "hashedKey") String hashedKey, @RequestBody @Valid TransactionThirdPartyDTO thirdPartyTransaction) {
     try {
       if (thirdPartyService.hasHashedKey(hashedKey)) {
         Account account = accountService.getById(thirdPartyTransaction.getTargetAccountId());
@@ -169,7 +169,7 @@ public class TransactionControllerImpl implements TransactionController {
 
   @PostMapping("/{account_id}/transactions/new_internal_transaction")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createInternalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid InternalTransactionsDTO internalTransactions) {
+  public void createInternalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionInternalDTO internalTransactions) {
     try {
       accountService.getById(id);
       TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());

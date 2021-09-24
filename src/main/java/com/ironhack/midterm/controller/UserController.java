@@ -30,17 +30,17 @@ public interface UserController {
 
   // ======================================== POST Methods ========================================
   // -------------------- New Admin [ADMIN] --------------------
-  void createNewAdmin(AdminDTO admin);
+  void createNewAdmin(UserDTO admin);
 
   // -------------------- New Account Holder [PUBLIC] --------------------
-  void createNewAccountHolder(AccountHolderDTO accountHolder);
+  void createNewAccountHolder(UserAccountHolderDTO accountHolder);
 
   // -------------------- New Third Party [ADMIN] --------------------
-  void createNewThirdParty(ThirdPartyDTO thirdParty);
+  void createNewThirdParty(UserDTO thirdParty);
 
 
   // ======================================== PATCH Methods ========================================
-  void editPassword(String username, UserPasswordDTO userPassword);
+  void editPassword(String username, UserEditPasswordDTO userPassword);
 
   void editUser(String username, UserEditDTO user);
 

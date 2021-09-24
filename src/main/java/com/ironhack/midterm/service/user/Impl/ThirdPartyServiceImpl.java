@@ -2,7 +2,7 @@ package com.ironhack.midterm.service.user.Impl;
 
 import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.dao.user.ThirdParty;
-import com.ironhack.midterm.dto.ThirdPartyDTO;
+import com.ironhack.midterm.dto.UserDTO;
 import com.ironhack.midterm.repository.user.ThirdPartyRepository;
 import com.ironhack.midterm.service.user.RoleService;
 import com.ironhack.midterm.service.user.ThirdPartyService;
@@ -36,7 +36,7 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
 
   // ======================================== SAVE THIRD PARTY Methods ========================================
   @Override
-  public void newUser(ThirdPartyDTO thirdParty) throws InstanceAlreadyExistsException {
+  public void newUser(UserDTO thirdParty) throws InstanceAlreadyExistsException {
     // Check if username already exists
     if (userService.isUsernamePresent(thirdParty.getUsername())) throw new InstanceAlreadyExistsException();
 

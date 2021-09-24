@@ -3,7 +3,7 @@ package com.ironhack.midterm.service.user.Impl;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.dto.AccountDTO;
-import com.ironhack.midterm.dto.AccountHolderDTO;
+import com.ironhack.midterm.dto.UserAccountHolderDTO;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
 import com.ironhack.midterm.service.user.AccountHolderService;
@@ -47,7 +47,7 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 
 
   // ======================================== ADD USERS Methods ========================================
-  public void newUser(AccountHolderDTO accountHolder) throws InstanceAlreadyExistsException {
+  public void newUser(UserAccountHolderDTO accountHolder) throws InstanceAlreadyExistsException {
     // Check if username already exists
     if (userService.isUsernamePresent(accountHolder.getUsername())) throw new InstanceAlreadyExistsException();
 
