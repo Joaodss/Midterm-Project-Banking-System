@@ -68,10 +68,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.POST, "/api/accounts/transactions/new_third_party_transaction").permitAll()
         .mvcMatchers(HttpMethod.POST, "/api/accounts/{accountId}", "/api/accounts/{accountId}/**")
         .access("@apiGuard.checkUsernameFromAccountIdOrIfAdmin(authentication, #accountId)")
-        .mvcMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("U")
+        .mvcMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("ADMIN")
 
-        // GET /users
-        .mvcMatchers(HttpMethod.PATCH, "/api/users/password").hasAnyRole("ADMIN", "USER")
+        // PATCH /users
+        .mvcMatchers(HttpMethod.PATCH, "/api/users/{username}/change_password")
+        .access("@apiGuard.checkUsernameOrIfAdmin(authentication, #username)")
+        .mvcMatchers(HttpMethod.PATCH, "/api/users/**}").hasRole("ADMIN")
+
+        // DELETE /users
+        .mvcMatchers(HttpMethod.DELETE, "/api/users/**}").hasRole("ADMIN")
+
+
+
 
         .anyRequest().authenticated();
   }

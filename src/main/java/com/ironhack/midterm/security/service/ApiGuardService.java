@@ -20,7 +20,7 @@ public class ApiGuardService {
   private AccountService accountService;
 
   public boolean checkUsernameOrIfAdmin(Authentication authentication, String username) throws AuthenticationException {
-    return authentication.getName().equals(username) ||
+    return (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER")) && authentication.getName().equals(username)) ||
         authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
   }
 
@@ -41,15 +41,9 @@ public class ApiGuardService {
     String secondaryAccountUsername = null;
     if (account.getSecondaryOwner() != null) secondaryAccountUsername = account.getSecondaryOwner().getUsername();
 
-    return authentication.getName().equals(primaryAccountUsername) ||
-        authentication.getName().equals(secondaryAccountUsername) ||
+    return (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER")) &&
+        authentication.getName().equals(primaryAccountUsername) || authentication.getName().equals(secondaryAccountUsername)) ||
         authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-
-  }
-
-  public boolean checkId(Authentication authentication, long id) throws AuthenticationException {
-    // check stuff
-    return true;
   }
 
 }

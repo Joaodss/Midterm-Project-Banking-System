@@ -4,10 +4,7 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.dao.user.User;
-import com.ironhack.midterm.dto.AccountHolderDTO;
-import com.ironhack.midterm.dto.AdminDTO;
-import com.ironhack.midterm.dto.ThirdPartyDTO;
-import org.springframework.security.core.Authentication;
+import com.ironhack.midterm.dto.*;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ public interface UserController {
 
   User getUserById(long id);
 
-  User getUserByUsername(Authentication auth, String username);
+  User getUserByUsername(String username);
 
   // -------------------- Admins [ADMIN] --------------------
   List<Admin> getAdmins();
@@ -42,13 +39,13 @@ public interface UserController {
   void createNewThirdParty(ThirdPartyDTO thirdParty);
 
 
-  // ======================================== PUT Methods ========================================
-
-
   // ======================================== PATCH Methods ========================================
+  void editPassword(String username, UserPasswordDTO userPassword);
+
+  void editUser(String username, UserDTO user);
 
 
   // ======================================== DELETE Methods ========================================
-
+  void deleteUser(long id, String username, String password);
 
 }

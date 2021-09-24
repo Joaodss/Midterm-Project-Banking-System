@@ -5,22 +5,18 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.dao.user.User;
-import com.ironhack.midterm.dto.AccountHolderDTO;
-import com.ironhack.midterm.dto.AdminDTO;
-import com.ironhack.midterm.dto.ThirdPartyDTO;
+import com.ironhack.midterm.dto.*;
 import com.ironhack.midterm.service.user.AccountHolderService;
 import com.ironhack.midterm.service.user.AdminService;
 import com.ironhack.midterm.service.user.ThirdPartyService;
 import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
-import javax.security.auth.login.LoginException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -67,7 +63,7 @@ public class UserControllerImpl implements UserController {
 
   @GetMapping("/{username}")
   @ResponseStatus(HttpStatus.OK)
-  public User getUserByUsername(Authentication auth, @PathVariable("username") String username) {
+  public User getUserByUsername(@PathVariable("username") String username) {
     try {
       return userService.getByUsername(username);
     } catch (InstanceNotFoundException e2) {
@@ -156,9 +152,48 @@ public class UserControllerImpl implements UserController {
 
 
   // ======================================== PATCH Methods ========================================
+  @PatchMapping("/{username}/change_password")
+  @ResponseStatus(HttpStatus.OK)
+  public void editPassword(@PathVariable("username") String username, @RequestBody @Valid UserPasswordDTO userPassword) {
+    try {
+      userService.changePassword(username, userPassword);
+    } catch (IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } catch (InstanceNotFoundException e2) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PatchMapping("/{username}/edit")
+  @ResponseStatus(HttpStatus.OK)
+  public void editUser(String username, UserDTO user) {
+    try {
+      userService.edit(username, user);
+    } catch (InstanceNotFoundException e2) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
 
 
   // ======================================== DELETE Methods ========================================
+  @DeleteMapping("/delete/{id}/{username}/{password}")
+  @ResponseStatus(HttpStatus.OK)
+  public void deleteUser(long id, String username, String password) {
+    try {
+      userService.delete(id, username, password);
+    } catch (IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } catch (InstanceNotFoundException e2) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
 
 }
