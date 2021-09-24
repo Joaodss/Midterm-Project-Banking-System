@@ -6,7 +6,7 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.LocalTransactionRepository;
-import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
+import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.LocalTransactionService;
@@ -27,7 +27,7 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
   private LocalTransactionRepository localTransactionRepository;
 
   @Autowired
-  private TransactionReceiptRepository transactionReceiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Autowired
   private AccountService accountService;
@@ -62,23 +62,23 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
   public void validateLocalTransaction(LocalTransaction transaction) throws InstanceNotFoundException {
     if (accountManagerService.isTransactionTimeFraudulent(transaction.getBaseAccount(), transaction) ||
         accountManagerService.isTransactionDailyAmountFraudulent(transaction.getBaseAccount())) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
-      transactionReceiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Fraudulent behaviour detected! Base account was frozen."));
+      receiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
+      receiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Fraudulent behaviour detected! Base account was frozen."));
       accountService.freezeAccount(transaction.getBaseAccount().getId());
 
     } else if (accountManagerService.isTransactionAmountValid(transaction) &&
         accountManagerService.isAccountsNotFrozen(transaction)) {
       processTransaction(transaction);
-      transactionReceiptRepository.save(transaction.acceptAndGenerateReceiverReceipt());
-      transactionReceiptRepository.save(transaction.acceptAndGenerateSenderReceipt());
+      receiptRepository.save(transaction.acceptAndGenerateReceiverReceipt());
+      receiptRepository.save(transaction.acceptAndGenerateSenderReceipt());
 
     } else if (!accountManagerService.isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
-      transactionReceiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Account is frozen. Unable to complete the transaction."));
+      receiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
+      receiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Account is frozen. Unable to complete the transaction."));
 
     } else if (!accountManagerService.isTransactionAmountValid(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
-      transactionReceiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Invalid amount to transfer."));
+      receiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
+      receiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Invalid amount to transfer."));
     }
     accountService.save(transaction.getBaseAccount());
     accountService.save(transaction.getTargetAccount());

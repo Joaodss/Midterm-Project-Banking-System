@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface ThirdPartyTransactionRepository
     extends TransactionBaseRepository<ThirdPartyTransaction>, JpaRepository<ThirdPartyTransaction, Long> {
 
-
 }

@@ -12,5 +12,4 @@ public interface ThirdPartyRepository
 
   Optional<ThirdParty> findByHashedKey(String hashedKey);
 
-
 }

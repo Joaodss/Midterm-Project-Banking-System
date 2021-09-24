@@ -5,7 +5,7 @@ import com.ironhack.midterm.dao.transaction.*;
 import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.enums.TransactionPurpose;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
+import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.InterestTransactionService;
 import com.ironhack.midterm.service.transaction.MaintenanceFeeTransactionService;
@@ -30,7 +30,7 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 public class AccountManagerServiceImpl implements AccountManagerService {
 
   @Autowired
-  private TransactionReceiptRepository transactionReceiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Autowired
   private AccountService accountService;

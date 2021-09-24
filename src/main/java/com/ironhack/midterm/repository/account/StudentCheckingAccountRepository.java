@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface StudentCheckingAccountRepository
     extends AccountBaseRepository<StudentCheckingAccount>, JpaRepository<StudentCheckingAccount, Long> {
 
-
 }

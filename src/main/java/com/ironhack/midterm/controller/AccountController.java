@@ -15,10 +15,10 @@ public interface AccountController {
   List<Account> getAccounts(Authentication auth);
 
   // -------------------- Account by Id [ADMIN] / User Specific Account by Id [Specific USER] --------------------
-  Account getAccountById(Authentication auth, long id);
+  Account getAccountById( long id);
 
   // -------------------- Account Balance by Id [ADMIN] / User Specific Account Balance by Id [Specific USER] --------------------
-  Money getAccountBalanceById(Authentication auth, long id);
+  Money getAccountBalanceById(long id);
 
   // -------------------- All Checking Accounts [ADMIN] --------------------
   List<CheckingAccount> getCheckingAccounts();

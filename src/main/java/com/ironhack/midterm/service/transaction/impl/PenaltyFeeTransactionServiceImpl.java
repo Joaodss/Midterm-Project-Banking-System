@@ -4,7 +4,7 @@ import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.transaction.PenaltyFeeTransaction;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.PenaltyFeeTransactionRepository;
-import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
+import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
@@ -22,7 +22,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
   private PenaltyFeeTransactionRepository penaltyFeeTransactionRepository;
 
   @Autowired
-  private TransactionReceiptRepository transactionReceiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Autowired
   private AccountService accountService;
@@ -47,12 +47,12 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
   // ======================================== VALIDATE TRANSACTION Methods ========================================
   public void validatePenaltyFeeTransaction(PenaltyFeeTransaction transaction) throws InstanceNotFoundException {
     if (accountManagerService.isTransactionAmountValid(transaction) && accountManagerService.isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.acceptAndGenerateReceipt());
+      receiptRepository.save(transaction.acceptAndGenerateReceipt());
       processTransaction(transaction);
     } else if (!accountManagerService.isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to withdraw penalty fee."));
+      receiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to withdraw penalty fee."));
     } else if (!accountManagerService.isTransactionAmountValid(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Insufficient founds to withdraw."));
+      receiptRepository.save(transaction.refuseAndGenerateReceipt("Insufficient founds to withdraw."));
       PenaltyFeeTransaction newTransaction = newTransaction(transaction.getTargetAccount().getId(), transaction.getTargetAccount().getBalance());
       validatePenaltyFeeTransaction(newTransaction);
       accountService.freezeAccount(transaction.getTargetAccount().getId());

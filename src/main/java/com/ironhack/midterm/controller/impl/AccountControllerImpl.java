@@ -76,7 +76,7 @@ public class AccountControllerImpl implements AccountController {
   // -------------------- Account by Id [ADMIN] / User Specific Account by Id [Specific USER] --------------------
   @GetMapping("/{account_id}")
   @ResponseStatus(HttpStatus.OK)
-  public Account getAccountById(Authentication auth, @PathVariable("account_id") long id) {
+  public Account getAccountById(@PathVariable("account_id") long id) {
     try {
 
       Account account = accountService.getById(id);
@@ -93,13 +93,11 @@ public class AccountControllerImpl implements AccountController {
   // -------------------- Account Balance by Id [ADMIN] / User Specific Account Balance by Id [Specific USER] --------------------
   @GetMapping("/{account_id}/balance")
   @ResponseStatus(HttpStatus.OK)
-  public Money getAccountBalanceById(Authentication auth, @PathVariable("account_id") long id) {
+  public Money getAccountBalanceById(@PathVariable("account_id") long id) {
     try {
-
       Account account = accountService.getById(id);
       accountManagerService.checkForAlterations(account);
       return account.getBalance();
-
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     } catch (Exception e) {

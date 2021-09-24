@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface PenaltyFeeTransactionRepository
     extends TransactionBaseRepository<PenaltyFeeTransaction>, JpaRepository<PenaltyFeeTransaction, Long> {
 
-
 }

@@ -9,9 +9,6 @@ import java.util.Optional;
 public interface TransactionReceiptService {
 
   // ======================================== GET Methods ========================================
-  List<Receipt> getAllByAccountId(long AccountId) throws InstanceNotFoundException;
-
-  List<Receipt> getByAccountIdByDateRange(long AccountId, Optional<String> startDate, Optional<String> endDate);
 
   Receipt getById(long transactionReceiptId) throws InstanceNotFoundException;
 

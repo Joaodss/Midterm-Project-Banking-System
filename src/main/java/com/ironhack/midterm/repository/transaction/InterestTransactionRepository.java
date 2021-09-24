@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface InterestTransactionRepository
     extends TransactionBaseRepository<InterestTransaction>, JpaRepository<InterestTransaction, Long> {
 
-
 }

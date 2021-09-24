@@ -41,28 +41,9 @@ public class AccountServiceImpl implements AccountService {
     throw new InstanceNotFoundException();
   }
 
-  public Money getBalanceById(long id) throws InstanceNotFoundException {
-    var account = accountRepository.findByIdJoined(id);
-    if (account.isPresent()) return account.get().getBalance();
-    throw new InstanceNotFoundException();
-  }
-
   public List<Account> getAllByUsername(String username) {
     return accountRepository.findAllByUsernameJoined(username);
   }
-
-  public Account getByUsernameAndId(String username, long id) throws InstanceNotFoundException {
-    var account = accountRepository.findByUsernameAndIdJoined(username, id);
-    if (account.isPresent()) return account.get();
-    throw new InstanceNotFoundException();
-  }
-
-  public Money getBalanceByUsernameAndId(String username, long id) throws InstanceNotFoundException {
-    var account = accountRepository.findByUsernameAndIdJoined(username, id);
-    if (account.isPresent()) return account.get().getBalance();
-    throw new InstanceNotFoundException();
-  }
-
 
   public void freezeAccount(long id) throws InstanceNotFoundException {
     var account = getById(id);

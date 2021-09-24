@@ -27,11 +27,6 @@ public class TransactionServiceImpl implements TransactionService {
     return transactionRepository.findAllByAccountIdJoined(accountId);
   }
 
-  @Override
-  public List<Transaction> getByAccountIdByDateRange(long AccountId, Optional<String> startDate, Optional<String> endDate) {
-    return null;
-  }
-
 
   public Transaction getById(long transactionId) throws InstanceNotFoundException {
     var transaction = transactionRepository.findByIdJoined(transactionId);

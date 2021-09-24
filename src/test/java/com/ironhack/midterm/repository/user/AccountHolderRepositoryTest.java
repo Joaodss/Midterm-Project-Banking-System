@@ -3,7 +3,7 @@ package com.ironhack.midterm.repository.user;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.model.Address;
-import com.ironhack.midterm.util.database.DbResetUtil;
+import com.ironhack.midterm.testUtils.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.ironhack.midterm.util.database;
+package com.ironhack.midterm.testUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,6 +13,7 @@ import java.sql.Statement;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DbResetUtil {
 
+  // Resets the database id auto increment.
   public static void resetAutoIncrementColumns(ApplicationContext applicationContext, String... tableNames) throws SQLException {
     // Read the used database connection from the properties file
     DataSource dataSource = applicationContext.getBean(DataSource.class);
@@ -28,6 +29,7 @@ public class DbResetUtil {
     }
   }
 
+  // Get the template data with the SQL query to execute.
   private static String getResetSqlTemplate(ApplicationContext applicationContext) {
     // Read the SQL template from the properties file
     Environment environment = applicationContext.getBean(Environment.class);

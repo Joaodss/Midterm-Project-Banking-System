@@ -1,7 +1,7 @@
 package com.ironhack.midterm.service.transaction.impl;
 
 import com.ironhack.midterm.dao.transaction.Receipt;
-import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
+import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.TransactionReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,26 +15,15 @@ import java.util.Optional;
 public class TransactionReceiptServiceImpl implements TransactionReceiptService {
 
   @Autowired
-  private TransactionReceiptRepository transactionReceiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Autowired
   private AccountService accountService;
 
 
   // ======================================== GET Methods ========================================
-  public List<Receipt> getAllByAccountId(long accountId) throws InstanceNotFoundException {
-    accountService.getById(accountId); // to check if account exists
-    return transactionReceiptRepository.findAllByAccountIdJoined(accountId);
-  }
-
-  @Override
-  public List<Receipt> getByAccountIdByDateRange(long AccountId, Optional<String> startDate, Optional<String> endDate) {
-    return null;
-  }
-
-
   public Receipt getById(long transactionId) throws InstanceNotFoundException {
-    var transaction = transactionReceiptRepository.findByIdJoined(transactionId);
+    var transaction = receiptRepository.findByIdJoined(transactionId);
     if (transaction.isPresent()) return transaction.get();
     throw new InstanceNotFoundException();
   }

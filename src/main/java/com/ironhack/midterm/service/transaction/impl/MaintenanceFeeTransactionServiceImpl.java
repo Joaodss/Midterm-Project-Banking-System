@@ -5,7 +5,7 @@ import com.ironhack.midterm.dao.account.CheckingAccount;
 import com.ironhack.midterm.dao.transaction.MaintenanceFeeTransaction;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.MaintenanceFeeTransactionRepository;
-import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
+import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.MaintenanceFeeTransactionService;
@@ -23,7 +23,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
   private MaintenanceFeeTransactionRepository maintenanceFeeTransactionRepository;
 
   @Autowired
-  private TransactionReceiptRepository transactionReceiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Autowired
   private AccountService accountService;
@@ -52,12 +52,12 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
   // ======================================== VALIDATE TRANSACTION Methods ========================================
   public void validateMaintenanceFeeTransaction(MaintenanceFeeTransaction transaction) throws InstanceNotFoundException {
     if (accountManagerService.isTransactionAmountValid(transaction) && accountManagerService.isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.acceptAndGenerateReceipt());
+      receiptRepository.save(transaction.acceptAndGenerateReceipt());
       processTransaction(transaction);
     } else if (!accountManagerService.isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to withdraw maintenance fee."));
+      receiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to withdraw maintenance fee."));
     } else if (!accountManagerService.isTransactionAmountValid(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Insufficient founds to withdraw."));
+      receiptRepository.save(transaction.refuseAndGenerateReceipt("Insufficient founds to withdraw."));
       MaintenanceFeeTransaction newTransaction = newTransaction(transaction.getTargetAccount().getId(), transaction.getTargetAccount().getBalance());
       validateMaintenanceFeeTransaction(newTransaction);
       accountService.freezeAccount(transaction.getTargetAccount().getId());

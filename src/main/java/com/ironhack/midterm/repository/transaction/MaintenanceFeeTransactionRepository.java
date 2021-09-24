@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface MaintenanceFeeTransactionRepository
     extends TransactionBaseRepository<MaintenanceFeeTransaction>, JpaRepository<MaintenanceFeeTransaction, Long> {
 
-
 }

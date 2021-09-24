@@ -29,13 +29,4 @@ public interface AccountBaseRepository<T extends Account> extends JpaRepository<
       "s.username = :username")
   List<T> findAllByUsernameJoined(String username);
 
-  @Query("SELECT e FROM #{#entityName} e " +
-      "LEFT JOIN FETCH e.primaryOwner p " +
-      "LEFT JOIN FETCH e.secondaryOwner s " +
-      "WHERE (p.username = :username " +
-      "OR s.username = :username) " +
-      "AND e.id = :id")
-  Optional<T> findByUsernameAndIdJoined(String username, long id);
-
-
 }

@@ -6,7 +6,7 @@ import com.ironhack.midterm.dao.account.SavingsAccount;
 import com.ironhack.midterm.dao.transaction.InterestTransaction;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.InterestTransactionRepository;
-import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
+import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.InterestTransactionService;
@@ -26,7 +26,7 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
   private InterestTransactionRepository interestTransactionRepository;
 
   @Autowired
-  private TransactionReceiptRepository transactionReceiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Autowired
   private AccountService accountService;
@@ -56,10 +56,10 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
   // ======================================== VALIDATE TRANSACTION Methods ========================================
   public void validateInterestTransaction(InterestTransaction transaction) throws InstanceNotFoundException {
     if (accountManagerService.isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.acceptAndGenerateReceipt());
+      receiptRepository.save(transaction.acceptAndGenerateReceipt());
       processTransaction(transaction);
     } else {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to add interest rate."));
+      receiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to add interest rate."));
     }
     accountService.save(transaction.getTargetAccount());
   }
