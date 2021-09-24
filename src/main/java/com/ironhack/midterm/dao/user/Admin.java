@@ -18,7 +18,6 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 public class Admin extends User {
 
-
   // ======================================== CONSTRUCTORS ========================================
   public Admin(String username, String password, String name) {
     super(username, password, name);

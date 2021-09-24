@@ -1,8 +1,8 @@
 package com.ironhack.midterm.dao.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.ironhack.midterm.dao.account.Account;
-import com.ironhack.midterm.dao.request.Request;
 import com.ironhack.midterm.model.Address;
 import lombok.*;
 
@@ -21,6 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @ToString(callSuper = true)
 public class AccountHolder extends User {
 
@@ -32,37 +33,32 @@ public class AccountHolder extends User {
   @Valid
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "streetAddress", column = @Column(name = "pa_street", nullable = false)),
-      @AttributeOverride(name = "postalCode", column = @Column(name = "pa_postal_code", nullable = false)),
-      @AttributeOverride(name = "city", column = @Column(name = "pa_city", nullable = false)),
-      @AttributeOverride(name = "country", column = @Column(name = "pa_country", nullable = false)),
+      @AttributeOverride(name = "streetAddress", column = @Column(name = "primary_address_street", nullable = false)),
+      @AttributeOverride(name = "postalCode", column = @Column(name = "primary_address_postal_code", nullable = false)),
+      @AttributeOverride(name = "city", column = @Column(name = "primary_address_city", nullable = false)),
+      @AttributeOverride(name = "country", column = @Column(name = "primary_address_country", nullable = false)),
   })
   private Address primaryAddress;
 
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "streetAddress", column = @Column(name = "ma_street")),
-      @AttributeOverride(name = "postalCode", column = @Column(name = "ma_postal_code")),
-      @AttributeOverride(name = "city", column = @Column(name = "ma_city")),
-      @AttributeOverride(name = "country", column = @Column(name = "ma_country")),
+      @AttributeOverride(name = "streetAddress", column = @Column(name = "mailing_address_street")),
+      @AttributeOverride(name = "postalCode", column = @Column(name = "mailing_address_postal_code")),
+      @AttributeOverride(name = "city", column = @Column(name = "mailing_address_city")),
+      @AttributeOverride(name = "country", column = @Column(name = "mailing_address_country")),
   })
   private Address mailingAddress;
 
   // ======================================== MAPPING ========================================
-  @ToString.Exclude
   @JsonIncludeProperties(value = {"id", "accountType", "balance"})
+  @ToString.Exclude
   @OneToMany(mappedBy = "primaryOwner")
   private List<Account> primaryAccounts = new ArrayList<>();
 
-  @ToString.Exclude
   @JsonIncludeProperties(value = {"id", "accountType", "balance"})
+  @ToString.Exclude
   @OneToMany(mappedBy = "secondaryOwner")
   private List<Account> secondaryAccounts = new ArrayList<>();
-
-  @ToString.Exclude
-  @JsonIncludeProperties(value = {"id"})
-  @OneToMany(mappedBy = "user")
-  private List<Request> requestList = new ArrayList<>();
 
 
   // ======================================== CONSTRUCTORS ========================================
