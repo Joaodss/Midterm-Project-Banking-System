@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
@@ -28,7 +29,6 @@ import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class Account {
 
@@ -39,12 +39,11 @@ public abstract class Account {
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(name = "type")
+  @Column(name = "account_type")
   private AccountType accountType;
 
-
-  @Valid
   @NotNull
+  @Valid
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "balance_amount", nullable = false)),
@@ -52,19 +51,19 @@ public abstract class Account {
   })
   private Money balance;
 
+  @JsonIncludeProperties(value = {"id", "name"})
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "primary_owner_id")
-  @JsonIncludeProperties(value = {"id", "name"})
   private AccountHolder primaryOwner;
 
+  @JsonIncludeProperties(value = {"id", "name"})
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "secondary_owner_id")
-  @JsonIncludeProperties(value = {"id", "name"})
   private AccountHolder secondaryOwner;
 
-  @Valid
   @NotNull
+  @Valid
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "penaltyFee_amount", nullable = false)),
@@ -73,23 +72,21 @@ public abstract class Account {
   private Money penaltyFee;
 
   @NotNull
-  @Column(name = "last_penalty_fee")
-  private LocalDate lastPenaltyFee;
+  @Column(name = "last_penalty_fee_check")
+  private LocalDate lastPenaltyFeeCheck;
 
   @NotNull
   @Column(name = "creation_date")
   private LocalDateTime creationDate;
 
-  // ======================================== MAPPING ========================================
-
-  @OneToMany(mappedBy = "targetAccount")
   @JsonIgnore
   @ToString.Exclude
+  @OneToMany(mappedBy = "targetAccount")
   private List<Transaction> incomingTransactions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "baseAccount")
   @JsonIgnore
   @ToString.Exclude
+  @OneToMany(mappedBy = "baseAccount")
   private List<Transaction> outgoingTransactions = new ArrayList<>();
 
 
@@ -98,17 +95,17 @@ public abstract class Account {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
     this.secondaryOwner = secondaryOwner;
-    this.penaltyFee = newMoney("40");
+    this.penaltyFee = newMoney("40.00");
     this.creationDate = dateTimeNow();
-    this.lastPenaltyFee = getCreationDate().toLocalDate().minusMonths(1);
+    this.lastPenaltyFeeCheck = getCreationDate().toLocalDate().withDayOfMonth(1);
   }
 
   public Account(Money balance, AccountHolder primaryOwner) {
     this.balance = balance;
     this.primaryOwner = primaryOwner;
-    this.penaltyFee = newMoney("40");
+    this.penaltyFee = newMoney("40.00");
     this.creationDate = dateTimeNow();
-    this.lastPenaltyFee = getCreationDate().toLocalDate().minusMonths(1);
+    this.lastPenaltyFeeCheck = getCreationDate().toLocalDate().withDayOfMonth(1);
   }
 
 
@@ -123,6 +120,33 @@ public abstract class Account {
 
 
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "(" +
+        "id = " + id + ", " +
+        "accountType = " + accountType + ", " +
+        "balance = " + balance + ", " +
+        "primaryOwner = " + primaryOwner.getId() + ": " + primaryOwner.getUsername() + ", " +
+        (secondaryOwner != null ?
+            "secondaryOwner = " + secondaryOwner.getId() + ": " + secondaryOwner.getUsername() + ", " :
+            ""
+        ) +
+        "penaltyFee = " + penaltyFee + ", " +
+        "lastPenaltyFeeCheck = " + lastPenaltyFeeCheck + ", " +
+        "creationDate = " + creationDate + ")";
+  }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Account account = (Account) o;
+    return getId().equals(account.getId()) && getAccountType() == account.getAccountType() && getBalance().equals(account.getBalance()) && getPenaltyFee().equals(account.getPenaltyFee()) && getLastPenaltyFeeCheck().equals(account.getLastPenaltyFeeCheck()) && getCreationDate().equals(account.getCreationDate());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getAccountType(), getBalance(), getPenaltyFee(), getLastPenaltyFeeCheck(), getCreationDate());
+  }
 
 }

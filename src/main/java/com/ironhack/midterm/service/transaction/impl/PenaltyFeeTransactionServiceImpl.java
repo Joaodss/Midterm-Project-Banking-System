@@ -65,7 +65,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
   public void processTransaction(PenaltyFeeTransaction transaction) throws InstanceNotFoundException {
     Account account = accountService.getById(transaction.getTargetAccount().getId());
     account.setBalance(subtractMoney(account.getBalance(), transaction.getConvertedAmount()));
-    account.setLastPenaltyFee(account.getLastPenaltyFee().plusMonths(1));
+    account.setLastPenaltyFeeCheck(account.getLastPenaltyFeeCheck().plusMonths(1));
     accountService.save(account);
     accountManagerService.checkForAlterations(account);
   }

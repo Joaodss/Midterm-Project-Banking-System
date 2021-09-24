@@ -4,16 +4,14 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.enums.AccountType;
 import com.ironhack.midterm.model.Money;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.EncryptedKeysUtil.generateSecretKey;
 import static com.ironhack.midterm.util.MoneyUtil.convertCurrency;
@@ -27,14 +25,15 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class CheckingAccount extends Account {
 
   @NotNull
   @Column(name = "secret_key")
   private String secretKey;
 
-  @Valid
   @NotNull
+  @Valid
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "min_balance_amount", nullable = false)),
@@ -42,8 +41,8 @@ public class CheckingAccount extends Account {
   })
   private Money minimumBalance;
 
-  @Valid
   @NotNull
+  @Valid
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "amount", column = @Column(name = "monthly_maintenance_fee_amount", nullable = false)),
@@ -65,8 +64,8 @@ public class CheckingAccount extends Account {
   public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.CHECKING_ACCOUNT);
-    this.minimumBalance = newMoney("250");
-    this.monthlyMaintenanceFee = newMoney("12");
+    this.minimumBalance = newMoney("250.00");
+    this.monthlyMaintenanceFee = newMoney("12.00");
     this.lastMaintenanceFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
@@ -75,8 +74,8 @@ public class CheckingAccount extends Account {
   public CheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.CHECKING_ACCOUNT);
-    this.minimumBalance = newMoney("250");
-    this.monthlyMaintenanceFee = newMoney("12");
+    this.minimumBalance = newMoney("250.00");
+    this.monthlyMaintenanceFee = newMoney("12.00");
     this.lastMaintenanceFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
@@ -92,6 +91,18 @@ public class CheckingAccount extends Account {
 
 
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    CheckingAccount that = (CheckingAccount) o;
+    return getSecretKey().equals(that.getSecretKey()) && getMinimumBalance().equals(that.getMinimumBalance()) && getMonthlyMaintenanceFee().equals(that.getMonthlyMaintenanceFee()) && getLastMaintenanceFee().equals(that.getLastMaintenanceFee()) && getAccountStatus() == that.getAccountStatus();
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getSecretKey(), getMinimumBalance(), getMonthlyMaintenanceFee(), getLastMaintenanceFee(), getAccountStatus());
+  }
 
 }

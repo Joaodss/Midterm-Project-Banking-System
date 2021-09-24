@@ -6,6 +6,7 @@ import com.ironhack.midterm.model.Money;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -20,35 +21,45 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class StudentCheckingAccount extends CheckingAccount {
-
 
   // ======================================== CONSTRUCTORS ========================================
   public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.STUDENT_CHECKING_ACCOUNT);
-    setMinimumBalance(newMoney("0"));
-    setMonthlyMaintenanceFee(newMoney("0"));
-    setPenaltyFee(newMoney("0"));
+    setMinimumBalance(newMoney("0.00"));
+    setMonthlyMaintenanceFee(newMoney("0.00"));
+    setPenaltyFee(newMoney("0.00"));
   }
 
   public StudentCheckingAccount(Money balance, AccountHolder primaryOwner) throws NoSuchAlgorithmException {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.STUDENT_CHECKING_ACCOUNT);
-    setMinimumBalance(newMoney("0"));
-    setMonthlyMaintenanceFee(newMoney("0"));
-    setPenaltyFee(newMoney("0"));
+    setMinimumBalance(newMoney("0.00"));
+    setMonthlyMaintenanceFee(newMoney("0.00"));
+    setPenaltyFee(newMoney("0.00"));
   }
 
 
   // ======================================== METHODS ========================================
+  @Override
   public void updateCurrencyValues() {
     setPenaltyFee(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
     setMinimumBalance(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
     setMonthlyMaintenanceFee(newMoney("0", getBalance().getCurrency().getCurrencyCode()));
   }
 
-  // ======================================== OVERRIDE METHODS ========================================
 
+  // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 
 }

@@ -35,7 +35,6 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
   @Autowired
   private AccountManagerService accountManagerService;
 
-
   // ======================================== ADD TRANSACTION Methods ========================================
   public LocalTransaction newTransaction(long accountId, LocalTransactionDTO localTransaction) throws InstanceNotFoundException, IllegalArgumentException {
     Account ownerAccount = accountService.getById(accountId);

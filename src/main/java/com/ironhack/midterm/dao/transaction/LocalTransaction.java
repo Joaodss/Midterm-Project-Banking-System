@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyUtil.negativeMoney;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
@@ -26,21 +27,16 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @Setter
 public class LocalTransaction extends Transaction {
 
-  @NotNull
   @JsonIncludeProperties(value = {"id", "name"})
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "target_owner_id")
   private AccountHolder targetOwner;
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public LocalTransaction(Money baseAmount, Account account, Account targetAccount, AccountHolder targetOwner) {
-    super(baseAmount, account, targetAccount);
-    this.targetOwner = targetOwner;
-  }
-
-  public LocalTransaction(Money baseAmount, Account targetAccount, AccountHolder targetOwner) {
-    super(baseAmount, targetAccount);
+  public LocalTransaction(Money baseAmount, Account baseAccount, Account targetAccount, AccountHolder targetOwner) {
+    super(baseAmount, baseAccount, targetAccount);
     this.targetOwner = targetOwner;
   }
 
@@ -132,5 +128,25 @@ public class LocalTransaction extends Transaction {
 
 
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "(" +
+        "super = " + super.toString() + ", " +
+        "targetOwner = " + targetOwner.getId() + ": " + targetOwner.getName() + ")";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    LocalTransaction that = (LocalTransaction) o;
+    return getTargetOwner().equals(that.getTargetOwner());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getTargetOwner());
+  }
 
 }

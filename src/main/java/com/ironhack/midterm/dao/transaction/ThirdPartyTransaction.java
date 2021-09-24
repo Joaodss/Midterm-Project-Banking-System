@@ -1,17 +1,16 @@
 package com.ironhack.midterm.dao.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.enums.TransactionPurpose;
 import com.ironhack.midterm.enums.TransactionType;
 import com.ironhack.midterm.model.Money;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyUtil.negativeMoney;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
@@ -23,8 +22,11 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class ThirdPartyTransaction extends Transaction {
 
+  @JsonIgnore
+  @ToString.Exclude
   @NotNull
   @Column(name = "secret_key")
   private String secretKey;
@@ -36,12 +38,6 @@ public class ThirdPartyTransaction extends Transaction {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  public ThirdPartyTransaction(Money baseAmount, Account account, Account targetAccount, String secretKey, TransactionPurpose transactionPurpose) {
-    super(baseAmount, account, targetAccount);
-    this.secretKey = secretKey;
-    this.transactionPurpose = transactionPurpose;
-  }
-
   public ThirdPartyTransaction(Money baseAmount, Account targetAccount, String secretKey, TransactionPurpose transactionPurpose) {
     super(baseAmount, targetAccount);
     this.secretKey = secretKey;
@@ -55,7 +51,7 @@ public class ThirdPartyTransaction extends Transaction {
     if (transactionPurpose == TransactionPurpose.SEND) {
       return new TransactionReceipt(
           getTargetAccount(),
-          TransactionType.RECEIVE_THIRD_PARTY,
+          TransactionType.RECEIVE_FROM_THIRD_PARTY,
           getConvertedAmount(),
           getStatus(),
           "The amount of " + getConvertedAmount().toString() + " was successfully transferred to this account.",
@@ -65,7 +61,7 @@ public class ThirdPartyTransaction extends Transaction {
     } else {
       return new TransactionReceipt(
           getTargetAccount(),
-          TransactionType.SEND_THIRD_PARTY,
+          TransactionType.SEND_TO_THIRD_PARTY,
           negativeMoney(getConvertedAmount()),
           getStatus(),
           "The amount of " + getConvertedAmount().toString() + " was successfully transferred from this account.",
@@ -80,7 +76,7 @@ public class ThirdPartyTransaction extends Transaction {
     if (transactionPurpose == TransactionPurpose.SEND) {
       return new TransactionReceipt(
           getTargetAccount(),
-          TransactionType.RECEIVE_THIRD_PARTY,
+          TransactionType.RECEIVE_FROM_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           "The amount of " + getConvertedAmount().toString() + " was NOT transferred to this account.",
@@ -90,7 +86,7 @@ public class ThirdPartyTransaction extends Transaction {
     } else {
       return new TransactionReceipt(
           getTargetAccount(),
-          TransactionType.SEND_THIRD_PARTY,
+          TransactionType.SEND_TO_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           "The amount of " + getConvertedAmount().toString() + " was NOT transferred from this account.",
@@ -105,7 +101,7 @@ public class ThirdPartyTransaction extends Transaction {
     if (transactionPurpose == TransactionPurpose.SEND) {
       return new TransactionReceipt(
           getTargetAccount(),
-          TransactionType.RECEIVE_THIRD_PARTY,
+          TransactionType.RECEIVE_FROM_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           message,
@@ -115,7 +111,7 @@ public class ThirdPartyTransaction extends Transaction {
     } else {
       return new TransactionReceipt(
           getTargetAccount(),
-          TransactionType.SEND_THIRD_PARTY,
+          TransactionType.SEND_TO_THIRD_PARTY,
           newMoney("0", getConvertedAmount().getCurrency().getCurrencyCode()),
           getStatus(),
           message,
@@ -127,5 +123,18 @@ public class ThirdPartyTransaction extends Transaction {
 
 
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    ThirdPartyTransaction that = (ThirdPartyTransaction) o;
+    return getSecretKey().equals(that.getSecretKey()) && getTransactionPurpose() == that.getTransactionPurpose();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getSecretKey(), getTransactionPurpose());
+  }
 
 }

@@ -196,7 +196,7 @@ public class AccountServiceImpl implements AccountService {
     if (accountEdit.getPenaltyFee() != null)
       account.setPenaltyFee(new Money(accountEdit.getPenaltyFee(), account.getPenaltyFee().getCurrency()));
 
-    if (accountEdit.getLastPenaltyFee() != null) account.setLastPenaltyFee(accountEdit.getLastPenaltyFee());
+    if (accountEdit.getLastPenaltyFee() != null) account.setLastPenaltyFeeCheck(accountEdit.getLastPenaltyFee());
 
     save(account);
 

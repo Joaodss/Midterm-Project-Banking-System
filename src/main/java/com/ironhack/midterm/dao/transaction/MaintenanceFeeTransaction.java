@@ -7,6 +7,7 @@ import com.ironhack.midterm.model.Money;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -21,14 +22,10 @@ import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class MaintenanceFeeTransaction extends Transaction {
 
-
   // ======================================== CONSTRUCTORS ========================================
-  public MaintenanceFeeTransaction(Money baseAmount, Account account, Account targetAccount) {
-    super(baseAmount, account, targetAccount);
-  }
-
   public MaintenanceFeeTransaction(Money baseAmount, Account targetAccount) {
     super(baseAmount, targetAccount);
   }
@@ -76,5 +73,14 @@ public class MaintenanceFeeTransaction extends Transaction {
 
 
   // ======================================== OVERRIDE METHODS ========================================
+  @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 
 }

@@ -77,31 +77,31 @@ public class AccountManagerServiceImpl implements AccountManagerService {
 
     if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       if (compareMoney(account.getBalance(), ((CheckingAccount) account).getMinimumBalance()) < 0) {
-        LocalDate lastPenaltyFee = account.getLastPenaltyFee();
+        LocalDate lastPenaltyFee = account.getLastPenaltyFeeCheck();
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
           PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
           penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
         }
       } else {
-        account.setLastPenaltyFee(
-            account.getLastPenaltyFee().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
-                account.getLastPenaltyFee() :
+        account.setLastPenaltyFeeCheck(
+            account.getLastPenaltyFeeCheck().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
+                account.getLastPenaltyFeeCheck() :
                 dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)
         );
         accountService.save(account);
       }
     } else if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       if (compareMoney(account.getBalance(), ((SavingsAccount) account).getMinimumBalance()) < 0) {
-        LocalDate lastPenaltyFee = account.getLastPenaltyFee();
+        LocalDate lastPenaltyFee = account.getLastPenaltyFeeCheck();
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
           PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
           penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
 
         }
       } else {
-        account.setLastPenaltyFee(
-            account.getLastPenaltyFee().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
-                account.getLastPenaltyFee() :
+        account.setLastPenaltyFeeCheck(
+            account.getLastPenaltyFeeCheck().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
+                account.getLastPenaltyFeeCheck() :
                 dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)
         );
         accountService.save(account);
