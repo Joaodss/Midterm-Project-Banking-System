@@ -3,6 +3,7 @@ package com.ironhack.midterm.controller.impl;
 import com.ironhack.midterm.controller.AccountController;
 import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dto.AccountDTO;
+import com.ironhack.midterm.dto.AccountEditDTO;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.*;
@@ -231,7 +232,19 @@ public class AccountControllerImpl implements AccountController {
 
 
   // ======================================== PATCH Methods ========================================
-
+  @PatchMapping("/edit/account/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public void editAccount(@PathVariable("id") long id, @RequestBody @Valid AccountEditDTO accountEdit) {
+    try {
+      accountService.edit(id, accountEdit);
+    } catch (IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } catch (InstanceNotFoundException e2) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   // ======================================== DELETE Methods ========================================
 

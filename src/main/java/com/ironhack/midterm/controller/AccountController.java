@@ -2,6 +2,7 @@ package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dto.AccountDTO;
+import com.ironhack.midterm.dto.AccountEditDTO;
 import com.ironhack.midterm.model.Money;
 import org.springframework.security.core.Authentication;
 
@@ -47,7 +48,7 @@ public interface AccountController {
 
 
   // ======================================== PATCH Methods ========================================
-
+  void editAccount(long id, AccountEditDTO accountEdit);
 
   // ======================================== DELETE Methods ========================================
 

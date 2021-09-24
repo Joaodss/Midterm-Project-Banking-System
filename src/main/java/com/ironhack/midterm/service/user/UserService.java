@@ -1,7 +1,7 @@
 package com.ironhack.midterm.service.user;
 
 import com.ironhack.midterm.dao.user.User;
-import com.ironhack.midterm.dto.UserDTO;
+import com.ironhack.midterm.dto.UserEditDTO;
 import com.ironhack.midterm.dto.UserPasswordDTO;
 
 import javax.management.InstanceNotFoundException;
@@ -20,8 +20,7 @@ public interface UserService {
 
   void changePassword(String username, UserPasswordDTO userPassword) throws InstanceNotFoundException;
 
-  void edit(String username, UserDTO user) throws InstanceNotFoundException;
+  void edit(String username, UserEditDTO user) throws InstanceNotFoundException;
 
-  void delete(long id, String username, String password) throws InstanceNotFoundException;
 
 }

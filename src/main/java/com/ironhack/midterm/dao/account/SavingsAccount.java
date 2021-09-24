@@ -60,7 +60,7 @@ public class SavingsAccount extends Account {
     super(balance, primaryOwner, secondaryOwner);
     super.setAccountType(AccountType.SAVINGS_ACCOUNT);
     this.minimumBalance = newMoney("1000");
-    this.interestRate = newBD("0.0025");
+    this.interestRate = new BigDecimal("0.0025");
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();
@@ -70,7 +70,7 @@ public class SavingsAccount extends Account {
     super(balance, primaryOwner);
     super.setAccountType(AccountType.SAVINGS_ACCOUNT);
     this.minimumBalance = newMoney("1000");
-    this.interestRate = newBD("0.0025");
+    this.interestRate = new BigDecimal("0.0025");
     this.lastInterestUpdate = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
     this.accountStatus = AccountStatus.ACTIVE;
     this.secretKey = generateSecretKey();

@@ -42,10 +42,7 @@ public interface UserController {
   // ======================================== PATCH Methods ========================================
   void editPassword(String username, UserPasswordDTO userPassword);
 
-  void editUser(String username, UserDTO user);
+  void editUser(String username, UserEditDTO user);
 
-
-  // ======================================== DELETE Methods ========================================
-  void deleteUser(long id, String username, String password);
 
 }

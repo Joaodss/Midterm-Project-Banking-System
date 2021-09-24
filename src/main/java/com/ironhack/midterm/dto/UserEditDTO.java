@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserDTO {
+public class UserEditDTO {
 
   private String username;
 

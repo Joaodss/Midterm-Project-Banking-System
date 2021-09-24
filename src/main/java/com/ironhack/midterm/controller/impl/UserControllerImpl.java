@@ -166,28 +166,11 @@ public class UserControllerImpl implements UserController {
     }
   }
 
-  @PatchMapping("/{username}/edit")
+  @PatchMapping("/edit/user/{username}")
   @ResponseStatus(HttpStatus.OK)
-  public void editUser(String username, UserDTO user) {
+  public void editUser(@PathVariable("username") String username, @RequestBody @Valid UserEditDTO user) {
     try {
       userService.edit(username, user);
-    } catch (InstanceNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-  }
-
-
-  // ======================================== DELETE Methods ========================================
-  @DeleteMapping("/delete/{id}/{username}/{password}")
-  @ResponseStatus(HttpStatus.OK)
-  public void deleteUser(long id, String username, String password) {
-    try {
-      userService.delete(id, username, password);
-    } catch (IllegalArgumentException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {

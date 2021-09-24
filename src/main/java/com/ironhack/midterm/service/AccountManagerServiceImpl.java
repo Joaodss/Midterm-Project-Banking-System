@@ -50,7 +50,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
 
   // ============================== Check Account Alterations ==============================
   public void checkForAlterations(Account account) throws InstanceNotFoundException {
-    if (account.getClass() == SavingsAccount.class) {
+    if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       LocalDate lastInterestDate = ((SavingsAccount) account).getLastInterestUpdate();
       if (lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate())) {
         InterestTransaction transaction = interestTransactionService.newTransaction(account.getId());
@@ -66,7 +66,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
       }
     }
 
-    if (account.getClass() == CheckingAccount.class) {
+    if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       LocalDate lastMaintenanceDate = ((CheckingAccount) account).getLastMaintenanceFee();
       if (lastMaintenanceDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
         MaintenanceFeeTransaction transaction = maintenanceFeeTransactionService.newTransaction(account.getId());
@@ -75,7 +75,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
       }
     }
 
-    if (account.getClass() == CheckingAccount.class) {
+    if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       if (compareMoney(account.getBalance(), ((CheckingAccount) account).getMinimumBalance()) < 0) {
         LocalDate lastPenaltyFee = account.getLastPenaltyFee();
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
@@ -90,7 +90,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
         );
         accountService.save(account);
       }
-    } else if (account.getClass() == SavingsAccount.class) {
+    } else if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       if (compareMoney(account.getBalance(), ((SavingsAccount) account).getMinimumBalance()) < 0) {
         LocalDate lastPenaltyFee = account.getLastPenaltyFee();
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {

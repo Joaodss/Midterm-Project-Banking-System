@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class EnumsUtil {
 
   // ============================== Valid Status from String (exists) ==============================
-  public static boolean isValidStatusFromString(String stringStatus) {
+  public static boolean isValidAccountStatusFromString(String stringStatus) {
     for (AccountStatus s : AccountStatus.values()) {
       if (s.name().equalsIgnoreCase(stringStatus))
         return true;
@@ -19,7 +19,7 @@ public class EnumsUtil {
   }
 
   // =================================== Get Status from String ===================================
-  public static AccountStatus statusFromString(String stringStatus) {
+  public static AccountStatus accountStatusFromString(String stringStatus) {
     for (AccountStatus s : AccountStatus.values()) {
       if (s.name().equalsIgnoreCase(stringStatus))
         return s;

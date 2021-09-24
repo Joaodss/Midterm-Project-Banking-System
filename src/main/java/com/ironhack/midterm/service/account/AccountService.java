@@ -1,10 +1,13 @@
 package com.ironhack.midterm.service.account;
 
 import com.ironhack.midterm.dao.account.Account;
+import com.ironhack.midterm.dto.AccountEditDTO;
 import com.ironhack.midterm.model.Money;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.management.InstanceNotFoundException;
 import javax.security.auth.login.LoginException;
+import javax.validation.Valid;
 import java.util.List;
 
 public interface AccountService {
@@ -31,5 +34,7 @@ public interface AccountService {
 
   // ============================== Save Account ==============================
   void save(Account account);
+
+  void edit(long id, AccountEditDTO accountEdit) throws InstanceNotFoundException;
 
 }

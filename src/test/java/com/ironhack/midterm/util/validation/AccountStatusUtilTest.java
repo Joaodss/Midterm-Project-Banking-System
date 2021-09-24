@@ -7,8 +7,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.ironhack.midterm.util.EnumsUtil.isValidStatusFromString;
-import static com.ironhack.midterm.util.EnumsUtil.statusFromString;
+import static com.ironhack.midterm.util.EnumsUtil.isValidAccountStatusFromString;
+import static com.ironhack.midterm.util.EnumsUtil.accountStatusFromString;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -19,14 +19,14 @@ class AccountStatusUtilTest {
   @ValueSource(strings = {"active", "ActIVe", "Frozen", "FROZEN"})
   @Order(1)
   void testIsValidStatusFromString_validStatus_true(String status) {
-    assertTrue(isValidStatusFromString(status));
+    assertTrue(isValidAccountStatusFromString(status));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"", " ", "Fro_zen", "a c t i v e", "blabla"})
   @Order(1)
   void testIsValidStatusFromString_invalidStatus_false(String status) {
-    assertFalse(isValidStatusFromString(status));
+    assertFalse(isValidAccountStatusFromString(status));
   }
 
 
@@ -35,21 +35,21 @@ class AccountStatusUtilTest {
   @ValueSource(strings = {"active", "ActIVe"})
   @Order(2)
   void testStatusFromString_validActiveStatus_returnActiveStatus(String status) {
-    assertEquals(AccountStatus.ACTIVE, statusFromString(status));
+    assertEquals(AccountStatus.ACTIVE, accountStatusFromString(status));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"Frozen", "FROZEN"})
   @Order(2)
   void testStatusFromString_validFrozenStatus_returnFrozenStatus(String status) {
-    assertEquals(AccountStatus.FROZEN, statusFromString(status));
+    assertEquals(AccountStatus.FROZEN, accountStatusFromString(status));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"", " ", "Fro_zen", "a c t i v e", "blabla"})
   @Order(2)
   void testStatusFromString_invalidStatus_throwException(String status) {
-    assertThrows(IllegalArgumentException.class, () -> statusFromString(status));
+    assertThrows(IllegalArgumentException.class, () -> accountStatusFromString(status));
   }
 
 
