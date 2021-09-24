@@ -100,7 +100,7 @@ public abstract class Account {
     this.secondaryOwner = secondaryOwner;
     this.penaltyFee = newMoney("40");
     this.creationDate = dateTimeNow();
-    this.lastPenaltyFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
+    this.lastPenaltyFee = getCreationDate().toLocalDate().minusMonths(1);
   }
 
   public Account(Money balance, AccountHolder primaryOwner) {
@@ -108,7 +108,7 @@ public abstract class Account {
     this.primaryOwner = primaryOwner;
     this.penaltyFee = newMoney("40");
     this.creationDate = dateTimeNow();
-    this.lastPenaltyFee = getCreationDate().toLocalDate().withDayOfMonth(1).plusMonths(1);
+    this.lastPenaltyFee = getCreationDate().toLocalDate().minusMonths(1);
   }
 
 

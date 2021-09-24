@@ -7,7 +7,7 @@ import com.ironhack.midterm.dto.LocalTransactionDTO;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.LocalTransactionRepository;
 import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
-import com.ironhack.midterm.service.AccountManagerServiceImpl;
+import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.LocalTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
   private AccountService accountService;
 
   @Autowired
-  private AccountManagerServiceImpl accountManagerService;
+  private AccountManagerService accountManagerService;
 
 
   // ======================================== ADD TRANSACTION Methods ========================================
@@ -62,7 +62,7 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
 
   public void validateLocalTransaction(LocalTransaction transaction) throws InstanceNotFoundException {
     if (accountManagerService.isTransactionTimeFraudulent(transaction.getBaseAccount(), transaction) ||
-        accountManagerService.isTransactionDailyAmountFraudulent(transaction.getBaseAccount(), transaction)) {
+        accountManagerService.isTransactionDailyAmountFraudulent(transaction.getBaseAccount())) {
       transactionReceiptRepository.save(transaction.refuseAndGenerateReceiverReceipt());
       transactionReceiptRepository.save(transaction.refuseAndGenerateSenderReceipt("Fraudulent behaviour detected! Base account was frozen."));
       accountService.freezeAccount(transaction.getBaseAccount().getId());

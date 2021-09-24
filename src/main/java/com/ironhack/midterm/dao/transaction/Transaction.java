@@ -53,13 +53,13 @@ public abstract class Transaction {
   })
   private Money convertedAmount;
 
-  @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
+  @JsonIncludeProperties(value = {"id"})
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "base_account_id")
   private Account baseAccount;
 
   @NotNull
-  @JsonIncludeProperties(value = {"id", "primaryOwner", "secondaryOwner"})
+  @JsonIncludeProperties(value = {"id"})
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "target_account_id")
   private Account targetAccount;

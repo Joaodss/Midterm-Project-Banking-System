@@ -53,22 +53,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.GET, "/api/users/{username}")
         .access("@apiGuard.checkUsernameOrIfAdmin(authentication, #username)")
         .mvcMatchers(HttpMethod.GET, "/api/users/", "/api/users/**").hasRole("ADMIN")
+        // GET /accounts
+        .mvcMatchers(HttpMethod.GET, "/api/accounts").hasAnyRole("ADMIN", "USER")
+        .mvcMatchers(HttpMethod.GET, "/api/accounts/{accountId}", "/api/accounts/{accountId}/**")
+        .access("@apiGuard.checkUsernameFromAccountIdOrIfAdmin(authentication, #accountId)")
+        .mvcMatchers(HttpMethod.GET, "/api/accounts/**").hasRole("ADMIN")
+
 
         // POST /users
         .mvcMatchers(HttpMethod.POST, "/api/users/new").permitAll()
         .mvcMatchers(HttpMethod.POST, "/api/users/new_admin").permitAll() // ********** temporary **********
         .mvcMatchers(HttpMethod.POST, "/api/users/**").hasRole("ADMIN")
-
-
-        // GET /accounts
-        .mvcMatchers(HttpMethod.GET, "/api/accounts/").hasAnyRole("ADMIN", "USER")
-        .mvcMatchers(HttpMethod.GET, "/api/accounts/{accountId}", "/api/accounts/{accountId}/**")
-        .access("@apiGuard.checkUsernameFromAccountIdOrIfAdmin(authentication, #accountId)")
-        .mvcMatchers(HttpMethod.GET, "/api/accounts/**").hasRole("ADMIN")
-
         // POST /accounts
-        .mvcMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("ADMIN")
+        .mvcMatchers(HttpMethod.POST, "/api/accounts/transactions/new_third_party_transaction").permitAll()
+        .mvcMatchers(HttpMethod.POST, "/api/accounts/{accountId}", "/api/accounts/{accountId}/**")
+        .access("@apiGuard.checkUsernameFromAccountIdOrIfAdmin(authentication, #accountId)")
+        .mvcMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("U")
 
+        // GET /users
+        .mvcMatchers(HttpMethod.PATCH, "/api/users/password").hasAnyRole("ADMIN", "USER")
 
         .anyRequest().authenticated();
   }

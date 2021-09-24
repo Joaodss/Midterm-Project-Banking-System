@@ -4,6 +4,7 @@ import com.ironhack.midterm.controller.AccountController;
 import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.model.Money;
+import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,9 @@ public class AccountControllerImpl implements AccountController {
   @Autowired
   private CreditCardService creditCardService;
 
+  @Autowired
+  private AccountManagerService accountManagerService;
+
 
   // ======================================== GET ACCOUNT Methods ========================================
   // -------------------- All Accounts [ADMIN] / User Specific Accounts [Specific USER] --------------------
@@ -44,9 +48,21 @@ public class AccountControllerImpl implements AccountController {
   public List<Account> getAccounts(Authentication auth) {
     try {
       if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
-        return accountService.getAll();
+
+        List<Account> accounts = accountService.getAll();
+        for (Account a : accounts) {
+          accountManagerService.checkForAlterations(a);
+        }
+        return accounts;
+
       } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-        return accountService.getAllByUsername(auth.getName());
+
+        List<Account> accounts = accountService.getAllByUsername(auth.getName());
+        for (Account a : accounts) {
+          accountManagerService.checkForAlterations(a);
+        }
+        return accounts;
+
       }
       throw new LoginException("Invalid user logg in.");
     } catch (LoginException e1) {
@@ -61,14 +77,11 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Account getAccountById(Authentication auth, @PathVariable("account_id") long id) {
     try {
-//      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
-        return accountService.getById(id);
-//      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-//        return accountService.getByUsernameAndId(auth.getName(), id);
-//      }
-//      throw new LoginException("Invalid user logg in.");
-//    } catch (LoginException e1) {
-//      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+
+      Account account = accountService.getById(id);
+      accountManagerService.checkForAlterations(account);
+      return account;
+
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found or not associated with your account.");
     } catch (Exception e) {
@@ -81,14 +94,11 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Money getAccountBalanceById(Authentication auth, @PathVariable("account_id") long id) {
     try {
-//      if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
-        return accountService.getBalanceById(id);
-//      } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-//        return accountService.getBalanceByUsernameAndId(auth.getName(), id);
-//      }
-//      throw new LoginException("Invalid user logg in.");
-//    } catch (LoginException e1) {
-//      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+
+      Account account = accountService.getById(id);
+      accountManagerService.checkForAlterations(account);
+      return account.getBalance();
+
     } catch (InstanceNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     } catch (Exception e) {
@@ -102,7 +112,13 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<CheckingAccount> getCheckingAccounts() {
     try {
-      return checkingAccountService.getAll();
+
+      List<CheckingAccount> accounts = checkingAccountService.getAll();
+      for (Account a : accounts) {
+        accountManagerService.checkForAlterations(a);
+      }
+      return accounts;
+
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -113,7 +129,13 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<StudentCheckingAccount> getStudentCheckingAccounts() {
     try {
-      return studentCheckingAccountService.getAll();
+
+      List<StudentCheckingAccount> accounts = studentCheckingAccountService.getAll();
+      for (Account a : accounts) {
+        accountManagerService.checkForAlterations(a);
+      }
+      return accounts;
+
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -124,7 +146,13 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<SavingsAccount> getSavingsAccounts() {
     try {
-      return savingsAccountService.getAll();
+
+      List<SavingsAccount> accounts = savingsAccountService.getAll();
+      for (Account a : accounts) {
+        accountManagerService.checkForAlterations(a);
+      }
+      return accounts;
+
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -135,7 +163,13 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<CreditCard> getCreditCards() {
     try {
-      return creditCardService.getAll();
+
+      List<CreditCard> accounts = creditCardService.getAll();
+      for (Account a : accounts) {
+        accountManagerService.checkForAlterations(a);
+      }
+      return accounts;
+
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }

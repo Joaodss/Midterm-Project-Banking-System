@@ -54,5 +54,10 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
     thirdPartyRepository.save(tp);
   }
 
+  public boolean hasHashedKey(String hashedKey) {
+    Optional<ThirdParty> thirdParty = thirdPartyRepository.findByHashedKey(hashedKey);
+    return thirdParty.isPresent();
+  }
+
 
 }

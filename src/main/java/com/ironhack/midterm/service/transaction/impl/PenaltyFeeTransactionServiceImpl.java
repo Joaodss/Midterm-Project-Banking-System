@@ -5,7 +5,7 @@ import com.ironhack.midterm.dao.transaction.PenaltyFeeTransaction;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.PenaltyFeeTransactionRepository;
 import com.ironhack.midterm.repository.transaction.TransactionReceiptRepository;
-import com.ironhack.midterm.service.AccountManagerServiceImpl;
+import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
   private AccountService accountService;
 
   @Autowired
-  private AccountManagerServiceImpl accountManagerService;
+  private AccountManagerService accountManagerService;
 
   // ======================================== ADD TRANSACTION Methods ========================================
   public PenaltyFeeTransaction newTransaction(long accountId) throws InstanceNotFoundException, IllegalArgumentException {

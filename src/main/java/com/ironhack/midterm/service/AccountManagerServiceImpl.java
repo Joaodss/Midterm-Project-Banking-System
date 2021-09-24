@@ -27,7 +27,7 @@ import static com.ironhack.midterm.util.MoneyUtil.*;
 import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
 
 @Service
-public class AccountManagerServiceImpl {
+public class AccountManagerServiceImpl implements AccountManagerService {
 
   @Autowired
   private TransactionReceiptRepository transactionReceiptRepository;
@@ -55,12 +55,14 @@ public class AccountManagerServiceImpl {
       if (lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate())) {
         InterestTransaction transaction = interestTransactionService.newTransaction(account.getId());
         interestTransactionService.validateInterestTransaction(transaction);
+
       }
     } else if (account.getClass() == CreditCard.class) {
       LocalDate lastInterestRate = ((CreditCard) account).getLastInterestUpdate();
       if (lastInterestRate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
         InterestTransaction transaction = interestTransactionService.newTransaction(account.getId());
         interestTransactionService.validateInterestTransaction(transaction);
+
       }
     }
 
@@ -69,6 +71,7 @@ public class AccountManagerServiceImpl {
       if (lastMaintenanceDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
         MaintenanceFeeTransaction transaction = maintenanceFeeTransactionService.newTransaction(account.getId());
         maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
+
       }
     }
 
@@ -79,6 +82,13 @@ public class AccountManagerServiceImpl {
           PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
           penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
         }
+      } else {
+        account.setLastPenaltyFee(
+            account.getLastPenaltyFee().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
+                account.getLastPenaltyFee() :
+                dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)
+        );
+        accountService.save(account);
       }
     } else if (account.getClass() == SavingsAccount.class) {
       if (compareMoney(account.getBalance(), ((SavingsAccount) account).getMinimumBalance()) < 0) {
@@ -86,29 +96,18 @@ public class AccountManagerServiceImpl {
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
           PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
           penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+
         }
+      } else {
+        account.setLastPenaltyFee(
+            account.getLastPenaltyFee().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
+                account.getLastPenaltyFee() :
+                dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)
+        );
+        accountService.save(account);
       }
     }
 
-  }
-
-
-  public void validateThirdPartyTransaction(ThirdPartyTransaction transaction) throws InstanceNotFoundException {
-    if (transaction.getTransactionPurpose() == TransactionPurpose.REQUEST &&
-        !isTransactionTimeFraudulent(transaction.getBaseAccount(), transaction) &&
-        !isTransactionDailyAmountFraudulent(transaction.getBaseAccount(), transaction)) {
-      accountService.freezeAccount(transaction.getBaseAccount().getId());
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Fraudulent behaviour detected! Base account was frozen."));
-    } else if (isTransactionAmountValid(transaction) && isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.acceptAndGenerateReceipt());
-
-      // TODO - Add service to exchange money
-
-    } else if (isTransactionAmountValid(transaction) && !isAccountsNotFrozen(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Account is frozen. Unable to complete the transaction."));
-    } else if (transaction.getTransactionPurpose() == TransactionPurpose.REQUEST && !isTransactionAmountValid(transaction)) {
-      transactionReceiptRepository.save(transaction.refuseAndGenerateReceipt("Invalid amount to transfer."));
-    }
   }
 
 
@@ -164,7 +163,7 @@ public class AccountManagerServiceImpl {
 
   // -------------------- Check if transaction daily amount is fraudulent --------------------
   // (daily amount > 1000 or max daily amount > 150%)
-  public boolean isTransactionDailyAmountFraudulent(Account account, Transaction transaction) {
+  public boolean isTransactionDailyAmountFraudulent(Account account) {
     Money totalDayTransaction = lastDailyTransactions(account);
 
     Money dailyMax = dailyMax(account);

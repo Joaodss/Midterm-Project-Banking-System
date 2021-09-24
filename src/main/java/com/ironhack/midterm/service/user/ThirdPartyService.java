@@ -12,7 +12,9 @@ public interface ThirdPartyService {
   List<ThirdParty> getAll();
 
 
+
   // ======================================== ADD USERS Methods ========================================
   void newUser(ThirdPartyDTO thirdParty) throws InstanceAlreadyExistsException;
 
+  boolean hasHashedKey(String hashedKey);
 }
