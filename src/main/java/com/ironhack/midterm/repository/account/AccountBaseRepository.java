@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface AccountBaseRepository<T extends Account> extends JpaRepository<T, Long> {
+  // Used by all user account based repositories.
 
   @Query("SELECT e FROM #{#entityName} e " +
       "LEFT JOIN FETCH e.primaryOwner p " +

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface UserBaseRepository<T extends User> extends JpaRepository<T, Long> {
+  // Used by all user based repositories.
 
   Optional<T> findByUsername(String username);
 

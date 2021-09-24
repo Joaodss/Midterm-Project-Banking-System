@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface TransactionBaseRepository<T extends Transaction> extends JpaRepository<T, Long> {
+  // Used by all transaction based repositories.
 
   @Query("SELECT e FROM #{#entityName} e " +
       "LEFT JOIN FETCH e.baseAccount ba " +
