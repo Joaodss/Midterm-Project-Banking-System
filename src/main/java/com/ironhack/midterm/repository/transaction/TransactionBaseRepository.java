@@ -23,7 +23,7 @@ public interface TransactionBaseRepository<T extends Transaction> extends JpaRep
       "LEFT JOIN FETCH e.targetAccount ta " +
       "WHERE ba.id = :id " +
       "OR ta.id = :id " +
-      "ORDER BY t.operationDate DESC")
+      "ORDER BY e.operationDate DESC")
   List<T> findAllByAccountIdJoined(long id);
 
 }
