@@ -1,9 +1,8 @@
 package com.ironhack.midterm.service;
 
 import com.ironhack.midterm.dao.account.*;
-import com.ironhack.midterm.dao.transaction.*;
+import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.enums.AccountStatus;
-import com.ironhack.midterm.enums.TransactionPurpose;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.service.account.AccountService;
@@ -53,14 +52,14 @@ public class AccountManagerServiceImpl implements AccountManagerService {
     if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       LocalDate lastInterestDate = ((SavingsAccount) account).getLastInterestUpdate();
       if (lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate())) {
-        InterestTransaction transaction = interestTransactionService.newTransaction(account.getId());
+        Transaction transaction = interestTransactionService.newTransaction(account.getId());
         interestTransactionService.validateInterestTransaction(transaction);
 
       }
     } else if (account.getClass() == CreditCard.class) {
       LocalDate lastInterestRate = ((CreditCard) account).getLastInterestUpdate();
       if (lastInterestRate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        InterestTransaction transaction = interestTransactionService.newTransaction(account.getId());
+        Transaction transaction = interestTransactionService.newTransaction(account.getId());
         interestTransactionService.validateInterestTransaction(transaction);
 
       }
@@ -69,7 +68,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
     if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       LocalDate lastMaintenanceDate = ((CheckingAccount) account).getLastMaintenanceFee();
       if (lastMaintenanceDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        MaintenanceFeeTransaction transaction = maintenanceFeeTransactionService.newTransaction(account.getId());
+        Transaction transaction = maintenanceFeeTransactionService.newTransaction(account.getId());
         maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
 
       }
@@ -79,7 +78,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
       if (compareMoney(account.getBalance(), ((CheckingAccount) account).getMinimumBalance()) < 0) {
         LocalDate lastPenaltyFee = account.getLastPenaltyFeeCheck();
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-          PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
+          Transaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
           penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
         }
       } else {
@@ -94,7 +93,7 @@ public class AccountManagerServiceImpl implements AccountManagerService {
       if (compareMoney(account.getBalance(), ((SavingsAccount) account).getMinimumBalance()) < 0) {
         LocalDate lastPenaltyFee = account.getLastPenaltyFeeCheck();
         if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-          PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
+          Transaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
           penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
 
         }
@@ -112,20 +111,6 @@ public class AccountManagerServiceImpl implements AccountManagerService {
 
 
   // ============================== SPECIFIC VALIDATION ==============================
-  // -------------------- Check if transaction is possible --------------------
-  // (transfer money <= account balance and account not frozen)
-  public boolean isTransactionAmountValid(Transaction transaction) {
-    if (transaction.getClass() == ThirdPartyTransaction.class) {
-      if (((ThirdPartyTransaction) transaction).getTransactionPurpose() == TransactionPurpose.REQUEST)
-        return compareMoney(transaction.getTargetAccount().getBalance(), transaction.getBaseAmount()) >= 0;
-    } else if (transaction.getClass() == LocalTransaction.class) {
-      return compareMoney(transaction.getBaseAccount().getBalance(), transaction.getBaseAmount()) >= 0;
-    } else if (transaction.getClass() == PenaltyFeeTransaction.class ||
-        transaction.getClass() == MaintenanceFeeTransaction.class) {
-      return compareMoney(transaction.getTargetAccount().getBalance(), transaction.getBaseAmount()) >= 0;
-    }
-    return true;
-  }
 
   // -------------------- Check if transaction accounts are one frozen --------------------
   // (accounts in transaction not frozen)

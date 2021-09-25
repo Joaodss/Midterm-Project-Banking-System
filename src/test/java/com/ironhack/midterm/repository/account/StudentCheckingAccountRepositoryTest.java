@@ -5,7 +5,7 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
-import com.ironhack.midterm.testUtils.DbResetUtil;
+import com.ironhack.midterm.utils.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -173,6 +173,22 @@ class StudentCheckingAccountRepositoryTest {
 
 
   // ======================================== Custom Queries Testing ========================================
+  // ==================== Find By Username Joined ====================
+  @Test
+  @Order(8)
+  void testFindByUsernameJoined_validUsername_returnCheckingAccountWithTransaction() {
+    var element1 = studentCheckingAccountRepository.findAllByUsernameJoined("joa0ds5");
+    assertFalse(element1.isEmpty());
+    assertTrue(element1.contains(sca1));
+    assertTrue(element1.contains(sca2));
+    assertFalse(element1.contains(sca3));
+  }
 
+  @Test
+  @Order(8)
+  void testFindByUsernameJoined_invalidUsername_returnCheckingAccountWithTransaction() {
+    var element1 = studentCheckingAccountRepository.findAllByUsernameJoined("noooooooo");
+    assertTrue(element1.isEmpty());
+  }
 
 }

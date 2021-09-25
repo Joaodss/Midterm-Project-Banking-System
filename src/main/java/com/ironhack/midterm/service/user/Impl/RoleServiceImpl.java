@@ -16,11 +16,6 @@ public class RoleServiceImpl implements RoleService {
 
   // ======================================== GET Methods ========================================
   @Override
-  public boolean isRolePresent(String name) {
-    return roleRepository.findByName(name).isPresent();
-  }
-
-  @Override
   public Optional<Role> getRoleByName(String name) {
     return roleRepository.findByName(name);
   }

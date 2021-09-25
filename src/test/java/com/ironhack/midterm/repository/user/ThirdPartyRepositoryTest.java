@@ -2,7 +2,7 @@ package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.dao.user.ThirdParty;
-import com.ironhack.midterm.testUtils.DbResetUtil;
+import com.ironhack.midterm.utils.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,22 +32,18 @@ class ThirdPartyRepositoryTest {
   private Role r1;
   private Role r2;
 
-  private ThirdParty tp1;
-  private ThirdParty tp2;
-  private ThirdParty tp3;
-
   @BeforeEach
   void setUp() {
     r1 = new Role("USER");
     r2 = new Role("ADMIN");
     roleRepository.saveAll(List.of(r1, r2));
 
-    tp1 = new ThirdParty("thirdParty", "thirdParty", "thirdParty");
+    ThirdParty tp1 = new ThirdParty("thirdParty", "thirdParty", "thirdParty");
     tp1.getRoles().add(r1);
     tp1.getRoles().add(r2);
-    tp2 = new ThirdParty("superuser", "test1", "SU");
+    ThirdParty tp2 = new ThirdParty("superuser", "test1", "SU");
     tp2.getRoles().add(r1);
-    tp3 = new ThirdParty("joaodss", "password", "Joaods");
+    ThirdParty tp3 = new ThirdParty("joaodss", "password", "João Afonso");
     thirdPartyRepository.saveAll(List.of(tp1, tp2, tp3));
   }
 
@@ -93,7 +89,7 @@ class ThirdPartyRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadThirdParty_findById_invalidId_returnsObjectsWithSameId() {
+  void testReadThirdParty_findById_invalidId_returnsEmpty() {
     var element1 = thirdPartyRepository.findById(99L);
     assertTrue(element1.isEmpty());
   }
@@ -152,11 +148,26 @@ class ThirdPartyRepositoryTest {
   void testReadFromRoles_findById_returnThirdPartyWithItsSetOfRoles_roleWithCorrectName() {
     var element1 = thirdPartyRepository.findById(2L);
     assertTrue(element1.isPresent());
+    assertTrue(element1.get().getRoles().stream().findFirst().isPresent());
     assertEquals("USER", element1.get().getRoles().stream().findFirst().get().getName());
   }
 
 
   // ======================================== Custom Queries Testing ========================================
+  // ==================== Find By Username ====================
+  @Test
+  @Order(7)
+  void testFindByUsername_usernameIsValid_returnCorrectAccount() {
+    var element1 = thirdPartyRepository.findByUsername("joaodss");
+    assertTrue(element1.isPresent());
+    assertEquals("João Afonso", element1.get().getName());
+  }
 
+  @Test
+  @Order(7)
+  void testFindByUsername_usernameIsInvalid_returnEmpty() {
+    var element1 = thirdPartyRepository.findByUsername("no_username");
+    assertTrue(element1.isEmpty());
+  }
 
 }

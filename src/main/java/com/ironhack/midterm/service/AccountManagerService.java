@@ -9,8 +9,6 @@ public interface AccountManagerService {
 
   void checkForAlterations(Account account) throws InstanceNotFoundException;
 
-  boolean isTransactionAmountValid(Transaction transaction);
-
   boolean isAccountsNotFrozen(Transaction transaction);
 
   boolean isTransactionTimeFraudulent(Account account, Transaction transaction);

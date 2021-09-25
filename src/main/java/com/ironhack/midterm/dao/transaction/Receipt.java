@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "transaction_receipt")
+@Table(name = "receipt")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -75,7 +75,7 @@ public class Receipt {
 
 
   // ======================================== CONSTRUCTORS ========================================
-  // Constructor with personal and external accounts.
+  // Constructor with personal and external accounts. (for Local Transactions)
   public Receipt(Account personalAccount, Account externalAccount, TransactionType transactionType, Money baseAmount, Status status, String details, LocalDateTime operationDate, Transaction transaction) {
     this.personalAccount = personalAccount;
     this.externalAccount = externalAccount;

@@ -3,7 +3,7 @@ package com.ironhack.midterm.repository.user;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Role;
 import com.ironhack.midterm.model.Address;
-import com.ironhack.midterm.testUtils.DbResetUtil;
+import com.ironhack.midterm.utils.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,26 +37,21 @@ class AccountHolderRepositoryTest {
   private Role r1;
   private Role r2;
 
-  private AccountHolder ah1;
-  private AccountHolder ah2;
-  private AccountHolder ah3;
-
   @BeforeEach
   void setUp() {
     pa1 = new Address("Rua 1", "1010", "Coimbra", "Portugal");
-    pa1 = new Address("Rua 244", "3526", "Porto", "Portugal");
     pa2 = new Address("Rua 22", "2222", "Lisbon", "Portugal");
 
     r1 = new Role("USER");
     r2 = new Role("ADMIN");
     roleRepository.saveAll(List.of(r1, r2));
 
-    ah1 = new AccountHolder("joaodss", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa1, pa1);
+    AccountHolder ah1 = new AccountHolder("joaodss", "123456", "João Afonso", LocalDate.parse("1996-10-01"), pa1, pa1);
     ah1.getRoles().add(r1);
     ah1.getRoles().add(r2);
-    ah2 = new AccountHolder("anamaria", "123456", "Ana Maria", LocalDate.parse("1989-08-25"), pa2);
+    AccountHolder ah2 = new AccountHolder("anamaria", "123456", "Ana Maria", LocalDate.parse("1989-08-25"), pa2);
     ah2.getRoles().add(r1);
-    ah3 = new AccountHolder("jose", "123456", "Jose", LocalDate.parse("1964-03-19"), pa1, pa2);
+    AccountHolder ah3 = new AccountHolder("jose", "123456", "Jose", LocalDate.parse("1964-03-19"), pa1, pa2);
     accountHolderRepository.saveAll(List.of(ah1, ah2, ah3));
   }
 
@@ -110,7 +105,7 @@ class AccountHolderRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadAccountHolder_findById_invalidId_returnsObjectsWithSameId() {
+  void testReadAccountHolder_findById_invalidId_returnsEmpty() {
     var element1 = accountHolderRepository.findById(99L);
     assertTrue(element1.isEmpty());
   }
@@ -169,18 +164,26 @@ class AccountHolderRepositoryTest {
   void testReadFromRoles_findById_returnAccountHolderWithItsSetOfRoles_roleWithCorrectName() {
     var element1 = accountHolderRepository.findById(2L);
     assertTrue(element1.isPresent());
+    assertTrue(element1.get().getRoles().stream().findFirst().isPresent());
     assertEquals("USER", element1.get().getRoles().stream().findFirst().get().getName());
   }
 
 
   // ======================================== Custom Queries Testing ========================================
+  // ==================== Find By Username ====================
+  @Test
+  @Order(7)
+  void testFindByUsername_usernameIsValid_returnCorrectAccount() {
+    var element1 = accountHolderRepository.findByUsername("joaodss");
+    assertTrue(element1.isPresent());
+    assertEquals("João Afonso", element1.get().getName());
+  }
 
   @Test
   @Order(7)
-  void testGetUsername_findByUsername_returnAccountHolderWithCorrectUsername() {
-    var element1 = accountHolderRepository.findByUsername("joaodss");
-    assertTrue(element1.isPresent());
-    assertEquals("joaodss", element1.get().getUsername());
+  void testFindByUsername_usernameIsInvalid_returnEmpty() {
+    var element1 = accountHolderRepository.findByUsername("no_username");
+    assertTrue(element1.isEmpty());
   }
 
 }

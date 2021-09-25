@@ -42,7 +42,7 @@ public class SavingsAccount extends Account {
   private Money minimumBalance;
 
   @NotNull
-  @Column(name = "interest_rate")
+  @Column(name = "interest_rate", precision = 16, scale = 4)
   private BigDecimal interestRate;
 
   @NotNull

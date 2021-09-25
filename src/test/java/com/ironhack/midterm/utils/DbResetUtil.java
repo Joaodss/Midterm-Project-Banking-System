@@ -1,4 +1,4 @@
-package com.ironhack.midterm.testUtils;
+package com.ironhack.midterm.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

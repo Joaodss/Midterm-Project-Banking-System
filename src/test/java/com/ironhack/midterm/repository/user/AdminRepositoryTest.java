@@ -2,7 +2,7 @@ package com.ironhack.midterm.repository.user;
 
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.Role;
-import com.ironhack.midterm.testUtils.DbResetUtil;
+import com.ironhack.midterm.utils.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,22 +32,18 @@ class AdminRepositoryTest {
   private Role r1;
   private Role r2;
 
-  private Admin a1;
-  private Admin a2;
-  private Admin a3;
-
   @BeforeEach
   void setUp() {
     r1 = new Role("USER");
     r2 = new Role("ADMIN");
     roleRepository.saveAll(List.of(r1, r2));
 
-    a1 = new Admin("admin", "admin", "Admin");
+    Admin a1 = new Admin("admin", "admin", "Admin");
     a1.getRoles().add(r1);
     a1.getRoles().add(r2);
-    a2 = new Admin("superuser", "test1", "SU");
+    Admin a2 = new Admin("superuser", "test1", "SU");
     a2.getRoles().add(r1);
-    a3 = new Admin("joaodss", "password", "Joaods");
+    Admin a3 = new Admin("joaodss", "password", "João Afonso");
     adminRepository.saveAll(List.of(a1, a2, a3));
   }
 
@@ -93,7 +89,7 @@ class AdminRepositoryTest {
 
   @Test
   @Order(3)
-  void testReadAdmin_findById_invalidId_returnsObjectsWithSameId() {
+  void testReadAdmin_findById_invalidId_returnsEmpty() {
     var element1 = adminRepository.findById(99L);
     assertTrue(element1.isEmpty());
   }
@@ -152,11 +148,26 @@ class AdminRepositoryTest {
   void testReadFromRoles_findById_returnAdminWithItsSetOfRoles_roleWithCorrectName() {
     var element1 = adminRepository.findById(2L);
     assertTrue(element1.isPresent());
+    assertTrue(element1.get().getRoles().stream().findFirst().isPresent());
     assertEquals("USER", element1.get().getRoles().stream().findFirst().get().getName());
   }
 
 
   // ======================================== Custom Queries Testing ========================================
+  // ==================== Find By Username ====================
+  @Test
+  @Order(7)
+  void testFindByUsername_usernameIsValid_returnCorrectAccount() {
+    var element1 = adminRepository.findByUsername("joaodss");
+    assertTrue(element1.isPresent());
+    assertEquals("João Afonso", element1.get().getName());
+  }
 
+  @Test
+  @Order(7)
+  void testFindByUsername_usernameIsInvalid_returnEmpty() {
+    var element1 = adminRepository.findByUsername("no_username");
+    assertTrue(element1.isEmpty());
+  }
 
 }

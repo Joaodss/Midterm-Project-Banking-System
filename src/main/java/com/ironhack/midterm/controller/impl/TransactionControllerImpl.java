@@ -134,7 +134,7 @@ public class TransactionControllerImpl implements TransactionController {
   public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionLocalDTO localTransaction) {
     try {
       Account account = accountService.getById(id);
-      LocalTransaction transaction = localTransactionService.newTransaction(id, localTransaction);
+      Transaction transaction = localTransactionService.newTransaction(id, localTransaction);
       localTransactionService.validateLocalTransaction(transaction);
     } catch (InstanceNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
@@ -152,7 +152,7 @@ public class TransactionControllerImpl implements TransactionController {
     try {
       if (thirdPartyService.hasHashedKey(hashedKey)) {
         Account account = accountService.getById(thirdPartyTransaction.getTargetAccountId());
-        ThirdPartyTransaction transaction = thirdPartyTransactionService.newTransaction(thirdPartyTransaction);
+        Transaction transaction = thirdPartyTransactionService.newTransaction(thirdPartyTransaction);
         thirdPartyTransactionService.validateThirdPartyTransaction(transaction);
       } else {
         throw new IllegalArgumentException("Invalid hashed key.");
@@ -174,13 +174,13 @@ public class TransactionControllerImpl implements TransactionController {
       accountService.getById(id);
       TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());
       if (transactionType == TransactionType.INTEREST) {
-        InterestTransaction transaction = interestTransactionService.newTransaction(id);
+        Transaction transaction = interestTransactionService.newTransaction(id);
         interestTransactionService.validateInterestTransaction(transaction);
       } else if (transactionType == TransactionType.MAINTENANCE_FEE) {
-        MaintenanceFeeTransaction transaction = maintenanceFeeTransactionService.newTransaction(id);
+        Transaction transaction = maintenanceFeeTransactionService.newTransaction(id);
         maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
       } else if (transactionType == TransactionType.PENALTY_FEE) {
-        PenaltyFeeTransaction transaction = penaltyFeeTransactionService.newTransaction(id);
+        Transaction transaction = penaltyFeeTransactionService.newTransaction(id);
         penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
       }
     } catch (InstanceNotFoundException e1) {

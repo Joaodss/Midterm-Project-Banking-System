@@ -4,7 +4,7 @@ import com.ironhack.midterm.dao.account.CreditCard;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.user.AccountHolderRepository;
-import com.ironhack.midterm.testUtils.DbResetUtil;
+import com.ironhack.midterm.utils.DbResetUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -123,7 +123,7 @@ class CreditCardRepositoryTest {
 
     var updatedElement1 = creditCardRepository.findById(3L);
     assertTrue(updatedElement1.isPresent());
-    assertEquals(newBD("0.12"), updatedElement1.get().getInterestRate());
+    assertEquals(newBD("0.1200"), updatedElement1.get().getInterestRate());
   }
 
   // ==================== Delete ====================
@@ -172,6 +172,23 @@ class CreditCardRepositoryTest {
 
 
   // ======================================== Custom Queries Testing ========================================
+  // ==================== Find By Username Joined ====================
+  @Test
+  @Order(8)
+  void testFindByUsernameJoined_validUsername_returnCheckingAccountWithTransaction() {
+    var element1 = creditCardRepository.findAllByUsernameJoined("an5m6ri7");
+    assertFalse(element1.isEmpty());
+    assertTrue(element1.contains(cc3));
+    assertTrue(element1.contains(cc2));
+    assertFalse(element1.contains(cc1));
+  }
+
+  @Test
+  @Order(8)
+  void testFindByUsernameJoined_invalidUsername_returnCheckingAccountWithTransaction() {
+    var element1 = creditCardRepository.findAllByUsernameJoined("noooooooo");
+    assertTrue(element1.isEmpty());
+  }
 
 
 }

@@ -115,6 +115,7 @@ public abstract class Account {
 
   // ======================================== METHODS ========================================
   // Joins incomingTransactions and outgoingTransactions, and returns them ordered by date (new on top).
+  @JsonIgnore
   public List<Transaction> getAllTransactionsOrdered() {
     List<Transaction> allTransactions = new ArrayList<>();
     allTransactions.addAll(incomingTransactions);
