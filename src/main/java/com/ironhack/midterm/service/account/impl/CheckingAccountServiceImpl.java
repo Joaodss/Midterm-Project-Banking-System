@@ -5,16 +5,16 @@ import com.ironhack.midterm.dao.account.StudentCheckingAccount;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.repository.account.CheckingAccountRepository;
-import com.ironhack.midterm.repository.account.StudentCheckingAccountRepository;
 import com.ironhack.midterm.service.account.CheckingAccountService;
+import com.ironhack.midterm.service.account.StudentCheckingAccountService;
 import com.ironhack.midterm.service.user.AccountHolderService;
-import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
@@ -26,22 +26,22 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
   private CheckingAccountRepository checkingAccountRepository;
 
   @Autowired
-  private StudentCheckingAccountRepository studentCheckingAccountRepository;
+  private AccountHolderService accountHolderService;
 
   @Autowired
-  private AccountHolderService accountHolderService;
+  private StudentCheckingAccountService studentCheckingAccountService;
 
 
   // ======================================== GET ACCOUNT Methods ========================================
   public List<CheckingAccount> getAll() {
-    List<CheckingAccount> checkingAccounts = checkingAccountRepository.findAllJoined();
-    List<StudentCheckingAccount> studentCheckingAccounts = studentCheckingAccountRepository.findAllJoined();
+    ArrayList<CheckingAccount> checkingAccounts = new ArrayList<>(checkingAccountRepository.findAllJoined());
+    ArrayList<StudentCheckingAccount> studentCheckingAccounts = new ArrayList<>(studentCheckingAccountService.getAll());
     checkingAccounts.removeAll(studentCheckingAccounts);
     return checkingAccounts;
   }
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  public void newAccount(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
+  public void newAccount(AccountDTO checkingAccount) throws EntityNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.findAccountHolders(checkingAccount);
 
@@ -49,14 +49,12 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
       // older than 24 years (25 years old or more) (birthdate + 25 < now)
       CheckingAccount ca = new CheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency()), accountHolders[0], accountHolders[1]);
       ca.updateCurrencyValues();
-
       checkingAccountRepository.save(ca);
     } else {
       // younger than 24 years (24 years old or less) (birthdate + 25 > now)
       StudentCheckingAccount sca = new StudentCheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency()), accountHolders[0], accountHolders[1]);
       sca.updateCurrencyValues();
-
-      studentCheckingAccountRepository.save(sca);
+      studentCheckingAccountService.newAccount(sca);
     }
   }
 

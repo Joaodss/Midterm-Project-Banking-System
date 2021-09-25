@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface CreditCardService {
 
-  // ======================================== GET ACCOUNT Methods ========================================
+  // ======================================== get Methods ========================================
   List<CreditCard> getAll();
 
-
-  // ======================================== ADD ACCOUNT Methods ========================================
+  // ======================================== new Methods ========================================
   void newAccount(AccountDTO creditCard) throws InstanceNotFoundException, IllegalArgumentException;
 
+  // ======================================== update balance Methods ========================================
 
 }

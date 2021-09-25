@@ -3,28 +3,26 @@ package com.ironhack.midterm.service.account;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dto.AccountEditDTO;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 public interface AccountService {
 
-  // ======================================== GET Methods ========================================
+  // ======================================== get Methods ========================================
   List<Account> getAll();
-
-  Account getById(Long id) throws InstanceNotFoundException;
 
   List<Account> getAllByUsername(String username);
 
+  Account getById(Long id) throws EntityNotFoundException;
 
-  // ============================== Freeze Account ==============================
-  void freezeAccount(long id) throws InstanceNotFoundException;
+  // ======================================== edit Methods ========================================
+  void edit(long id, AccountEditDTO accountEdit) throws EntityNotFoundException;
 
-  void unFreezeAccount(long id) throws InstanceNotFoundException;
-
-
-  // ============================== Save Account ==============================
+  // ======================================== utils Methods ========================================
   void save(Account account);
 
-  void edit(long id, AccountEditDTO accountEdit) throws InstanceNotFoundException;
+  void freezeAccount(long id) throws EntityNotFoundException;
+
+  void updateBalance(Account account);
 
 }

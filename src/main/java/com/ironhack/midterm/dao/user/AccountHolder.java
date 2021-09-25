@@ -50,12 +50,12 @@ public class AccountHolder extends User {
   private Address mailingAddress;
 
   // ======================================== MAPPING ========================================
-  @JsonIncludeProperties(value = {"id", "accountType", "balance"})
+  @JsonIncludeProperties(value = {"id", "accountType"})
   @ToString.Exclude
   @OneToMany(mappedBy = "primaryOwner")
   private List<Account> primaryAccounts = new ArrayList<>();
 
-  @JsonIncludeProperties(value = {"id", "accountType", "balance"})
+  @JsonIncludeProperties(value = {"id", "accountType"})
   @ToString.Exclude
   @OneToMany(mappedBy = "secondaryOwner")
   private List<Account> secondaryAccounts = new ArrayList<>();

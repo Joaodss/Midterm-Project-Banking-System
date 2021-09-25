@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.management.InstanceAlreadyExistsException;
 import javax.persistence.EntityExistsException;
 import java.util.Optional;
 

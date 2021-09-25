@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
 public class ApiGuardService {
@@ -31,7 +32,7 @@ public class ApiGuardService {
       account = accountService.getById(Long.parseLong(id));
     } catch (NumberFormatException e1) {
       return authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-    } catch (InstanceNotFoundException e2) {
+    } catch (EntityNotFoundException e2) {
       if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN")))
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Account id noty found.");
       return false;

@@ -12,7 +12,7 @@ import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import java.util.Currency;
 import java.util.List;
 
@@ -35,36 +35,37 @@ public class AccountServiceImpl implements AccountService {
     return accountRepository.findAllJoined();
   }
 
-  public Account getById(Long id) throws InstanceNotFoundException {
-    var account = accountRepository.findByIdJoined(id);
-    if (account.isPresent()) return account.get();
-    throw new InstanceNotFoundException();
-  }
-
   public List<Account> getAllByUsername(String username) {
-    return accountRepository.findAllByUsernameJoined(username);
+    List<Account> accounts = accountRepository.findAllByUsernameJoined(username);
+    for (Account a : accounts) updateBalance(a);
+    return accounts;
   }
 
-  public void freezeAccount(long id) throws InstanceNotFoundException {
+  public Account getById(Long id) throws EntityNotFoundException {
+    var account = accountRepository.findByIdJoined(id);
+    if (account.isPresent()) {
+      updateBalance(account.get());
+      return account.get();
+    }
+    throw new EntityNotFoundException("Id not found.");
+  }
+
+  // ============================== Freeze Account ==============================
+  public void freezeAccount(long id) throws EntityNotFoundException {
     var account = getById(id);
-    if (account.getClass() == CheckingAccount.class)
+
+    if (account.getClass() == CheckingAccount.class) {
       ((CheckingAccount) account).setAccountStatus(AccountStatus.FROZEN);
-    if (account.getClass() == StudentCheckingAccount.class)
+      accountRepository.save(account);
+    }
+    if (account.getClass() == StudentCheckingAccount.class) {
       ((StudentCheckingAccount) account).setAccountStatus(AccountStatus.FROZEN);
-    if (account.getClass() == SavingsAccount.class)
+      accountRepository.save(account);
+    }
+    if (account.getClass() == SavingsAccount.class) {
       ((SavingsAccount) account).setAccountStatus(AccountStatus.FROZEN);
-    save(account);
-  }
-
-  public void unFreezeAccount(long id) throws InstanceNotFoundException {
-    var account = getById(id);
-    if (account.getClass() == CheckingAccount.class)
-      ((CheckingAccount) account).setAccountStatus(AccountStatus.ACTIVE);
-    if (account.getClass() == StudentCheckingAccount.class)
-      ((StudentCheckingAccount) account).setAccountStatus(AccountStatus.ACTIVE);
-    if (account.getClass() == SavingsAccount.class)
-      ((SavingsAccount) account).setAccountStatus(AccountStatus.ACTIVE);
-    save(account);
+      accountRepository.save(account);
+    }
   }
 
 
@@ -73,20 +74,25 @@ public class AccountServiceImpl implements AccountService {
     accountRepository.save(account);
   }
 
-  public void edit(long id, AccountEditDTO accountEdit) throws InstanceNotFoundException {
+  // ============================== Edit Account ==============================
+  public void edit(long id, AccountEditDTO accountEdit) throws EntityNotFoundException {
     Account account = getById(id);
 
     if (accountEdit.getPrimaryOwnerUsername() != null) {
       User primaryUser = userService.getByUsername(accountEdit.getPrimaryOwnerUsername());
-      if (primaryUser.getClass() == AccountHolder.class) account.setPrimaryOwner((AccountHolder) primaryUser);
+      if (primaryUser.getClass() == AccountHolder.class) {
+        account.setPrimaryOwner((AccountHolder) primaryUser);
+      } else throw new EntityNotFoundException();
     }
 
     if (accountEdit.getSecondaryOwnerUsername() != null) {
       User secondaryUser = userService.getByUsername(accountEdit.getSecondaryOwnerUsername());
-      if (secondaryUser.getClass() == AccountHolder.class) account.setSecondaryOwner((AccountHolder) secondaryUser);
+      if (secondaryUser.getClass() == AccountHolder.class) {
+        account.setSecondaryOwner((AccountHolder) secondaryUser);
+      } else throw new EntityNotFoundException();
     }
 
-    // ========== (Student) Checking Accounts ==========
+    // ==================== (Student) Checking Accounts ====================
     if (account.getClass() == CheckingAccount.class || account.getClass() == StudentCheckingAccount.class) {
       // Status
       if (accountEdit.getAccountStatus() != null)
@@ -112,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
         ((CheckingAccount) account).setLastMaintenanceFee(accountEdit.getLastMaintenanceFee());
 
 
-      // ========== Savings Accounts ==========
+      // ==================== Savings Accounts ====================
     } else if (account.getClass() == SavingsAccount.class) {
       // Status
       if (accountEdit.getAccountStatus() != null)
@@ -142,7 +148,7 @@ public class AccountServiceImpl implements AccountService {
         ((SavingsAccount) account).setLastInterestUpdate(accountEdit.getLastInterestUpdate());
 
 
-      // ========== Credit Cards ==========
+      // ==================== Credit Cards ====================
     } else if (account.getClass() == CreditCard.class) {
       // Currency
       if (accountEdit.getCurrency() != null) {
@@ -166,7 +172,6 @@ public class AccountServiceImpl implements AccountService {
 
       if (accountEdit.getLastInterestUpdate() != null)
         ((CreditCard) account).setLastInterestUpdate(accountEdit.getLastInterestUpdate());
-
     }
 
     // Account Balance
@@ -180,6 +185,10 @@ public class AccountServiceImpl implements AccountService {
     if (accountEdit.getLastPenaltyFee() != null) account.setLastPenaltyFeeCheck(accountEdit.getLastPenaltyFee());
 
     save(account);
+
+  }
+
+  public void updateBalance(Account account) {
 
   }
 

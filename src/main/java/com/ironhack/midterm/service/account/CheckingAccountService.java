@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface CheckingAccountService {
 
-  // ======================================== GET ACCOUNT Methods ========================================
+  // ======================================== get Methods ========================================
   List<CheckingAccount> getAll();
 
-
-  // ======================================== ADD ACCOUNT Methods ========================================
+  // ======================================== new Methods ========================================
   void newAccount(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException;
 
+  // ======================================== update balance Methods ========================================
 
 }

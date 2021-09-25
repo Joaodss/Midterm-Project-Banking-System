@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import javax.security.auth.login.LoginException;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
@@ -49,23 +50,14 @@ public class AccountControllerImpl implements AccountController {
   public List<Account> getAccounts(Authentication auth) {
     try {
       if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
-
-        List<Account> accounts = accountService.getAll();
-        for (Account a : accounts) {
-          accountManagerService.checkForAlterations(a);
-        }
-        return accounts;
-
+        return accountService.getAll();
       } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
 
         List<Account> accounts = accountService.getAllByUsername(auth.getName());
-        for (Account a : accounts) {
-          accountManagerService.checkForAlterations(a);
-        }
+
         return accounts;
 
-      }
-      throw new LoginException("Invalid user logg in.");
+      } else throw new LoginException("Invalid user logg in.");
     } catch (LoginException e1) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
     } catch (Exception e) {
@@ -182,7 +174,7 @@ public class AccountControllerImpl implements AccountController {
   public void createCheckingAccount(@RequestBody @Valid AccountDTO checkingAccount) {
     try {
       checkingAccountService.newAccount(checkingAccount);
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and username did not match for the same entity");
@@ -199,7 +191,7 @@ public class AccountControllerImpl implements AccountController {
   public void createSavingsAccount(@RequestBody @Valid AccountDTO savingsAccount) {
     try {
       savingsAccountService.newAccount(savingsAccount);
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and username did not match for the same entity");
@@ -216,7 +208,7 @@ public class AccountControllerImpl implements AccountController {
   public void createCreditCard(@RequestBody @Valid AccountDTO creditCard) {
     try {
       creditCardService.newAccount(creditCard);
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and username did not match for the same entity");
@@ -237,7 +229,7 @@ public class AccountControllerImpl implements AccountController {
       accountService.edit(id, accountEdit);
     } catch (IllegalArgumentException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-    } catch (InstanceNotFoundException e2) {
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);

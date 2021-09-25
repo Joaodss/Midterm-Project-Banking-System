@@ -15,7 +15,7 @@ public interface AccountController {
   List<Account> getAccounts(Authentication auth);
 
   // -------------------- Account by Id [ADMIN] / User Specific Account by Id [Specific USER] --------------------
-  Account getAccountById( long id);
+  Account getAccountById(long id);
 
   // -------------------- Account Balance by Id [ADMIN] / User Specific Account Balance by Id [Specific USER] --------------------
   Money getAccountBalanceById(long id);
@@ -44,13 +44,8 @@ public interface AccountController {
   void createCreditCard(AccountDTO creditCard);
 
 
-  // ======================================== PUT Methods ========================================
-
-
   // ======================================== PATCH Methods ========================================
   void editAccount(long id, AccountEditDTO accountEdit);
-
-  // ======================================== DELETE Methods ========================================
 
 
 }

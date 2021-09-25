@@ -20,5 +20,9 @@ public class StudentCheckingAccountServiceImpl implements StudentCheckingAccount
     return studentCheckingAccountRepository.findAllJoined();
   }
 
+  public void newAccount(StudentCheckingAccount studentCheckingAccount) {
+    studentCheckingAccountRepository.save(studentCheckingAccount);
+  }
+
 
 }
