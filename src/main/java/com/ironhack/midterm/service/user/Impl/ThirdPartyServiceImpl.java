@@ -10,7 +10,7 @@ import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceAlreadyExistsException;
+import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,24 +36,28 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
 
   // ======================================== SAVE THIRD PARTY Methods ========================================
   @Override
-  public void newUser(UserDTO thirdParty) throws InstanceAlreadyExistsException {
+  public void newUser(UserDTO thirdParty) throws EntityExistsException {
     // Check if username already exists
-    if (userService.isUsernamePresent(thirdParty.getUsername())) throw new InstanceAlreadyExistsException();
+    if (userService.isUsernamePresent(thirdParty.getUsername()))
+      throw new EntityExistsException("Username already exists.");
 
     ThirdParty tp = new ThirdParty(thirdParty.getUsername(), thirdParty.getPassword(), thirdParty.getName());
 
     // Set "THIRD_PARTY" role
-    Optional<Role> userRole = roleService.getRoleByName("THIRD_PARTY");
+    Optional<Role> userRole = roleService.getByName("THIRD_PARTY");
     if (userRole.isPresent()) {
       tp.getRoles().add(userRole.get());
     } else {
-      roleService.addRole("THIRD_PARTY");
-      Optional<Role> newUserRole = roleService.getRoleByName("THIRD_PARTY");
+      roleService.newRole("THIRD_PARTY");
+      Optional<Role> newUserRole = roleService.getByName("THIRD_PARTY");
       newUserRole.ifPresent(role -> tp.getRoles().add(role));
     }
     thirdPartyRepository.save(tp);
   }
 
+
+  // ======================================== utils Methods ========================================
+  @Override
   public boolean hasHashedKey(String hashedKey) {
     Optional<ThirdParty> thirdParty = thirdPartyRepository.findByHashedKey(hashedKey);
     return thirdParty.isPresent();

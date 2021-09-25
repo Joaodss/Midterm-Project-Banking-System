@@ -29,9 +29,6 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
   private StudentCheckingAccountRepository studentCheckingAccountRepository;
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private AccountHolderService accountHolderService;
 
 
@@ -46,7 +43,7 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
   // ======================================== ADD ACCOUNT Methods ========================================
   public void newAccount(AccountDTO checkingAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
     // Perform an identity check of both account owners
-    AccountHolder[] accountHolders = accountHolderService.getAccountHolders(checkingAccount, accountHolderService, userService);
+    AccountHolder[] accountHolders = accountHolderService.findAccountHolders(checkingAccount);
 
     if (accountHolders[0].getDateOfBirth().plusYears(25).isBefore(LocalDate.now())) {
       // older than 24 years (25 years old or more) (birthdate + 25 < now)

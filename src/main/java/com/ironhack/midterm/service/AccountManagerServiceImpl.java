@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import static com.ironhack.midterm.util.MoneyUtil.*;
-import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
 
 @Service
 public class AccountManagerServiceImpl implements AccountManagerService {

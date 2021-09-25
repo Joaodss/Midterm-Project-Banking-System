@@ -1,4 +1,4 @@
-package com.ironhack.midterm.util.validation;
+package com.ironhack.midterm.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

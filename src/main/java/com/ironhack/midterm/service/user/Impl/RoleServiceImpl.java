@@ -16,14 +16,14 @@ public class RoleServiceImpl implements RoleService {
 
   // ======================================== GET Methods ========================================
   @Override
-  public Optional<Role> getRoleByName(String name) {
+  public Optional<Role> getByName(String name) {
     return roleRepository.findByName(name);
   }
 
 
   // ======================================== SAVE Methods ========================================
   @Override
-  public void addRole(String name) {
+  public void newRole(String name) {
     roleRepository.save(new Role(name));
   }
 

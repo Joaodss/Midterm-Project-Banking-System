@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.ironhack.midterm.util.MoneyUtil.*;
-import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
 
 @Entity
 @Table(name = "transaction")

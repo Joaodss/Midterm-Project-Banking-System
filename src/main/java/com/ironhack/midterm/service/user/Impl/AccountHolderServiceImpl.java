@@ -12,9 +12,10 @@ import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,25 +36,15 @@ public class AccountHolderServiceImpl implements AccountHolderService {
     return accountHolderRepository.findAll();
   }
 
-  public AccountHolder getByUsername(String username) throws InstanceNotFoundException {
-    var accountHolder = accountHolderRepository.findByUsername(username);
-    if (accountHolder.isPresent()) return accountHolder.get();
-    throw new InstanceNotFoundException();
-  }
-
-  public boolean isUsernamePresent(String username) {
-    return accountHolderRepository.findByUsername(username).isPresent();
-  }
-
 
   // ======================================== ADD USERS Methods ========================================
-  public void newUser(UserAccountHolderDTO accountHolder) throws InstanceAlreadyExistsException {
+  public void newUser(UserAccountHolderDTO accountHolder) throws EntityExistsException {
     // Check if username already exists
-    if (userService.isUsernamePresent(accountHolder.getUsername())) throw new InstanceAlreadyExistsException();
+    if (userService.isUsernamePresent(accountHolder.getUsername()))
+      throw new EntityExistsException("Username already exists.");
 
     Address pa = new Address(
         accountHolder.getPaStreetAddress().trim(), accountHolder.getPaPostalCode().trim(), accountHolder.getPaCity().trim(), accountHolder.getPaCountry().trim());
-
     Address ma = null;
     if (accountHolder.getMaStreetAddress() != null || accountHolder.getMaPostalCode() != null || accountHolder.getMaCity() != null || accountHolder.getMaCountry() != null)
       ma = new Address(accountHolder.getMaStreetAddress().trim(), accountHolder.getMaPostalCode().trim(), accountHolder.getMaCity().trim(), accountHolder.getMaCountry().trim());
@@ -62,12 +53,12 @@ public class AccountHolderServiceImpl implements AccountHolderService {
         accountHolder.getUsername().trim(), accountHolder.getPassword().trim(), accountHolder.getName().trim(), accountHolder.getDateOfBirth(), pa, ma);
 
     // Set "USER" role
-    Optional<Role> userRole = roleService.getRoleByName("USER");
+    Optional<Role> userRole = roleService.getByName("USER");
     if (userRole.isPresent()) {
       ah.getRoles().add(userRole.get());
     } else {
-      roleService.addRole("USER");
-      Optional<Role> newUserRole = roleService.getRoleByName("USER");
+      roleService.newRole("USER");
+      Optional<Role> newUserRole = roleService.getByName("USER");
       newUserRole.ifPresent(role -> ah.getRoles().add(role));
     }
     accountHolderRepository.save(ah);
@@ -75,35 +66,29 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 
 
   // ======================================== UTIL Methods ========================================
-  public AccountHolder[] getAccountHolders(AccountDTO account, AccountHolderService accountHolderService, UserService userService) throws InstanceNotFoundException, IllegalArgumentException {
-    // Check if usernames exists in Account Holders
-    if (!accountHolderService.isUsernamePresent(account.getPrimaryOwnerUsername()))
-      throw new InstanceNotFoundException("Primary owner user not found by username.");
-    if (account.getSecondaryOwnerUsername() != null && !accountHolderService.isUsernamePresent(account.getSecondaryOwnerUsername()))
-      throw new InstanceNotFoundException("Secondary owner user not found by username.");
+  public AccountHolder[] findAccountHolders(AccountDTO account) throws EntityNotFoundException, IllegalArgumentException {
+    // Check if primary owner exists and id and username match.
+    Optional<AccountHolder> primaryOwner = accountHolderRepository.findByUsername(account.getPrimaryOwnerUsername());
+    if (primaryOwner.isEmpty()) throw new EntityNotFoundException("Primary owner user not found by username.");
+    if (!Objects.equals(primaryOwner.get().getId(), account.getPrimaryOwnerId()))
+      throw new IllegalArgumentException("Primary owner's username and id do not match.");
 
-    // Check if username and id match
-    try {
-      if (!userService.getById(account.getPrimaryOwnerId()).getUsername().equals(account.getPrimaryOwnerUsername()))
-        throw new IllegalArgumentException("Primary owner's username and id do not match.");
-    } catch (InstanceNotFoundException e1) {
-      throw new InstanceNotFoundException("Primary owner's id not found.");
-    }
-    try {
-      if (account.getSecondaryOwnerId() != null && !userService.getById(account.getSecondaryOwnerId()).getUsername().equals(account.getSecondaryOwnerUsername()))
+    // Check if secondary owner exists and id and username match. Only if secondary owner id and name inputs are present.
+    Optional<AccountHolder> secondaryOwner = Optional.empty();
+    if (account.getSecondaryOwnerId() != null && account.getSecondaryOwnerUsername() != null) {
+      secondaryOwner = accountHolderRepository.findByUsername(account.getSecondaryOwnerUsername());
+      if (secondaryOwner.isEmpty()) throw new EntityNotFoundException("Secondary owner user not found by username.");
+      if (!Objects.equals(secondaryOwner.get().getId(), account.getSecondaryOwnerId()))
         throw new IllegalArgumentException("Secondary owner's username and id do not match.");
-    } catch (InstanceNotFoundException e1) {
-      throw new InstanceNotFoundException("Secondary owner's id not found.");
     }
 
-    AccountHolder pah = accountHolderService.getByUsername(account.getPrimaryOwnerUsername());
-    AccountHolder sah = null;
-    if (!account.getPrimaryOwnerUsername().equals(account.getSecondaryOwnerUsername()) && account.getSecondaryOwnerId() != null && account.getSecondaryOwnerUsername() != null)
-      sah = accountHolderService.getByUsername(account.getSecondaryOwnerUsername());
+    // If equal, secondary is null.
+    if (secondaryOwner.isPresent() && primaryOwner.get() == secondaryOwner.get())
+      secondaryOwner = Optional.empty();
 
     AccountHolder[] accountHolders = new AccountHolder[2];
-    accountHolders[0] = pah;
-    accountHolders[1] = sah;
+    accountHolders[0] = primaryOwner.get();
+    accountHolders[1] = secondaryOwner.orElse(null);
     return accountHolders;
   }
 

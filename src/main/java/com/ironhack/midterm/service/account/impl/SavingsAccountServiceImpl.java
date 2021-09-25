@@ -22,8 +22,6 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
   @Autowired
   private SavingsAccountRepository savingsAccountRepository;
 
-  @Autowired
-  private UserService userService;
 
   @Autowired
   private AccountHolderService accountHolderService;
@@ -37,7 +35,7 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
   // ======================================== ADD ACCOUNT Methods ========================================
   public void newAccount(AccountDTO savingsAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
     // Perform an identity check of both account owners
-    AccountHolder[] accountHolders = accountHolderService.getAccountHolders(savingsAccount, accountHolderService, userService);
+    AccountHolder[] accountHolders = accountHolderService.findAccountHolders(savingsAccount);
 
     SavingsAccount sa = new SavingsAccount(newMoney(savingsAccount.getInitialBalance().toString(), savingsAccount.getCurrency()), accountHolders[0], accountHolders[1]);
     sa.updateCurrencyValues();

@@ -4,16 +4,20 @@ import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.dto.UserDTO;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.persistence.EntityExistsException;
 import java.util.List;
 
 public interface ThirdPartyService {
 
-  // ======================================== GET USERS Methods ========================================
+  // ======================================== get Methods ========================================
   List<ThirdParty> getAll();
 
 
-  // ======================================== ADD USERS Methods ========================================
-  void newUser(UserDTO thirdParty) throws InstanceAlreadyExistsException;
+  // ======================================== new Methods ========================================
+  void newUser(UserDTO thirdParty) throws EntityExistsException;
 
+
+  // ======================================== utils Methods ========================================
   boolean hasHashedKey(String hashedKey);
+
 }

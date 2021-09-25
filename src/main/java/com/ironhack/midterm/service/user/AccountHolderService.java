@@ -4,26 +4,20 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.dto.UserAccountHolderDTO;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 public interface AccountHolderService {
 
-  // ======================================== GET USERS Methods ========================================
+  // ======================================== get Methods ========================================
   List<AccountHolder> getAll();
 
-  AccountHolder getByUsername(String username) throws InstanceNotFoundException;
+  // ======================================== new Methods ========================================
+  void newUser(UserAccountHolderDTO accountHolder) throws EntityExistsException;
 
-  boolean isUsernamePresent(String username);
+  // ======================================== utils Methods ========================================
+  AccountHolder[] findAccountHolders(AccountDTO account) throws EntityNotFoundException, IllegalArgumentException;
 
-
-  // ======================================== ADD USERS Methods ========================================
-
-  void newUser(UserAccountHolderDTO accountHolder) throws InstanceAlreadyExistsException;
-
-
-  // ======================================== UTILS Methods ========================================
-  AccountHolder[] getAccountHolders(AccountDTO account, AccountHolderService accountHolderService, UserService userService) throws InstanceNotFoundException, IllegalArgumentException;
 
 }

@@ -4,15 +4,16 @@ import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dto.UserDTO;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.persistence.EntityExistsException;
 import java.util.List;
 
 public interface AdminService {
 
-  // ======================================== GET USERS Methods ========================================
+  // ======================================== get Methods ========================================
   List<Admin> getAll();
 
 
-  // ======================================== ADD USERS Methods ========================================
-  void newUser(UserDTO admin) throws InstanceAlreadyExistsException;
+  // ======================================== new Methods ========================================
+  void newUser(UserDTO admin) throws EntityExistsException;
 
 }

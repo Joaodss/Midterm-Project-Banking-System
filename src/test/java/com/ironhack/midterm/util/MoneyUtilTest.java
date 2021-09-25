@@ -59,35 +59,9 @@ class MoneyUtilTest {
   }
 
 
-  // ======================================== new BigDecimal ========================================
-  @ParameterizedTest
-  @Order(2)
-  @ValueSource(strings = {"0", "3.333", "235723572.5721571"})
-  void testNewBD_validStringNumber(String value) {
-    assertEquals(new BigDecimal(value), newBD(value));
-    assertEquals(new BigDecimal(value).setScale(3, RoundingMode.HALF_EVEN), newBD(value, 3));
-  }
-
-  @ParameterizedTest
-  @Order(2)
-  @ValueSource(strings = {"", "  ", "ah3haefhb", "157135,13532"})
-  void testNewBD_invalidStringNumber(String value) {
-    assertThrows(NumberFormatException.class, () -> newBD(value));
-    assertThrows(NumberFormatException.class, () -> newBD(value, 2));
-  }
-
-  @Test
-  @Order(2)
-  void testNewBD_toString() {
-    assertEquals("42", MoneyUtil.newBD("42").toString());
-    assertEquals("42.00", MoneyUtil.newBD("42", 2).toString());
-    assertEquals("42", MoneyUtil.newBD("42", 0).toString());
-  }
-
-
   // ======================================== Is Same Currency ========================================
   @Test
-  @Order(3)
+  @Order(2)
   void testIsSameCurrency_sameCurrency_true() {
     var m1 = newMoney("100", "EUR");
     var m2 = newMoney("350.5", "EUR");
@@ -96,7 +70,7 @@ class MoneyUtilTest {
   }
 
   @Test
-  @Order(3)
+  @Order(2)
   void testIsSameCurrency_differentCurrency_false() {
     var m1 = newMoney("100", "EUR");
     var m2 = newMoney("350.5", "USD");
@@ -106,7 +80,7 @@ class MoneyUtilTest {
 
   // ======================================== Is Same Currency ========================================
   @Test
-  @Order(4)
+  @Order(3)
   void testConvertCurrency_multipleConversions_differentCurrency_convertValues() { // slow
     var initialMoney1 = newMoney("100", "USD");
     var initialMoney2 = newMoney("200", "CHF");
@@ -119,7 +93,7 @@ class MoneyUtilTest {
   }
 
   @Test
-  @Order(4)
+  @Order(3)
   void testConvertCurrency_multipleConversions_sameCurrency_convertValues() { // less slow
     var initialMoney1 = newMoney("100", "USD");
     var initialMoney2 = newMoney("200", "CHF");
@@ -132,7 +106,7 @@ class MoneyUtilTest {
   }
 
   @Test
-  @Order(4)
+  @Order(3)
   void testConvertCurrency_sameCurrency_returnInitialValue() {
     var initialMoney1 = newMoney("10");
     var initialMoney2 = newMoney("20", "USD");

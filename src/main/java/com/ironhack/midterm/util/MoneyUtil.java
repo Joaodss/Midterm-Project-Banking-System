@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.money.convert.MonetaryConversions;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Currency;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,17 +19,6 @@ public class MoneyUtil {
   public static Money newMoney(String value, String currency) {
     return new Money(new BigDecimal(value), Currency.getInstance(currency));
   }
-
-
-  // =================================== Simplify new BigDecimal ===================================
-  public static BigDecimal newBD(String value) {
-    return new BigDecimal(value);
-  }
-
-  public static BigDecimal newBD(String value, int scale) {
-    return new BigDecimal(value).setScale(scale, RoundingMode.HALF_EVEN);
-  }
-
 
   // =================================== Is Same Currency ===================================
   public static boolean isSameCurrency(Currency baseCurrency, Money comparativeMoney) {

@@ -1,5 +1,6 @@
-package com.ironhack.midterm.util.validation;
+package com.ironhack.midterm.util;
 
+import com.ironhack.midterm.util.DateTimeUtil;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
 
-import static com.ironhack.midterm.util.validation.DateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

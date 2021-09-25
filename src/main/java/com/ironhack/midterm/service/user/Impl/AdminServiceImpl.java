@@ -10,7 +10,7 @@ import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceAlreadyExistsException;
+import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,19 +34,20 @@ public class AdminServiceImpl implements AdminService {
 
 
   // ======================================== ADD ADMINS Methods ========================================
-  public void newUser(UserDTO admin) throws InstanceAlreadyExistsException {
+  public void newUser(UserDTO admin) throws EntityExistsException {
     // Check if username already exists
-    if (userService.isUsernamePresent(admin.getUsername())) throw new InstanceAlreadyExistsException();
+    if (userService.isUsernamePresent(admin.getUsername()))
+      throw new EntityExistsException("Username already exists.");
 
     Admin a = new Admin(admin.getUsername(), admin.getPassword(), admin.getName());
 
     // Set "ADMIN" role
-    Optional<Role> userRole = roleService.getRoleByName("ADMIN");
+    Optional<Role> userRole = roleService.getByName("ADMIN");
     if (userRole.isPresent()) {
       a.getRoles().add(userRole.get());
     } else {
-      roleService.addRole("ADMIN");
-      Optional<Role> newUserRole = roleService.getRoleByName("ADMIN");
+      roleService.newRole("ADMIN");
+      Optional<Role> newUserRole = roleService.getByName("ADMIN");
       newUserRole.ifPresent(role -> a.getRoles().add(role));
     }
     adminRepository.save(a);

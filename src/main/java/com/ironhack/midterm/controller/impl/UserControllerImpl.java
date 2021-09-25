@@ -5,7 +5,10 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.dao.user.User;
-import com.ironhack.midterm.dto.*;
+import com.ironhack.midterm.dto.UserAccountHolderDTO;
+import com.ironhack.midterm.dto.UserDTO;
+import com.ironhack.midterm.dto.UserEditDTO;
+import com.ironhack.midterm.dto.UserEditPasswordDTO;
 import com.ironhack.midterm.service.user.AccountHolderService;
 import com.ironhack.midterm.service.user.AdminService;
 import com.ironhack.midterm.service.user.ThirdPartyService;
@@ -15,8 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -39,6 +42,7 @@ public class UserControllerImpl implements UserController {
 
   // ======================================== GET Methods ========================================
   // -------------------- Global USER --------------------
+  // -------------------- All Users [ADMIN] --------------------
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<User> getUsers() {
@@ -49,31 +53,33 @@ public class UserControllerImpl implements UserController {
     }
   }
 
+  // -------------------- Users by Id [ADMIN] --------------------
   @GetMapping("/id/{id}")
   @ResponseStatus(HttpStatus.OK)
   public User getUserById(@PathVariable("id") long id) {
     try {
       return userService.getById(id);
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
+  // -------------------- Users by username [USER/ADMIN] --------------------
   @GetMapping("/{username}")
   @ResponseStatus(HttpStatus.OK)
   public User getUserByUsername(@PathVariable("username") String username) {
     try {
       return userService.getByUsername(username);
-    } catch (InstanceNotFoundException e2) {
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  // -------------------- Admin --------------------
+  // -------------------- Admin [ADMIN] --------------------
   @GetMapping("/admins")
   @ResponseStatus(HttpStatus.OK)
   public List<Admin> getAdmins() {
@@ -84,7 +90,7 @@ public class UserControllerImpl implements UserController {
     }
   }
 
-  // -------------------- Account Holder --------------------
+  // -------------------- Account Holder [ADMIN] --------------------
   @GetMapping("/account_holders")
   @ResponseStatus(HttpStatus.OK)
   public List<AccountHolder> getAccountHolders() {
@@ -95,7 +101,7 @@ public class UserControllerImpl implements UserController {
     }
   }
 
-  // -------------------- Third Party --------------------
+  // -------------------- Third Party [ADMIN] --------------------
   @GetMapping("/third_parties")
   @ResponseStatus(HttpStatus.OK)
   public List<ThirdParty> getAThirdParties() {
@@ -114,7 +120,7 @@ public class UserControllerImpl implements UserController {
   public void createNewAdmin(@RequestBody @Valid UserDTO admin) {
     try {
       adminService.newUser(admin);
-    } catch (InstanceAlreadyExistsException e1) {
+    } catch (EntityExistsException e1) {
       throw new ResponseStatusException(HttpStatus.CONFLICT);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,7 +133,7 @@ public class UserControllerImpl implements UserController {
   public void createNewAccountHolder(@RequestBody @Valid UserAccountHolderDTO accountHolder) {
     try {
       accountHolderService.newUser(accountHolder);
-    } catch (InstanceAlreadyExistsException e1) {
+    } catch (EntityExistsException e1) {
       throw new ResponseStatusException(HttpStatus.CONFLICT);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -140,7 +146,7 @@ public class UserControllerImpl implements UserController {
   public void createNewThirdParty(@RequestBody @Valid UserDTO thirdParty) {
     try {
       thirdPartyService.newUser(thirdParty);
-    } catch (InstanceAlreadyExistsException e1) {
+    } catch (EntityExistsException e1) {
       throw new ResponseStatusException(HttpStatus.CONFLICT);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -148,30 +154,32 @@ public class UserControllerImpl implements UserController {
 
   }
 
-  // ======================================== PUT Methods ========================================
-
 
   // ======================================== PATCH Methods ========================================
+  // -------------------- Change Password [USER/ADMIN] --------------------
   @PatchMapping("/{username}/change_password")
   @ResponseStatus(HttpStatus.OK)
   public void editPassword(@PathVariable("username") String username, @RequestBody @Valid UserEditPasswordDTO userPassword) {
     try {
-      userService.changePassword(username, userPassword);
+      userService.editPassword(username, userPassword);
     } catch (IllegalArgumentException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-    } catch (InstanceNotFoundException e2) {
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
+  // -------------------- Edit User [ADMIN] --------------------
   @PatchMapping("/edit/user/{username}")
   @ResponseStatus(HttpStatus.OK)
   public void editUser(@PathVariable("username") String username, @RequestBody @Valid UserEditDTO user) {
     try {
       userService.edit(username, user);
-    } catch (InstanceNotFoundException e2) {
+    } catch (IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);

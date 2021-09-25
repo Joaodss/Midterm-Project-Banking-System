@@ -1,4 +1,4 @@
-package com.ironhack.midterm.util.validation;
+package com.ironhack.midterm.util;
 
 import com.ironhack.midterm.enums.AccountStatus;
 import org.junit.jupiter.api.MethodOrderer;
@@ -7,28 +7,11 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.ironhack.midterm.util.EnumsUtil.isValidAccountStatusFromString;
 import static com.ironhack.midterm.util.EnumsUtil.accountStatusFromString;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class AccountStatusUtilTest {
-
-  // ============================== Is Valid Status from String ==============================
-  @ParameterizedTest
-  @ValueSource(strings = {"active", "ActIVe", "Frozen", "FROZEN"})
-  @Order(1)
-  void testIsValidStatusFromString_validStatus_true(String status) {
-    assertTrue(isValidAccountStatusFromString(status));
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"", " ", "Fro_zen", "a c t i v e", "blabla"})
-  @Order(1)
-  void testIsValidStatusFromString_invalidStatus_false(String status) {
-    assertFalse(isValidAccountStatusFromString(status));
-  }
-
+class EnumUtilTest {
 
   // ============================== Is Valid Status from String ==============================
   @ParameterizedTest

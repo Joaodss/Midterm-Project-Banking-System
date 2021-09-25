@@ -12,11 +12,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.ironhack.midterm.util.MoneyUtil.newBD;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,8 +64,6 @@ class CreditCardRepositoryTest {
     DbResetUtil.resetAutoIncrementColumns(applicationContext, "account", "user");
   }
 
-
-  // ======================================== CRUD TESTING ========================================
   @Test
   @Order(1)
   void testCount_numberOfCreditCardsInDatabase_correctAmount() {
@@ -118,12 +116,12 @@ class CreditCardRepositoryTest {
   void testUpdateCreditCard_changeInterestRate_newInterestRateEqualsDefinedValue() {
     var element1 = creditCardRepository.findById(3L);
     assertTrue(element1.isPresent());
-    element1.get().setInterestRate(newBD("0.12"));
+    element1.get().setInterestRate(new BigDecimal("0.12"));
     creditCardRepository.save(element1.get());
 
     var updatedElement1 = creditCardRepository.findById(3L);
     assertTrue(updatedElement1.isPresent());
-    assertEquals(newBD("0.1200"), updatedElement1.get().getInterestRate());
+    assertEquals(new BigDecimal("0.1200"), updatedElement1.get().getInterestRate());
   }
 
   // ==================== Delete ====================
