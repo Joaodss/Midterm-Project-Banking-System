@@ -1,14 +1,12 @@
 package com.ironhack.midterm.controller.impl;
 
 import com.ironhack.midterm.controller.TransactionController;
-import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.transaction.Receipt;
 import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dto.TransactionInternalDTO;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
 import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
 import com.ironhack.midterm.enums.TransactionType;
-import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.*;
 import com.ironhack.midterm.service.user.ThirdPartyService;
@@ -47,9 +45,6 @@ public class TransactionControllerImpl implements TransactionController {
 
   @Autowired
   private PenaltyFeeTransactionService penaltyFeeTransactionService;
-
-  @Autowired
-  private AccountManagerService accountManagerService;
 
   @Autowired
   private ThirdPartyService thirdPartyService;
@@ -111,9 +106,8 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionLocalDTO localTransaction) {
     try {
-      Account account = accountService.getById(id);
-      Transaction transaction = localTransactionService.newTransaction(id, localTransaction);
-      localTransactionService.validateLocalTransaction(transaction);
+      accountService.getById(id);
+      localTransactionService.newTransaction(id, localTransaction);
     } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e1.getMessage());
     } catch (IllegalArgumentException e2) {
@@ -128,13 +122,7 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createThirdPartyTransaction(@RequestHeader(value = "hashedKey") String hashedKey, @RequestBody @Valid TransactionThirdPartyDTO thirdPartyTransaction) {
     try {
-      if (thirdPartyService.hasHashedKey(hashedKey)) {
-        Account account = accountService.getById(thirdPartyTransaction.getTargetAccountId());
-        Transaction transaction = thirdPartyTransactionService.newTransaction(thirdPartyTransaction);
-        thirdPartyTransactionService.validateThirdPartyTransaction(transaction);
-      } else {
-        throw new IllegalArgumentException("Invalid hashed key.");
-      }
+      thirdPartyTransactionService.newTransaction(hashedKey, thirdPartyTransaction);
     } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
     } catch (IllegalArgumentException e2) {
@@ -152,15 +140,12 @@ public class TransactionControllerImpl implements TransactionController {
       accountService.getById(id);
       TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());
       if (transactionType == TransactionType.INTEREST) {
-        Transaction transaction = interestTransactionService.newTransaction(id);
-        interestTransactionService.validateInterestTransaction(transaction);
+        interestTransactionService.newTransaction(id);
       } else if (transactionType == TransactionType.MAINTENANCE_FEE) {
-        Transaction transaction = maintenanceFeeTransactionService.newTransaction(id);
-        maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
+        maintenanceFeeTransactionService.newTransaction(id);
       } else if (transactionType == TransactionType.PENALTY_FEE) {
-        Transaction transaction = penaltyFeeTransactionService.newTransaction(id);
-        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
-      }
+        penaltyFeeTransactionService.newTransaction(id);
+      } else throw new IllegalArgumentException("Invalid transaction type.");
     } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
     } catch (IllegalArgumentException e2) {
@@ -169,14 +154,6 @@ public class TransactionControllerImpl implements TransactionController {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-  // ======================================== PUT Methods ========================================
-
-
-  // ======================================== PATCH Methods ========================================
-
-
-  // ======================================== DELETE Methods ========================================
 
 
 }

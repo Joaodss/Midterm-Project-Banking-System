@@ -1,7 +1,6 @@
 package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.CreditCard;
-import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.repository.account.CreditCardRepository;
@@ -57,10 +56,8 @@ public class CreditCardServiceImpl implements CreditCardService {
   public void checkInterestRate(CreditCard creditCard) {
     LocalDate lastInterestDate = creditCard.getLastInterestUpdate();
 
-    if (lastInterestDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-      Transaction transaction = interestTransactionService.newTransaction(creditCard.getId());
-      interestTransactionService.validateInterestTransaction(transaction);
-    }
+    if (lastInterestDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate()))
+      interestTransactionService.newTransaction(creditCard.getId());
   }
 
 
@@ -70,8 +67,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     if (compareMoney(creditCard.getBalance(), creditCard.getCreditLimit()) < 0) { // TODO - change here if credit card works the opposite way.
 
       if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        Transaction transaction = penaltyFeeTransactionService.newTransaction(creditCard.getId());
-        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+        penaltyFeeTransactionService.newTransaction(creditCard.getId());
       } // TODO - Change if order to make the credit card only check the balance once per month. Set to be in the start of the month.
     } else if (creditCard.getLastPenaltyFeeCheck().isBefore(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1))) {
       creditCard.setLastPenaltyFeeCheck(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1));

@@ -5,7 +5,6 @@ import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.dto.AccountEditDTO;
 import com.ironhack.midterm.model.Money;
-import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,9 +36,6 @@ public class AccountControllerImpl implements AccountController {
 
   @Autowired
   private CreditCardService creditCardService;
-
-  @Autowired
-  private AccountManagerService accountManagerService;
 
 
   // ======================================== GET ACCOUNT Methods ========================================

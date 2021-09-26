@@ -102,7 +102,6 @@ class SavingsAccountServiceTest {
     savingsAccountService.checkInterestRate(sa);
 
     verify(interestTransactionService).newTransaction(1L);
-    verify(interestTransactionService).validateInterestTransaction(any());
     verifyNoMoreInteractions(interestTransactionService);
   }
 
@@ -129,7 +128,6 @@ class SavingsAccountServiceTest {
     savingsAccountService.checkMinimumBalance(sa);
 
     verify(penaltyFeeTransactionService).newTransaction(1L);
-    verify(penaltyFeeTransactionService).validatePenaltyFeeTransaction(any());
     verifyNoMoreInteractions(penaltyFeeTransactionService);
   }
 

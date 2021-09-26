@@ -1,7 +1,6 @@
 package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.SavingsAccount;
-import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.enums.AccountStatus;
@@ -59,10 +58,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
     LocalDate lastInterestDate = savingsAccount.getLastInterestUpdate();
 
     if (savingsAccount.getAccountStatus() == AccountStatus.ACTIVE &&
-        lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate())) {
-      Transaction transaction = interestTransactionService.newTransaction(savingsAccount.getId());
-      interestTransactionService.validateInterestTransaction(transaction);
-    }
+        lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate()))
+      interestTransactionService.newTransaction(savingsAccount.getId());
   }
 
 
@@ -73,8 +70,7 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
         compareMoney(savingsAccount.getBalance(), savingsAccount.getMinimumBalance()) < 0) {
 
       if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        Transaction transaction = penaltyFeeTransactionService.newTransaction(savingsAccount.getId());
-        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+        penaltyFeeTransactionService.newTransaction(savingsAccount.getId());
       }
     } else if (savingsAccount.getLastPenaltyFeeCheck().isBefore(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1))) {
       savingsAccount.setLastPenaltyFeeCheck(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1));

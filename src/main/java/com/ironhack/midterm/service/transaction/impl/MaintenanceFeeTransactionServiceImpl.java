@@ -6,13 +6,11 @@ import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.repository.transaction.TransactionRepository;
-import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.MaintenanceFeeTransactionService;
+import com.ironhack.midterm.service.transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
 
 import static com.ironhack.midterm.util.MoneyUtil.compareMoney;
 import static com.ironhack.midterm.util.MoneyUtil.subtractMoney;
@@ -30,56 +28,77 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
   private AccountService accountService;
 
   @Autowired
-  private AccountManagerService accountManagerService;
+  private TransactionService transactionService;
+
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public Transaction newTransaction(long accountId) throws EntityNotFoundException {
+  public void newTransaction(long accountId) {
     Account account = accountService.getById(accountId);
+
     if (account.getClass() == CheckingAccount.class) {
       Money maintenanceFeeAmount = ((CheckingAccount) account).getMonthlyMaintenanceFee();
-      return transactionRepository.save(new Transaction(maintenanceFeeAmount, account));
-    }
-    throw new IllegalArgumentException("Error when using account");
+      Transaction transaction = transactionRepository.save(
+          new Transaction(maintenanceFeeAmount, account)
+      );
+      validateTransaction(transaction);
+      accountService.updateBalance(account);
+
+    } else throw new IllegalArgumentException("Error when using account");
   }
 
-  public Transaction newTransaction(long accountId, Money remaining) throws EntityNotFoundException {
+  public void newTransaction(long accountId, Money remaining) {
     Account account = accountService.getById(accountId);
+
     if (account.getClass() == CheckingAccount.class) {
-      return transactionRepository.save(new Transaction(remaining, account));
-    }
-    throw new IllegalArgumentException("Error when using account");
+
+      Transaction transaction = transactionRepository.save(
+          new Transaction(remaining, account)
+      );
+      processTransaction(transaction);
+      receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(true));
+
+    } else throw new IllegalArgumentException("Error when using account");
   }
 
   // ======================================== VALIDATE TRANSACTION Methods ========================================
-  public void validateMaintenanceFeeTransaction(Transaction transaction) throws EntityNotFoundException {
-    if (isTransactionAmountValid(transaction) && accountManagerService.isAccountsNotFrozen(transaction)) {
-      receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(true));
-      processTransaction(transaction);
-    } else if (!accountManagerService.isAccountsNotFrozen(transaction)) {
+  public void validateTransaction(Transaction transaction) {
+    // Check if frozen.
+    if (transactionService.isAccountFrozen(transaction)) {
       receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(false, "Account is frozen. Unable to withdraw maintenance fee."));
+
+      // Check if transaction amount is not valid.
     } else if (!isTransactionAmountValid(transaction)) {
-      receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(false, "Insufficient founds to withdraw."));
-      Transaction newTransaction = newTransaction(transaction.getTargetAccount().getId(), transaction.getTargetAccount().getBalance());
-      validateMaintenanceFeeTransaction(newTransaction);
       accountService.freezeAccount(transaction.getTargetAccount().getId());
+      receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(false, "Insufficient founds to withdraw."));
+      newTransaction(transaction.getTargetAccount().getId(), transaction.getTargetAccount().getBalance());
+
+      // If there are no constrains, accept and process transaction.
+    } else {
+      processTransaction(transaction);
+      receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(true));
     }
     accountService.save(transaction.getTargetAccount());
   }
 
 
   // ======================================== PROCESS TRANSACTION Methods ========================================
-  public void processTransaction(Transaction transaction) throws EntityNotFoundException {
+  public void processTransaction(Transaction transaction) {
     Account account = accountService.getById(transaction.getTargetAccount().getId());
+
     account.setBalance(subtractMoney(account.getBalance(), transaction.getConvertedAmount()));
-    if (account.getClass() == CheckingAccount.class)
+
+    // update next interest date
+    if (account.getClass() == CheckingAccount.class) {
       ((CheckingAccount) account).setLastMaintenanceFee(((CheckingAccount) account).getLastMaintenanceFee().plusMonths(1));
+    }
     accountService.save(account);
-    accountService.updateBalance(account);
   }
 
   // (transfer money <= account balance and account not frozen)
   public boolean isTransactionAmountValid(Transaction transaction) {
     return compareMoney(transaction.getTargetAccount().getBalance(), transaction.getBaseAmount()) >= 0;
   }
+
+
 
 }

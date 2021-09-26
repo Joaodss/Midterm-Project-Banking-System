@@ -102,7 +102,6 @@ class CreditCardServiceTest {
     creditCardService.checkInterestRate(cc);
 
     verify(interestTransactionService).newTransaction(1L);
-    verify(interestTransactionService).validateInterestTransaction(any());
     verifyNoMoreInteractions(interestTransactionService);
   }
 
@@ -129,7 +128,6 @@ class CreditCardServiceTest {
     creditCardService.checkCreditLimit(cc);
 
     verify(penaltyFeeTransactionService).newTransaction(1L);
-    verify(penaltyFeeTransactionService).validatePenaltyFeeTransaction(any());
     verifyNoMoreInteractions(penaltyFeeTransactionService);
   }
 

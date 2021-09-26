@@ -3,18 +3,18 @@ package com.ironhack.midterm.service.transaction;
 import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.model.Money;
 
-import javax.persistence.EntityNotFoundException;
-
 public interface PenaltyFeeTransactionService {
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  Transaction newTransaction(long accountId) throws EntityNotFoundException, IllegalArgumentException;
+  void newTransaction(long accountId);
 
-  Transaction newTransaction(long accountId, Money remaining) throws EntityNotFoundException, IllegalArgumentException;
+  void newTransaction(long accountId, Money remaining);
 
 
-  void validatePenaltyFeeTransaction(Transaction transaction) throws EntityNotFoundException;
+  void validateTransaction(Transaction transaction);
 
-  void processTransaction(Transaction transaction) throws EntityNotFoundException;
+  void processTransaction(Transaction transaction);
+
+  boolean isTransactionAmountValid(Transaction transaction);
 
 }

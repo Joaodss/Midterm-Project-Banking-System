@@ -151,7 +151,6 @@ class CheckingAccountServiceTest {
     checkingAccountService.checkMaintenanceFee(ca);
 
     verify(maintenanceFeeTransactionService).newTransaction(1L);
-    verify(maintenanceFeeTransactionService).validateMaintenanceFeeTransaction(any());
     verifyNoMoreInteractions(maintenanceFeeTransactionService);
   }
 
@@ -178,7 +177,6 @@ class CheckingAccountServiceTest {
     checkingAccountService.checkMinimumBalance(ca);
 
     verify(penaltyFeeTransactionService).newTransaction(1L);
-    verify(penaltyFeeTransactionService).validatePenaltyFeeTransaction(any());
     verifyNoMoreInteractions(penaltyFeeTransactionService);
   }
 

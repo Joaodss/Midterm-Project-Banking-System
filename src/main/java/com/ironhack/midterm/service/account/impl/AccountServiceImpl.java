@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
     return accounts;
   }
 
-  public Account getById(Long id) throws EntityNotFoundException {
+  public Account getById(Long id) {
     var account = accountRepository.findByIdJoined(id);
     if (account.isPresent()) {
       updateBalance(account.get());
@@ -63,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   // ============================== Freeze Account ==============================
-  public void freezeAccount(long id) throws EntityNotFoundException {
+  public void freezeAccount(long id) {
     var account = getById(id);
 
     if (account.getClass() == CheckingAccount.class) {
@@ -87,7 +87,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   // ============================== Edit Account ==============================
-  public void edit(long id, AccountEditDTO accountEdit) throws EntityNotFoundException {
+  public void edit(long id, AccountEditDTO accountEdit) {
     Account account = getById(id);
 
     if (accountEdit.getPrimaryOwnerUsername() != null) {
@@ -202,10 +202,10 @@ public class AccountServiceImpl implements AccountService {
 
   // ============================== Update Balance ==============================
   public void updateBalance(Account account) {
-    if (account.getClass() == CheckingAccount.class) {
+    if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       checkingAccountService.checkMinimumBalance((CheckingAccount) account);
       checkingAccountService.checkMaintenanceFee((CheckingAccount) account);
-    } else if (account.getClass() == SavingsAccount.class) {
+    } else if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
       savingsAccountService.checkMinimumBalance((SavingsAccount) account);
       savingsAccountService.checkInterestRate((SavingsAccount) account);
     } else if (account.getClass() == CreditCard.class) {

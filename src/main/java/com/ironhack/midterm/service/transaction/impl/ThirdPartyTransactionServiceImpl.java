@@ -10,13 +10,13 @@ import com.ironhack.midterm.enums.TransactionPurpose;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.transaction.ReceiptRepository;
 import com.ironhack.midterm.repository.transaction.TransactionRepository;
-import com.ironhack.midterm.service.AccountManagerService;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.ThirdPartyTransactionService;
+import com.ironhack.midterm.service.transaction.TransactionService;
+import com.ironhack.midterm.service.user.ThirdPartyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
 import java.util.Currency;
 
 import static com.ironhack.midterm.util.EnumsUtil.transactionPurposeFromString;
@@ -35,14 +35,18 @@ public class ThirdPartyTransactionServiceImpl implements ThirdPartyTransactionSe
   private AccountService accountService;
 
   @Autowired
-  private AccountManagerService accountManagerService;
+  private TransactionService transactionService;
+
+  @Autowired
+  private ThirdPartyService thirdPartyService;
 
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public Transaction newTransaction(TransactionThirdPartyDTO thirdPartyTransaction) throws InstanceNotFoundException, IllegalArgumentException {
+  public void newTransaction(String hashedKey, TransactionThirdPartyDTO thirdPartyTransaction) {
+    if (!thirdPartyService.hasHashedKey(hashedKey)) throw new IllegalArgumentException("Invalid hashed key.");
+
     Account targetAccount = accountService.getById(thirdPartyTransaction.getTargetAccountId());
     boolean isValidKey;
-
     if (targetAccount.getClass() == CheckingAccount.class) {
       isValidKey = (((CheckingAccount) targetAccount).getSecretKey().equals(thirdPartyTransaction.getSecretKey()));
     } else if (targetAccount.getClass() == StudentCheckingAccount.class) {
@@ -54,46 +58,53 @@ public class ThirdPartyTransactionServiceImpl implements ThirdPartyTransactionSe
     }
     if (!isValidKey) throw new IllegalArgumentException("Account key is not valid for the targeted account.");
 
-    return transactionRepository.save(
+    Transaction transaction = transactionRepository.save(
         new Transaction(
             new Money(thirdPartyTransaction.getTransferValue(), Currency.getInstance(thirdPartyTransaction.getCurrency())),
             targetAccount,
             transactionPurposeFromString(thirdPartyTransaction.getTransactionPurpose())
         )
     );
+    validateTransaction(transaction);
+    accountService.updateBalance(targetAccount);
   }
 
-  public void validateThirdPartyTransaction(Transaction transaction) throws InstanceNotFoundException {
-    if (transaction.getTransactionPurpose() == TransactionPurpose.REQUEST &&
-        (accountManagerService.isTransactionTimeFraudulent(transaction.getTargetAccount(), transaction) ||
-            accountManagerService.isTransactionDailyAmountFraudulent(transaction.getTargetAccount()))) {
-      receiptRepository.save(transaction.generateThirdPartyTransactionReceipt(false, "Fraudulent behaviour detected! Base account was frozen for safety."));
-      accountService.freezeAccount(transaction.getTargetAccount().getId());
-
-    } else if (isTransactionAmountValid(transaction) && accountManagerService.isAccountsNotFrozen(transaction)) {
-      processTransaction(transaction);
-      receiptRepository.save(transaction.generateThirdPartyTransactionReceipt(true));
-
-    } else if (!accountManagerService.isAccountsNotFrozen(transaction)) {
+  public void validateTransaction(Transaction transaction) {
+    // Check if frozen.
+    if (transactionService.isAccountFrozen(transaction)) {
       receiptRepository.save(transaction.generateThirdPartyTransactionReceipt(false, "Account is frozen. Unable to complete the transaction."));
 
+      // Check if fraudulent.
+    } else if (transaction.getTransactionPurpose() == TransactionPurpose.REQUEST &&
+        (transactionService.isTransactionTimeFraudulent(transaction.getTargetAccount()) ||
+            transactionService.isTransactionDailyAmountFraudulent(transaction.getTargetAccount()))) {
+      accountService.freezeAccount(transaction.getTargetAccount().getId());
+      receiptRepository.save(transaction.generateThirdPartyTransactionReceipt(false, "Fraudulent behaviour detected! Base account was frozen for safety."));
+
+      // Check if transaction amount is not valid.
     } else if (!isTransactionAmountValid(transaction)) {
       receiptRepository.save(transaction.generateThirdPartyTransactionReceipt(false, "Invalid amount to transfer."));
+
+      // If there are no constrains, accept and process transaction.
+    } else {
+      processTransaction(transaction);
+      receiptRepository.save(transaction.generateThirdPartyTransactionReceipt(true));
     }
     accountService.save(transaction.getTargetAccount());
   }
 
   // ======================================== PROCESS TRANSACTION Methods ========================================
-  public void processTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void processTransaction(Transaction transaction) {
     Account targetAccount = accountService.getById(transaction.getTargetAccount().getId());
+
     if (transaction.getTransactionPurpose() == TransactionPurpose.REQUEST) {
       targetAccount.setBalance(subtractMoney(targetAccount.getBalance(), transaction.getConvertedAmount()));
-    } else if (transaction.getTransactionPurpose() == TransactionPurpose.SEND) {
+    } else {
       targetAccount.setBalance(addMoney(targetAccount.getBalance(), transaction.getConvertedAmount()));
     }
     accountService.save(targetAccount);
-    accountService.updateBalance(targetAccount);
   }
+
 
   // (transfer money <= account balance)
   public boolean isTransactionAmountValid(Transaction transaction) {

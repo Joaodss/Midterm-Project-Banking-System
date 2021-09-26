@@ -13,15 +13,15 @@ public interface AccountService {
 
   List<Account> getAllByUsername(String username);
 
-  Account getById(Long id) throws EntityNotFoundException;
+  Account getById(Long id);
 
   // ======================================== edit Methods ========================================
-  void edit(long id, AccountEditDTO accountEdit) throws EntityNotFoundException;
+  void edit(long id, AccountEditDTO accountEdit);
 
   // ======================================== utils Methods ========================================
   void save(Account account);
 
-  void freezeAccount(long id) throws EntityNotFoundException;
+  void freezeAccount(long id);
 
   void updateBalance(Account account);
 

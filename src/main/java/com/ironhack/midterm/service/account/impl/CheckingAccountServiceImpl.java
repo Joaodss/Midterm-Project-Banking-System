@@ -2,7 +2,6 @@ package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.CheckingAccount;
 import com.ironhack.midterm.dao.account.StudentCheckingAccount;
-import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.enums.AccountStatus;
@@ -76,8 +75,7 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
 
     if (checkingAccount.getAccountStatus() == AccountStatus.ACTIVE &&
         lastMaintenanceDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-      Transaction transaction = maintenanceFeeTransactionService.newTransaction(checkingAccount.getId());
-      maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
+      maintenanceFeeTransactionService.newTransaction(checkingAccount.getId());
     }
   }
 
@@ -89,8 +87,7 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
         compareMoney(checkingAccount.getBalance(), checkingAccount.getMinimumBalance()) < 0) {
 
       if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        Transaction transaction = penaltyFeeTransactionService.newTransaction(checkingAccount.getId());
-        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+        penaltyFeeTransactionService.newTransaction(checkingAccount.getId());
       }
     } else if (checkingAccount.getLastPenaltyFeeCheck().isBefore(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1))) {
       checkingAccount.setLastPenaltyFeeCheck(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1));
