@@ -6,7 +6,7 @@ import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
 public interface ThirdPartyTransactionService {
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  void newTransaction(String hashedKey,TransactionThirdPartyDTO thirdPartyTransaction);
+  void newTransaction(String hashedKey, TransactionThirdPartyDTO thirdPartyTransaction);
 
   void validateTransaction(Transaction transaction);
 

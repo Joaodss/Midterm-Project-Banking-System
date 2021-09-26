@@ -18,7 +18,6 @@ public class EnumsUtil {
     throw new IllegalArgumentException("Status " + stringStatus + " does not exist.");
   }
 
-
   // =================================== Get TransactionPurpose from String ===================================
   public static TransactionPurpose transactionPurposeFromString(String stringTransactionPurpose) {
     for (TransactionPurpose tp : TransactionPurpose.values()) {

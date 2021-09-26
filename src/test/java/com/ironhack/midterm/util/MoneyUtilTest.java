@@ -9,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Currency;
 
 import static com.ironhack.midterm.util.MoneyUtil.*;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MoneyUtilTest {
 
-  // ======================================== new Money ========================================
+  // =================================== Simplify new Money ===================================
   @ParameterizedTest
   @ValueSource(strings = {"0", "3.333", "235723572.5721571"})
   @Order(1)
@@ -59,7 +58,7 @@ class MoneyUtilTest {
   }
 
 
-  // ======================================== Is Same Currency ========================================
+  // =================================== Is Same Currency ===================================
   @Test
   @Order(2)
   void testIsSameCurrency_sameCurrency_true() {
@@ -78,7 +77,7 @@ class MoneyUtilTest {
     assertFalse(isSameCurrency(m1.getCurrency(), m2));
   }
 
-  // ======================================== Is Same Currency ========================================
+  // =================================== Convert Currency ===================================
   @Test
   @Order(3)
   void testConvertCurrency_multipleConversions_differentCurrency_convertValues() { // slow
@@ -117,4 +116,58 @@ class MoneyUtilTest {
   }
 
 
+  // =================================== Negative Balance ===================================
+  @Test
+  @Order(4)
+  void testNegativeCurrency_sameCurrency_returnNegativeAmount() {
+    Money money = newMoney("100");
+    assertEquals(new Money(new BigDecimal("-100"), Currency.getInstance("EUR")), negativeMoney(money));
+  }
+
+  // =================================== Compare Balance ===================================
+  @Test
+  @Order(5)
+  void testCompareCurrency_equalCurrency_return0() {
+    Money money1 = newMoney("100");
+    Money money2 = newMoney("100");
+    assertEquals(0, compareMoney(money1, money2));
+  }
+
+  @Test
+  @Order(5)
+  void testCompareCurrency_greaterThanCurrency_return1() {
+    Money money1 = newMoney("200");
+    Money money2 = newMoney("100");
+    assertEquals(1, compareMoney(money1, money2));
+  }
+
+  @Test
+  @Order(5)
+  void testCompareCurrency_greaterThanCurrency_returnNegative1() {
+    Money money1 = newMoney("100");
+    Money money2 = newMoney("200");
+    assertEquals(-1, compareMoney(money1, money2));
+  }
+
+  // =================================== Calculate Balance (Subtraction)===================================
+  @Test
+  @Order(6)
+  void testSubtractMoney_subtract_returnCalculusAndBaseCurrency() {
+    Money money1 = newMoney("500");
+    Money money2 = newMoney("200");
+    Money result = subtractMoney(money1, money2);
+    assertEquals(new BigDecimal("300.00"), result.getAmount());
+    assertEquals(Currency.getInstance("EUR"), result.getCurrency());
+  }
+
+  // =================================== Calculate Balance (Addition)===================================
+  @Test
+  @Order(7)
+  void testAddMoney_add_returnCalculusAndBaseCurrency() {
+    Money money1 = newMoney("500");
+    Money money2 = newMoney("200");
+    Money result = addMoney(money1, money2);
+    assertEquals(new BigDecimal("700.00"), result.getAmount());
+    assertEquals(Currency.getInstance("EUR"), result.getCurrency());
+  }
 }

@@ -106,7 +106,6 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createLocalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionLocalDTO localTransaction) {
     try {
-      accountService.getById(id);
       localTransactionService.newTransaction(id, localTransaction);
     } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e1.getMessage());
@@ -137,7 +136,6 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createInternalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionInternalDTO internalTransactions) {
     try {
-      accountService.getById(id);
       TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());
       if (transactionType == TransactionType.INTEREST) {
         interestTransactionService.newTransaction(id);

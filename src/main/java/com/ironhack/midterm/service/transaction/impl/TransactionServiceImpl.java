@@ -97,7 +97,7 @@ public class TransactionServiceImpl implements TransactionService {
     Money totalDayTransaction = lastDayTransactions(account);
 
     Money dailyMax = allDailyMax(account);
-    Money baseMaxTransaction = convertCurrency(account.getBalance(),newMoney("1000"));
+    Money baseMaxTransaction = convertCurrency(account.getBalance(), newMoney("1000"));
     Money dailyMaxTransaction = new Money(dailyMax.getAmount().multiply(new BigDecimal("1.5")), account.getBalance().getCurrency());
 
     return compareMoney(totalDayTransaction, dailyMaxTransaction) > 0 && // greater than 1.5x max daily transaction

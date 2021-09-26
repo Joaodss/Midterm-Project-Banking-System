@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static com.ironhack.midterm.util.MoneyUtil.*;
 import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.MoneyUtil.*;
 
 @Entity
 @Table(name = "transaction")

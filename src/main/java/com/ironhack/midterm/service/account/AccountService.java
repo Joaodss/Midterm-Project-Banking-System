@@ -3,7 +3,6 @@ package com.ironhack.midterm.service.account;
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dto.AccountEditDTO;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 public interface AccountService {

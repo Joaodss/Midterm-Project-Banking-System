@@ -4,7 +4,10 @@ import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.dao.user.User;
-import com.ironhack.midterm.dto.*;
+import com.ironhack.midterm.dto.UserAccountHolderDTO;
+import com.ironhack.midterm.dto.UserDTO;
+import com.ironhack.midterm.dto.UserEditDTO;
+import com.ironhack.midterm.dto.UserEditPasswordDTO;
 
 import java.util.List;
 
