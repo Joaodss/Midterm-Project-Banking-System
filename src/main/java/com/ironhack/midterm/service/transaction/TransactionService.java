@@ -2,14 +2,13 @@ package com.ironhack.midterm.service.transaction;
 
 import com.ironhack.midterm.dao.transaction.Transaction;
 
-import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 public interface TransactionService {
 
-  // ======================================== GET Methods ========================================
-  List<Transaction> getAllByAccountId(long AccountId) throws InstanceNotFoundException;
+  // ======================================== get Methods ========================================
+  List<Transaction> getAllByAccountId(long AccountId);
 
-  Transaction getById(long transactionId) throws InstanceNotFoundException;
+  Transaction getById(long AccountId, long transactionId);
 
 }

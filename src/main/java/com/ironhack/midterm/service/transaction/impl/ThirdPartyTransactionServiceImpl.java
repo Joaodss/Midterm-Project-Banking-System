@@ -92,7 +92,7 @@ public class ThirdPartyTransactionServiceImpl implements ThirdPartyTransactionSe
       targetAccount.setBalance(addMoney(targetAccount.getBalance(), transaction.getConvertedAmount()));
     }
     accountService.save(targetAccount);
-    accountManagerService.checkForAlterations(targetAccount);
+    accountService.updateBalance(targetAccount);
   }
 
   // (transfer money <= account balance)

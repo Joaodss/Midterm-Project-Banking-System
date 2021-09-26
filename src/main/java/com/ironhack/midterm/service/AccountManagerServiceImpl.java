@@ -49,13 +49,6 @@ public class AccountManagerServiceImpl implements AccountManagerService {
   private PenaltyFeeTransactionService penaltyFeeTransactionService;
 
 
-  // ============================== Check Account Alterations ==============================
-  public void checkForAlterations(Account account) throws EntityNotFoundException {
-
-
-  }
-
-
   // ============================== SPECIFIC VALIDATION ==============================
 
   // -------------------- Check if transaction accounts are one frozen --------------------

@@ -1,8 +1,10 @@
 package com.ironhack.midterm.controller;
 
-import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.transaction.Receipt;
+import com.ironhack.midterm.dao.transaction.Transaction;
+import com.ironhack.midterm.dto.TransactionInternalDTO;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
+import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
 
 import java.util.List;
 
@@ -26,7 +28,8 @@ public interface TransactionController {
   void createLocalTransaction(long id, TransactionLocalDTO localTransaction);
 
   // -------------------- Add Account Specific Third Party Transaction [ADMIN / Specific USER] --------------------
-//  void createThirdPartyTransaction(ThirdPartyTransactionDTO localTransaction);
+  void createThirdPartyTransaction(String hashedKey, TransactionThirdPartyDTO thirdPartyTransaction);
 
+  void createInternalTransaction(long id, TransactionInternalDTO internalTransactions);
 
 }

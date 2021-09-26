@@ -121,12 +121,12 @@ public class Receipt {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Receipt receipt = (Receipt) o;
-    return getId().equals(receipt.getId()) && getPersonalAccount().equals(receipt.getPersonalAccount()) && Objects.equals(getExternalAccount(), receipt.getExternalAccount()) && getTransactionType() == receipt.getTransactionType() && getBaseAmount().equals(receipt.getBaseAmount()) && getStatus() == receipt.getStatus() && getDetails().equals(receipt.getDetails()) && getOperationDate().equals(receipt.getOperationDate()) && getTransaction().equals(receipt.getTransaction());
+    return getId().equals(receipt.getId()) && getPersonalAccount().equals(receipt.getPersonalAccount()) && Objects.equals(getExternalAccount(), receipt.getExternalAccount()) && getTransactionType() == receipt.getTransactionType() && getBaseAmount().equals(receipt.getBaseAmount()) && getStatus() == receipt.getStatus() && getDetails().equals(receipt.getDetails()) && getOperationDate().equals(receipt.getOperationDate());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getPersonalAccount(), getExternalAccount(), getTransactionType(), getBaseAmount(), getStatus(), getDetails(), getOperationDate(), getTransaction());
+    return Objects.hash(getId(), getPersonalAccount(), getExternalAccount(), getTransactionType(), getBaseAmount(), getStatus(), getDetails(), getOperationDate());
   }
 
 }

@@ -223,4 +223,22 @@ class ReceiptRepositoryTest {
     assertTrue(element1.isEmpty());
   }
 
+
+  // ======================================== Custom Query Testing ========================================
+  // ==================== Find By Transaction Id Joined ====================
+  @Test
+  @Order(7)
+  void testFindByTransactionIdJoined_findByTransactionIdJoined_validIds_returnReceipt() {
+    var element1 = receiptRepository.findByTransactionIdJoined(1L, 1L);
+    assertTrue(element1.isPresent());
+    assertEquals(r1r, element1.get());
+  }
+
+  @Test
+  @Order(7)
+  void testFindByTransactionIdJoined_findByTransactionIdJoined_invalidIdMatch_returnEmpty() {
+    var element1 = receiptRepository.findByTransactionIdJoined(2L, 1L);
+    assertTrue(element1.isEmpty());
+  }
+
 }

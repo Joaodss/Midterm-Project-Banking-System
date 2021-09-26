@@ -323,4 +323,22 @@ class AccountServiceTest {
     verifyNoMoreInteractions(creditCardService);
   }
 
+
+  // ==================== Has Account ====================
+  @Test
+  @Order(8)
+  void testHasAccount_validId_true() {
+    when(accountRepository.findByIdJoined(1L)).thenReturn(Optional.of(new CheckingAccount()));
+    assertTrue(accountService.hasAccount(1L));
+    verify(accountRepository).findByIdJoined(1L);
+  }
+
+  @Test
+  @Order(8)
+  void testHasAccount_invalidId_false() {
+    when(accountRepository.findByIdJoined(99L)).thenReturn(Optional.empty());
+    assertFalse(accountService.hasAccount(99L));
+    verify(accountRepository).findByIdJoined(99L);
+  }
+
 }

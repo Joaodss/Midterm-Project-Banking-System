@@ -96,8 +96,8 @@ public class LocalTransactionServiceImpl implements LocalTransactionService {
     accountService.save(baseAccount);
     accountService.save(targetAccount);
 
-    accountManagerService.checkForAlterations(baseAccount);
-    accountManagerService.checkForAlterations(targetAccount);
+    accountService.updateBalance(baseAccount);
+    accountService.updateBalance(targetAccount);
   }
 
   // (transfer money <= account balance)

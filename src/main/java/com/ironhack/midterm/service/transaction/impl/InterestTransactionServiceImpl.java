@@ -73,7 +73,7 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
     if (account.getClass() == CreditCard.class)
       ((CreditCard) account).setLastInterestUpdate(((CreditCard) account).getLastInterestUpdate().plusMonths(1));
     accountService.save(account);
-    accountManagerService.checkForAlterations(account);
+    accountService.updateBalance(account);
   }
 
   // (Transfer money will always be greater because it is adding)

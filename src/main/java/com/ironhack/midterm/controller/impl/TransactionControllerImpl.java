@@ -2,7 +2,8 @@ package com.ironhack.midterm.controller.impl;
 
 import com.ironhack.midterm.controller.TransactionController;
 import com.ironhack.midterm.dao.account.Account;
-import com.ironhack.midterm.dao.transaction.*;
+import com.ironhack.midterm.dao.transaction.Receipt;
+import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dto.TransactionInternalDTO;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
 import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.management.InstanceNotFoundException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
@@ -32,9 +32,6 @@ public class TransactionControllerImpl implements TransactionController {
 
   @Autowired
   private TransactionService transactionService;
-
-  @Autowired
-  private TransactionReceiptService transactionReceiptService;
 
   @Autowired
   private LocalTransactionService localTransactionService;
@@ -57,6 +54,9 @@ public class TransactionControllerImpl implements TransactionController {
   @Autowired
   private ThirdPartyService thirdPartyService;
 
+  @Autowired
+  private ReceiptService receiptService;
+
 
   // ======================================== GET TRANSACTION Methods ========================================
   // -------------------- Account Specific Transactions [ADMIN / Specific USER] --------------------
@@ -64,12 +64,11 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public List<Transaction> getTransactions(@PathVariable("account_id") long id) {
     try {
-      accountService.getById(id);
       return transactionService.getAllByAccountId(id);
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -78,22 +77,13 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public Transaction getTransactionsById(@PathVariable("account_id") long accountId, @PathVariable("transaction_id") long transactionId) {
     try {
-      Account account = accountService.getById(accountId);
-      Transaction transaction = transactionService.getById(transactionId);
-
-
-      if ((transaction.getBaseAccount() != null && transaction.getBaseAccount().getId() != accountId)
-          && transaction.getTargetAccount().getId() != accountId)
-        throw new IllegalArgumentException("Transaction does not exist in defined account.");
-
-      return transaction;
-
+      return transactionService.getById(accountId, transactionId);
     } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e1.getMessage());
     } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transaction does not exist in defined account.");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -104,26 +94,13 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public Receipt getReceiptsByTransactionId(@PathVariable("account_id") long accountId, @PathVariable("transaction_id") long transactionId) {
     try {
-      Account account = accountService.getById(accountId);
-      Transaction transaction = transactionService.getById(transactionId);
-
-      if ((transaction.getBaseAccount() != null && transaction.getBaseAccount().getId() != accountId)
-          && transaction.getTargetAccount().getId() != accountId)
-        throw new IllegalArgumentException("Transaction does not exist in defined account.");
-
-      Receipt receipt = null;
-      for (Receipt tr : transaction.getReceipts()) {
-        if (tr.getPersonalAccount().getId() == accountId) receipt = tr;
-      }
-
-      if (receipt != null) return receipt;
-
-      throw new InstanceNotFoundException("Receipt not found.");
-
+      return receiptService.getReceiptByTransactionId(accountId, transactionId);
+    } catch (IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Object not found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -138,11 +115,11 @@ public class TransactionControllerImpl implements TransactionController {
       Transaction transaction = localTransactionService.newTransaction(id, localTransaction);
       localTransactionService.validateLocalTransaction(transaction);
     } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e1.getMessage());
     } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 

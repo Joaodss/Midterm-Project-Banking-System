@@ -215,4 +215,10 @@ public class AccountServiceImpl implements AccountService {
   }
 
 
+  // ============================== Has account ==============================
+  public boolean hasAccount(Long id) {
+    var account = accountRepository.findByIdJoined(id);
+    return account.isPresent();
+  }
+
 }

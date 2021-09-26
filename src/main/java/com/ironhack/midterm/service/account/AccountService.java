@@ -25,4 +25,6 @@ public interface AccountService {
 
   void updateBalance(Account account);
 
+  boolean hasAccount(Long id);
+
 }

@@ -7,8 +7,6 @@ import javax.persistence.EntityNotFoundException;
 
 public interface AccountManagerService {
 
-  void checkForAlterations(Account account) throws EntityNotFoundException;
-
   boolean isAccountsNotFrozen(Transaction transaction);
 
   boolean isTransactionTimeFraudulent(Account account, Transaction transaction);

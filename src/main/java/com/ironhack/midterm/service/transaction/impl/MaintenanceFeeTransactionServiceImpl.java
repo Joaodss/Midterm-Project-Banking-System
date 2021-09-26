@@ -74,7 +74,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
     if (account.getClass() == CheckingAccount.class)
       ((CheckingAccount) account).setLastMaintenanceFee(((CheckingAccount) account).getLastMaintenanceFee().plusMonths(1));
     accountService.save(account);
-    accountManagerService.checkForAlterations(account);
+    accountService.updateBalance(account);
   }
 
   // (transfer money <= account balance and account not frozen)

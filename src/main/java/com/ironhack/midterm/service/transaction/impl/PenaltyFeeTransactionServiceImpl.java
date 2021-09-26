@@ -68,7 +68,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
     account.setBalance(subtractMoney(account.getBalance(), transaction.getConvertedAmount()));
     account.setLastPenaltyFeeCheck(account.getLastPenaltyFeeCheck().plusMonths(1));
     accountService.save(account);
-    accountManagerService.checkForAlterations(account);
+    accountService.updateBalance(account);
   }
 
   // (transfer money <= account balance and account not frozen)
