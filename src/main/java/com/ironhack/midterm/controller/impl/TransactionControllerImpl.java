@@ -122,12 +122,10 @@ public class TransactionControllerImpl implements TransactionController {
   public void createThirdPartyTransaction(@RequestHeader(value = "hashedKey") String hashedKey, @RequestBody @Valid TransactionThirdPartyDTO thirdPartyTransaction) {
     try {
       thirdPartyTransactionService.newTransaction(hashedKey, thirdPartyTransaction);
-    } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
-    } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");
+    } catch (EntityNotFoundException | IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -145,11 +143,11 @@ public class TransactionControllerImpl implements TransactionController {
         penaltyFeeTransactionService.newTransaction(id);
       } else throw new IllegalArgumentException("Invalid transaction type.");
     } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 

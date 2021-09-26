@@ -50,9 +50,9 @@ public class AccountControllerImpl implements AccountController {
         return accountService.getAllByUsername(auth.getName());
       } else throw new LoginException("Invalid user logg in.");
     } catch (LoginException e1) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -63,9 +63,9 @@ public class AccountControllerImpl implements AccountController {
     try {
       return accountService.getById(id);
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found or not associated with your account.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -76,9 +76,9 @@ public class AccountControllerImpl implements AccountController {
     try {
       return accountService.getById(id).getBalance();
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -90,7 +90,7 @@ public class AccountControllerImpl implements AccountController {
     try {
       return checkingAccountService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -101,7 +101,7 @@ public class AccountControllerImpl implements AccountController {
     try {
       return studentCheckingAccountService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -112,7 +112,7 @@ public class AccountControllerImpl implements AccountController {
     try {
       return savingsAccountService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -123,7 +123,7 @@ public class AccountControllerImpl implements AccountController {
     try {
       return creditCardService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -136,13 +136,13 @@ public class AccountControllerImpl implements AccountController {
     try {
       checkingAccountService.newAccount(checkingAccount);
     } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and username did not match for the same entity");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e2.getMessage());
     } catch (NoSuchAlgorithmException e3) {
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "An error occurred with the secret key generation algorithm. Please retry. If the error persists contact us.");
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e3.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -152,14 +152,12 @@ public class AccountControllerImpl implements AccountController {
   public void createSavingsAccount(@RequestBody @Valid AccountDTO savingsAccount) {
     try {
       savingsAccountService.newAccount(savingsAccount);
-    } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
-    } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and username did not match for the same entity");
+    } catch (EntityNotFoundException | IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (NoSuchAlgorithmException e3) {
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "An error occurred with the secret key generation algorithm. Please retry. If the error persists contact us.");
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e3.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -169,12 +167,10 @@ public class AccountControllerImpl implements AccountController {
   public void createCreditCard(@RequestBody @Valid AccountDTO creditCard) {
     try {
       creditCardService.newAccount(creditCard);
-    } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and / or username where not found.");
-    } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id and username did not match for the same entity");
+    } catch (EntityNotFoundException | IllegalArgumentException e1) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -186,11 +182,11 @@ public class AccountControllerImpl implements AccountController {
     try {
       accountService.edit(id, accountEdit);
     } catch (IllegalArgumentException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 

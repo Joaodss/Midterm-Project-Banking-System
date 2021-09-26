@@ -49,7 +49,7 @@ public class UserControllerImpl implements UserController {
     try {
       return userService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -60,9 +60,9 @@ public class UserControllerImpl implements UserController {
     try {
       return userService.getById(id);
     } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -73,9 +73,9 @@ public class UserControllerImpl implements UserController {
     try {
       return userService.getByUsername(username);
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -86,7 +86,7 @@ public class UserControllerImpl implements UserController {
     try {
       return adminService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -97,7 +97,7 @@ public class UserControllerImpl implements UserController {
     try {
       return accountHolderService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -108,7 +108,7 @@ public class UserControllerImpl implements UserController {
     try {
       return thirdPartyService.getAll();
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -121,9 +121,9 @@ public class UserControllerImpl implements UserController {
     try {
       adminService.newUser(admin);
     } catch (EntityExistsException e1) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT);
+      throw new ResponseStatusException(HttpStatus.CONFLICT, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -134,9 +134,9 @@ public class UserControllerImpl implements UserController {
     try {
       accountHolderService.newUser(accountHolder);
     } catch (EntityExistsException e1) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT);
+      throw new ResponseStatusException(HttpStatus.CONFLICT, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -147,9 +147,9 @@ public class UserControllerImpl implements UserController {
     try {
       thirdPartyService.newUser(thirdParty);
     } catch (EntityExistsException e1) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT);
+      throw new ResponseStatusException(HttpStatus.CONFLICT, e1.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
   }
@@ -163,11 +163,11 @@ public class UserControllerImpl implements UserController {
     try {
       userService.editPassword(username, userPassword);
     } catch (IllegalArgumentException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -178,11 +178,11 @@ public class UserControllerImpl implements UserController {
     try {
       userService.edit(username, user);
     } catch (IllegalArgumentException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
     } catch (EntityNotFoundException e2) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
