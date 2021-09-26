@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.management.InstanceNotFoundException;
 import javax.persistence.EntityNotFoundException;
 import javax.security.auth.login.LoginException;
 import javax.validation.Valid;
@@ -52,11 +51,7 @@ public class AccountControllerImpl implements AccountController {
       if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
         return accountService.getAll();
       } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-
-        List<Account> accounts = accountService.getAllByUsername(auth.getName());
-
-        return accounts;
-
+        return accountService.getAllByUsername(auth.getName());
       } else throw new LoginException("Invalid user logg in.");
     } catch (LoginException e1) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid user logg in.");
@@ -70,12 +65,8 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Account getAccountById(@PathVariable("account_id") long id) {
     try {
-
-      Account account = accountService.getById(id);
-      accountManagerService.checkForAlterations(account);
-      return account;
-
-    } catch (InstanceNotFoundException e2) {
+      return accountService.getById(id);
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found or not associated with your account.");
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,10 +78,8 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Money getAccountBalanceById(@PathVariable("account_id") long id) {
     try {
-      Account account = accountService.getById(id);
-      accountManagerService.checkForAlterations(account);
-      return account.getBalance();
-    } catch (InstanceNotFoundException e2) {
+      return accountService.getById(id).getBalance();
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,13 +92,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<CheckingAccount> getCheckingAccounts() {
     try {
-
-      List<CheckingAccount> accounts = checkingAccountService.getAll();
-      for (Account a : accounts) {
-        accountManagerService.checkForAlterations(a);
-      }
-      return accounts;
-
+      return checkingAccountService.getAll();
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -120,13 +103,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<StudentCheckingAccount> getStudentCheckingAccounts() {
     try {
-
-      List<StudentCheckingAccount> accounts = studentCheckingAccountService.getAll();
-      for (Account a : accounts) {
-        accountManagerService.checkForAlterations(a);
-      }
-      return accounts;
-
+      return studentCheckingAccountService.getAll();
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -137,13 +114,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<SavingsAccount> getSavingsAccounts() {
     try {
-
-      List<SavingsAccount> accounts = savingsAccountService.getAll();
-      for (Account a : accounts) {
-        accountManagerService.checkForAlterations(a);
-      }
-      return accounts;
-
+      return savingsAccountService.getAll();
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -154,13 +125,7 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public List<CreditCard> getCreditCards() {
     try {
-
-      List<CreditCard> accounts = creditCardService.getAll();
-      for (Account a : accounts) {
-        accountManagerService.checkForAlterations(a);
-      }
-      return accounts;
-
+      return creditCardService.getAll();
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -218,9 +183,6 @@ public class AccountControllerImpl implements AccountController {
   }
 
 
-  // ======================================== PUT Methods ========================================
-
-
   // ======================================== PATCH Methods ========================================
   @PatchMapping("/edit/account/{id}")
   @ResponseStatus(HttpStatus.OK)
@@ -235,8 +197,5 @@ public class AccountControllerImpl implements AccountController {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-  // ======================================== DELETE Methods ========================================
-
 
 }

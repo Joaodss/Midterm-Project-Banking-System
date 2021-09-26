@@ -82,7 +82,7 @@ class AccountRepositoryTest {
     savingsAccountRepository.deleteAll();
     creditCardRepository.deleteAll();
     accountHolderRepository.deleteAll();
-    DbResetUtil.resetAutoIncrementColumns(applicationContext, "account","user");
+    DbResetUtil.resetAutoIncrementColumns(applicationContext, "account", "user");
   }
 
   // ======================================== READ and DELETE TESTING ========================================

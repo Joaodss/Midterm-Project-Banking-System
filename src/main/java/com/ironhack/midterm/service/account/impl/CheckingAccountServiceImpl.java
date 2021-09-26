@@ -2,11 +2,15 @@ package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.CheckingAccount;
 import com.ironhack.midterm.dao.account.StudentCheckingAccount;
+import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
+import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.repository.account.CheckingAccountRepository;
 import com.ironhack.midterm.service.account.CheckingAccountService;
 import com.ironhack.midterm.service.account.StudentCheckingAccountService;
+import com.ironhack.midterm.service.transaction.MaintenanceFeeTransactionService;
+import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import com.ironhack.midterm.service.user.AccountHolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.MoneyUtil.compareMoney;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 
 @Service
@@ -30,6 +36,12 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
 
   @Autowired
   private StudentCheckingAccountService studentCheckingAccountService;
+
+  @Autowired
+  private MaintenanceFeeTransactionService maintenanceFeeTransactionService;
+
+  @Autowired
+  private PenaltyFeeTransactionService penaltyFeeTransactionService;
 
 
   // ======================================== GET ACCOUNT Methods ========================================
@@ -55,6 +67,34 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
       StudentCheckingAccount sca = new StudentCheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency()), accountHolders[0], accountHolders[1]);
       sca.updateCurrencyValues();
       studentCheckingAccountService.newAccount(sca);
+    }
+  }
+
+
+  public void checkMaintenanceFee(CheckingAccount checkingAccount) {
+    LocalDate lastMaintenanceDate = checkingAccount.getLastMaintenanceFee();
+
+    if (checkingAccount.getAccountStatus() == AccountStatus.ACTIVE &&
+        lastMaintenanceDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
+      Transaction transaction = maintenanceFeeTransactionService.newTransaction(checkingAccount.getId());
+      maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
+    }
+  }
+
+
+  public void checkMinimumBalance(CheckingAccount checkingAccount) {
+    LocalDate lastPenaltyFee = checkingAccount.getLastPenaltyFeeCheck();
+
+    if (checkingAccount.getAccountStatus() == AccountStatus.ACTIVE &&
+        compareMoney(checkingAccount.getBalance(), checkingAccount.getMinimumBalance()) < 0) {
+
+      if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
+        Transaction transaction = penaltyFeeTransactionService.newTransaction(checkingAccount.getId());
+        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+      }
+    } else if (checkingAccount.getLastPenaltyFeeCheck().isBefore(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1))) {
+      checkingAccount.setLastPenaltyFeeCheck(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1));
+      checkingAccountRepository.save(checkingAccount);
     }
   }
 

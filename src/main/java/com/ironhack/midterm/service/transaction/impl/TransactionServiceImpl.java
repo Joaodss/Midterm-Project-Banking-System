@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {

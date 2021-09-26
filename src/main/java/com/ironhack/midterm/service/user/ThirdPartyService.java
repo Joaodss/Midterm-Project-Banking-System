@@ -3,7 +3,6 @@ package com.ironhack.midterm.service.user;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.dto.UserDTO;
 
-import javax.management.InstanceAlreadyExistsException;
 import javax.persistence.EntityExistsException;
 import java.util.List;
 

@@ -11,7 +11,7 @@ import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 import static com.ironhack.midterm.util.MoneyUtil.compareMoney;
 import static com.ironhack.midterm.util.MoneyUtil.subtractMoney;
@@ -32,13 +32,13 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
   private AccountManagerService accountManagerService;
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public Transaction newTransaction(long accountId) throws InstanceNotFoundException, IllegalArgumentException {
+  public Transaction newTransaction(long accountId) throws EntityNotFoundException, IllegalArgumentException {
     Account account = accountService.getById(accountId);
     Money PenaltyFeeAmount = account.getPenaltyFee();
     return transactionRepository.save(new Transaction(PenaltyFeeAmount, account));
   }
 
-  public Transaction newTransaction(long accountId, Money remaining) throws InstanceNotFoundException, IllegalArgumentException {
+  public Transaction newTransaction(long accountId, Money remaining) throws EntityNotFoundException, IllegalArgumentException {
     Account account = accountService.getById(accountId);
     Money PenaltyFeeAmount = account.getPenaltyFee();
     return transactionRepository.save(new Transaction(PenaltyFeeAmount, account));
@@ -46,7 +46,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
 
 
   // ======================================== VALIDATE TRANSACTION Methods ========================================
-  public void validatePenaltyFeeTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void validatePenaltyFeeTransaction(Transaction transaction) throws EntityNotFoundException {
     if (isTransactionAmountValid(transaction) && accountManagerService.isAccountsNotFrozen(transaction)) {
       receiptRepository.save(transaction.generatePenaltyFeeTransactionReceipt(true));
       processTransaction(transaction);
@@ -63,7 +63,7 @@ public class PenaltyFeeTransactionServiceImpl implements PenaltyFeeTransactionSe
 
 
   // ======================================== PROCESS TRANSACTION Methods ========================================
-  public void processTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void processTransaction(Transaction transaction) throws EntityNotFoundException {
     Account account = accountService.getById(transaction.getTargetAccount().getId());
     account.setBalance(subtractMoney(account.getBalance(), transaction.getConvertedAmount()));
     account.setLastPenaltyFeeCheck(account.getLastPenaltyFeeCheck().plusMonths(1));

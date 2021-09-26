@@ -8,6 +8,9 @@ import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Money;
 import com.ironhack.midterm.repository.account.AccountRepository;
 import com.ironhack.midterm.service.account.AccountService;
+import com.ironhack.midterm.service.account.CheckingAccountService;
+import com.ironhack.midterm.service.account.CreditCardService;
+import com.ironhack.midterm.service.account.SavingsAccountService;
 import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,15 @@ public class AccountServiceImpl implements AccountService {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private CheckingAccountService checkingAccountService;
+
+  @Autowired
+  private SavingsAccountService savingsAccountService;
+
+  @Autowired
+  private CreditCardService creditCardService;
 
 
   // ======================================== GET Methods ========================================
@@ -185,11 +197,21 @@ public class AccountServiceImpl implements AccountService {
     if (accountEdit.getLastPenaltyFee() != null) account.setLastPenaltyFeeCheck(accountEdit.getLastPenaltyFee());
 
     save(account);
-
   }
 
-  public void updateBalance(Account account) {
 
+  // ============================== Update Balance ==============================
+  public void updateBalance(Account account) {
+    if (account.getClass() == CheckingAccount.class) {
+      checkingAccountService.checkMinimumBalance((CheckingAccount) account);
+      checkingAccountService.checkMaintenanceFee((CheckingAccount) account);
+    } else if (account.getClass() == SavingsAccount.class) {
+      savingsAccountService.checkMinimumBalance((SavingsAccount) account);
+      savingsAccountService.checkInterestRate((SavingsAccount) account);
+    } else if (account.getClass() == CreditCard.class) {
+      creditCardService.checkCreditLimit((CreditCard) account);
+      creditCardService.checkInterestRate((CreditCard) account);
+    }
   }
 
 

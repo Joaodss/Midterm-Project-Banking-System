@@ -7,6 +7,8 @@ import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.account.CheckingAccountRepository;
 import com.ironhack.midterm.service.account.impl.CheckingAccountServiceImpl;
+import com.ironhack.midterm.service.transaction.MaintenanceFeeTransactionService;
+import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import com.ironhack.midterm.service.user.AccountHolderService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -45,6 +47,12 @@ class CheckingAccountServiceTest {
 
   @Mock
   private StudentCheckingAccountService studentCheckingAccountService;
+
+  @Mock
+  private MaintenanceFeeTransactionService maintenanceFeeTransactionService;
+
+  @Mock
+  private PenaltyFeeTransactionService penaltyFeeTransactionService;
 
 
   // ======================================== get Methods ========================================
@@ -131,5 +139,77 @@ class CheckingAccountServiceTest {
     assertNull(argumentCaptor.getValue().getSecondaryOwner());
   }
 
+  // ======================================== update balance Methods ========================================
+  @Test
+  @Order(3)
+  void testCheckMaintenanceFee_expiredMaintenanceDate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var ca = new CheckingAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    ca.setId(1L);
+    ca.setLastMaintenanceFee(LocalDate.parse("2021-01-01"));
+
+    checkingAccountService.checkMaintenanceFee(ca);
+
+    verify(maintenanceFeeTransactionService).newTransaction(1L);
+    verify(maintenanceFeeTransactionService).validateMaintenanceFeeTransaction(any());
+    verifyNoMoreInteractions(maintenanceFeeTransactionService);
+  }
+
+  @Test
+  @Order(3)
+  void testCheckMaintenanceFee_currentMaintenanceDate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var ca = new CheckingAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    ca.setId(1L);
+
+    checkingAccountService.checkMaintenanceFee(ca);
+    verifyNoInteractions(maintenanceFeeTransactionService);
+  }
+
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_expiredPenaltyFeeDate_LowBalance_processFee() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var ca = new CheckingAccount(newMoney("50"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    ca.setId(1L);
+    ca.setLastPenaltyFeeCheck(LocalDate.parse("2021-01-01"));
+
+    checkingAccountService.checkMinimumBalance(ca);
+
+    verify(penaltyFeeTransactionService).newTransaction(1L);
+    verify(penaltyFeeTransactionService).validatePenaltyFeeTransaction(any());
+    verifyNoMoreInteractions(penaltyFeeTransactionService);
+  }
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_expiredPenaltyFeeDate_highBalance_updatelastDate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var ca = new CheckingAccount(newMoney("5000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    ca.setId(1L);
+    ca.setLastPenaltyFeeCheck(LocalDate.parse("2021-01-01"));
+
+    checkingAccountService.checkMinimumBalance(ca);
+
+    var argumentCaptor = ArgumentCaptor.forClass(CheckingAccount.class);
+    verify(checkingAccountRepository).save(argumentCaptor.capture());
+    verifyNoInteractions(penaltyFeeTransactionService);
+    assertEquals(LocalDate.now().minusMonths(1).minusDays(1), argumentCaptor.getValue().getLastPenaltyFeeCheck());
+  }
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_recentPenaltyFeeDate_loBalance_doNothing() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var ca = new CheckingAccount(newMoney("50"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    ca.setId(1L);
+    ca.setLastPenaltyFeeCheck(LocalDate.now().minusDays(5));
+
+    checkingAccountService.checkMinimumBalance(ca);
+
+    verifyNoInteractions(checkingAccountRepository);
+    verifyNoInteractions(penaltyFeeTransactionService);
+  }
 
 }

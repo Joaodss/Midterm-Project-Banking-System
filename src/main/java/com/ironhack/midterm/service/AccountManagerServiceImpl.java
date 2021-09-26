@@ -1,6 +1,9 @@
 package com.ironhack.midterm.service;
 
-import com.ironhack.midterm.dao.account.*;
+import com.ironhack.midterm.dao.account.Account;
+import com.ironhack.midterm.dao.account.CheckingAccount;
+import com.ironhack.midterm.dao.account.SavingsAccount;
+import com.ironhack.midterm.dao.account.StudentCheckingAccount;
 import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.model.Money;
@@ -13,7 +16,7 @@ import com.ironhack.midterm.service.transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -23,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import static com.ironhack.midterm.util.MoneyUtil.*;
-import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
 
 @Service
 public class AccountManagerServiceImpl implements AccountManagerService {
@@ -48,64 +50,8 @@ public class AccountManagerServiceImpl implements AccountManagerService {
 
 
   // ============================== Check Account Alterations ==============================
-  public void checkForAlterations(Account account) throws InstanceNotFoundException {
-    if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
-      LocalDate lastInterestDate = ((SavingsAccount) account).getLastInterestUpdate();
-      if (lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate())) {
-        Transaction transaction = interestTransactionService.newTransaction(account.getId());
-        interestTransactionService.validateInterestTransaction(transaction);
+  public void checkForAlterations(Account account) throws EntityNotFoundException {
 
-      }
-    } else if (account.getClass() == CreditCard.class) {
-      LocalDate lastInterestRate = ((CreditCard) account).getLastInterestUpdate();
-      if (lastInterestRate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        Transaction transaction = interestTransactionService.newTransaction(account.getId());
-        interestTransactionService.validateInterestTransaction(transaction);
-
-      }
-    }
-
-    if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
-      LocalDate lastMaintenanceDate = ((CheckingAccount) account).getLastMaintenanceFee();
-      if (lastMaintenanceDate.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-        Transaction transaction = maintenanceFeeTransactionService.newTransaction(account.getId());
-        maintenanceFeeTransactionService.validateMaintenanceFeeTransaction(transaction);
-
-      }
-    }
-
-    if (account.getClass() == CheckingAccount.class && ((CheckingAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
-      if (compareMoney(account.getBalance(), ((CheckingAccount) account).getMinimumBalance()) < 0) {
-        LocalDate lastPenaltyFee = account.getLastPenaltyFeeCheck();
-        if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-          Transaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
-          penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
-        }
-      } else {
-        account.setLastPenaltyFeeCheck(
-            account.getLastPenaltyFeeCheck().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
-                account.getLastPenaltyFeeCheck() :
-                dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)
-        );
-        accountService.save(account);
-      }
-    } else if (account.getClass() == SavingsAccount.class && ((SavingsAccount) account).getAccountStatus() == AccountStatus.ACTIVE) {
-      if (compareMoney(account.getBalance(), ((SavingsAccount) account).getMinimumBalance()) < 0) {
-        LocalDate lastPenaltyFee = account.getLastPenaltyFeeCheck();
-        if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
-          Transaction transaction = penaltyFeeTransactionService.newTransaction(account.getId());
-          penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
-
-        }
-      } else {
-        account.setLastPenaltyFeeCheck(
-            account.getLastPenaltyFeeCheck().isAfter(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)) ?
-                account.getLastPenaltyFeeCheck() :
-                dateTimeNow().toLocalDate().minusMonths(1).minusDays(1)
-        );
-        accountService.save(account);
-      }
-    }
 
   }
 

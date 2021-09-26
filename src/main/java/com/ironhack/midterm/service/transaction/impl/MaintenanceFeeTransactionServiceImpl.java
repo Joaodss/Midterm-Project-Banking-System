@@ -12,7 +12,7 @@ import com.ironhack.midterm.service.transaction.MaintenanceFeeTransactionService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 import static com.ironhack.midterm.util.MoneyUtil.compareMoney;
 import static com.ironhack.midterm.util.MoneyUtil.subtractMoney;
@@ -33,7 +33,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
   private AccountManagerService accountManagerService;
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public Transaction newTransaction(long accountId) throws InstanceNotFoundException {
+  public Transaction newTransaction(long accountId) throws EntityNotFoundException {
     Account account = accountService.getById(accountId);
     if (account.getClass() == CheckingAccount.class) {
       Money maintenanceFeeAmount = ((CheckingAccount) account).getMonthlyMaintenanceFee();
@@ -42,7 +42,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
     throw new IllegalArgumentException("Error when using account");
   }
 
-  public Transaction newTransaction(long accountId, Money remaining) throws InstanceNotFoundException {
+  public Transaction newTransaction(long accountId, Money remaining) throws EntityNotFoundException {
     Account account = accountService.getById(accountId);
     if (account.getClass() == CheckingAccount.class) {
       return transactionRepository.save(new Transaction(remaining, account));
@@ -51,7 +51,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
   }
 
   // ======================================== VALIDATE TRANSACTION Methods ========================================
-  public void validateMaintenanceFeeTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void validateMaintenanceFeeTransaction(Transaction transaction) throws EntityNotFoundException {
     if (isTransactionAmountValid(transaction) && accountManagerService.isAccountsNotFrozen(transaction)) {
       receiptRepository.save(transaction.generateMaintenanceFeeTransactionReceipt(true));
       processTransaction(transaction);
@@ -68,7 +68,7 @@ public class MaintenanceFeeTransactionServiceImpl implements MaintenanceFeeTrans
 
 
   // ======================================== PROCESS TRANSACTION Methods ========================================
-  public void processTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void processTransaction(Transaction transaction) throws EntityNotFoundException {
     Account account = accountService.getById(transaction.getTargetAccount().getId());
     account.setBalance(subtractMoney(account.getBalance(), transaction.getConvertedAmount()));
     if (account.getClass() == CheckingAccount.class)

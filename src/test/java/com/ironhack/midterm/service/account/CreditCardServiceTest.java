@@ -6,6 +6,8 @@ import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.account.CreditCardRepository;
 import com.ironhack.midterm.service.account.impl.CreditCardServiceImpl;
+import com.ironhack.midterm.service.transaction.InterestTransactionService;
+import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import com.ironhack.midterm.service.user.AccountHolderService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -41,6 +43,12 @@ class CreditCardServiceTest {
 
   @Mock
   private AccountHolderService accountHolderService;
+
+  @Mock
+  private InterestTransactionService interestTransactionService;
+
+  @Mock
+  private PenaltyFeeTransactionService penaltyFeeTransactionService;
 
 
   // ======================================== get Methods ========================================
@@ -79,6 +87,80 @@ class CreditCardServiceTest {
     assertEquals(newMoney("10000"), argumentCaptor.getValue().getBalance());
     assertEquals(user1, argumentCaptor.getValue().getPrimaryOwner());
     assertNull(argumentCaptor.getValue().getSecondaryOwner());
+  }
+
+
+  // ======================================== update balance Methods ========================================
+  @Test
+  @Order(3)
+  void testCheckInterestUpdate_expiredInterestDate_CallMethodsToUpdate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var cc = new CreditCard(newMoney("700"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    cc.setId(1L);
+    cc.setLastInterestUpdate(LocalDate.parse("2021-01-01"));
+
+    creditCardService.checkInterestRate(cc);
+
+    verify(interestTransactionService).newTransaction(1L);
+    verify(interestTransactionService).validateInterestTransaction(any());
+    verifyNoMoreInteractions(interestTransactionService);
+  }
+
+  @Test
+  @Order(3)
+  void testCheckInterestUpdate_currentInterestDate_DoNothing() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var cc = new CreditCard(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    cc.setId(1L);
+
+    creditCardService.checkInterestRate(cc);
+    verifyNoInteractions(interestTransactionService);
+  }
+
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_expiredPenaltyFeeDate_LowBalance_processFee() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var cc = new CreditCard(newMoney("60"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    cc.setId(1L);
+    cc.setLastPenaltyFeeCheck(LocalDate.parse("2021-01-01"));
+
+    creditCardService.checkCreditLimit(cc);
+
+    verify(penaltyFeeTransactionService).newTransaction(1L);
+    verify(penaltyFeeTransactionService).validatePenaltyFeeTransaction(any());
+    verifyNoMoreInteractions(penaltyFeeTransactionService);
+  }
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_expiredPenaltyFeeDate_highBalance_updateLastDate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var cc = new CreditCard(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    cc.setId(1L);
+    cc.setLastPenaltyFeeCheck(LocalDate.parse("2021-01-01"));
+
+    creditCardService.checkCreditLimit(cc);
+
+    var argumentCaptor = ArgumentCaptor.forClass(CreditCard.class);
+    verify(creditCardRepository).save(argumentCaptor.capture());
+    verifyNoInteractions(penaltyFeeTransactionService);
+    assertEquals(LocalDate.now().minusMonths(1).minusDays(1), argumentCaptor.getValue().getLastPenaltyFeeCheck());
+  }
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_recentPenaltyFeeDate_lowBalance_doNothing() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var cc = new CreditCard(newMoney("60"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    cc.setId(1L);
+    cc.setLastPenaltyFeeCheck(LocalDate.now().minusDays(5));
+
+    creditCardService.checkCreditLimit(cc);
+
+    verifyNoInteractions(creditCardRepository);
+    verifyNoInteractions(penaltyFeeTransactionService);
   }
 
 }

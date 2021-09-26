@@ -1,19 +1,25 @@
 package com.ironhack.midterm.service.account.impl;
 
 import com.ironhack.midterm.dao.account.SavingsAccount;
+import com.ironhack.midterm.dao.transaction.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dto.AccountDTO;
+import com.ironhack.midterm.enums.AccountStatus;
 import com.ironhack.midterm.repository.account.SavingsAccountRepository;
 import com.ironhack.midterm.service.account.SavingsAccountService;
+import com.ironhack.midterm.service.transaction.InterestTransactionService;
+import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import com.ironhack.midterm.service.user.AccountHolderService;
-import com.ironhack.midterm.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.List;
 
+import static com.ironhack.midterm.util.DateTimeUtil.dateTimeNow;
+import static com.ironhack.midterm.util.MoneyUtil.compareMoney;
 import static com.ironhack.midterm.util.MoneyUtil.newMoney;
 
 @Service
@@ -22,9 +28,14 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
   @Autowired
   private SavingsAccountRepository savingsAccountRepository;
 
-
   @Autowired
   private AccountHolderService accountHolderService;
+
+  @Autowired
+  private InterestTransactionService interestTransactionService;
+
+  @Autowired
+  private PenaltyFeeTransactionService penaltyFeeTransactionService;
 
 
   // ======================================== GET ACCOUNT Methods ========================================
@@ -33,7 +44,7 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
   }
 
   // ======================================== ADD ACCOUNT Methods ========================================
-  public void newAccount(AccountDTO savingsAccount) throws InstanceNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
+  public void newAccount(AccountDTO savingsAccount) throws EntityNotFoundException, IllegalArgumentException, NoSuchAlgorithmException {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.findAccountHolders(savingsAccount);
 
@@ -43,5 +54,32 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
     savingsAccountRepository.save(sa);
   }
 
+
+  public void checkInterestRate(SavingsAccount savingsAccount) {
+    LocalDate lastInterestDate = savingsAccount.getLastInterestUpdate();
+
+    if (savingsAccount.getAccountStatus() == AccountStatus.ACTIVE &&
+        lastInterestDate.plusYears(1).isBefore(dateTimeNow().toLocalDate())) {
+      Transaction transaction = interestTransactionService.newTransaction(savingsAccount.getId());
+      interestTransactionService.validateInterestTransaction(transaction);
+    }
+  }
+
+
+  public void checkMinimumBalance(SavingsAccount savingsAccount) {
+    LocalDate lastPenaltyFee = savingsAccount.getLastPenaltyFeeCheck();
+
+    if (savingsAccount.getAccountStatus() == AccountStatus.ACTIVE &&
+        compareMoney(savingsAccount.getBalance(), savingsAccount.getMinimumBalance()) < 0) {
+
+      if (lastPenaltyFee.plusMonths(1).isBefore(dateTimeNow().toLocalDate())) {
+        Transaction transaction = penaltyFeeTransactionService.newTransaction(savingsAccount.getId());
+        penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
+      }
+    } else if (savingsAccount.getLastPenaltyFeeCheck().isBefore(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1))) {
+      savingsAccount.setLastPenaltyFeeCheck(dateTimeNow().toLocalDate().minusMonths(1).minusDays(1));
+      savingsAccountRepository.save(savingsAccount);
+    }
+  }
 
 }

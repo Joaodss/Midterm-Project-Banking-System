@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class TransactionControllerImpl implements TransactionController {
     try {
       accountService.getById(id);
       return transactionService.getAllByAccountId(id);
-    } catch (InstanceNotFoundException e2) {
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,7 +88,7 @@ public class TransactionControllerImpl implements TransactionController {
 
       return transaction;
 
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transaction does not exist in defined account.");
@@ -119,7 +120,7 @@ public class TransactionControllerImpl implements TransactionController {
 
       throw new InstanceNotFoundException("Receipt not found.");
 
-    } catch (InstanceNotFoundException e2) {
+    } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Object not found.");
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -136,7 +137,7 @@ public class TransactionControllerImpl implements TransactionController {
       Account account = accountService.getById(id);
       Transaction transaction = localTransactionService.newTransaction(id, localTransaction);
       localTransactionService.validateLocalTransaction(transaction);
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");
@@ -157,7 +158,7 @@ public class TransactionControllerImpl implements TransactionController {
       } else {
         throw new IllegalArgumentException("Invalid hashed key.");
       }
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");
@@ -183,7 +184,7 @@ public class TransactionControllerImpl implements TransactionController {
         Transaction transaction = penaltyFeeTransactionService.newTransaction(id);
         penaltyFeeTransactionService.validatePenaltyFeeTransaction(transaction);
       }
-    } catch (InstanceNotFoundException e1) {
+    } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Id not found.");
     } catch (IllegalArgumentException e2) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction parameters.");

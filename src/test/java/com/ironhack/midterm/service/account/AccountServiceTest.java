@@ -47,6 +47,15 @@ class AccountServiceTest {
   @Mock
   private UserService userService;
 
+  @Mock
+  private CheckingAccountService checkingAccountService;
+
+  @Mock
+  private SavingsAccountService savingsAccountService;
+
+  @Mock
+  private CreditCardService creditCardService;
+
 
   // ======================================== get Methods ========================================
   // ==================== Get All ====================
@@ -99,7 +108,7 @@ class AccountServiceTest {
   // ======================================== edit Methods ========================================
   @Test
   @Order(4)
-  void edit_EditCheckingAccount_someValues_valuesAreEdited() throws NoSuchAlgorithmException {
+  void testEdit_EditCheckingAccount_someValues_valuesAreEdited() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var user = new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa);
     var ca = new CheckingAccount(newMoney("1000"), user);
@@ -135,7 +144,7 @@ class AccountServiceTest {
 
   @Test
   @Order(4)
-  void edit_EditStudentCheckingAccount_OneValue_valueEdited() throws NoSuchAlgorithmException {
+  void testEdit_EditStudentCheckingAccount_OneValue_valueEdited() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var user = new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa);
     var sca = new StudentCheckingAccount(newMoney("1000"), user);
@@ -155,7 +164,7 @@ class AccountServiceTest {
 
   @Test
   @Order(4)
-  void edit_EditSavingsAccount_SomeValue_valueEdited() throws NoSuchAlgorithmException {
+  void testEdit_EditSavingsAccount_SomeValue_valueEdited() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var user = new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa);
     var sa = new SavingsAccount(newMoney("1000"), user);
@@ -179,7 +188,7 @@ class AccountServiceTest {
 
   @Test
   @Order(4)
-  void edit_EditCreditCard_SomeValue_valueEdited() throws NoSuchAlgorithmException {
+  void testEdit_EditCreditCard_SomeValue_valueEdited() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var user = new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa);
     var cc = new CreditCard(newMoney("1000"), user);
@@ -216,7 +225,7 @@ class AccountServiceTest {
   // ==================== Freeze Account ====================
   @Test
   @Order(6)
-  void freezeAccount_checkingAccount_freeze() throws NoSuchAlgorithmException {
+  void testFreezeAccount_checkingAccount_freeze() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var ca = new CheckingAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
     ca.setId(1L);
@@ -234,7 +243,7 @@ class AccountServiceTest {
 
   @Test
   @Order(6)
-  void freezeAccount_studentCheckingAccount_freeze() throws NoSuchAlgorithmException {
+  void testFreezeAccount_studentCheckingAccount_freeze() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var ca = new StudentCheckingAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
     ca.setId(1L);
@@ -252,11 +261,11 @@ class AccountServiceTest {
 
   @Test
   @Order(6)
-  void freezeAccount_savingsAccount_freeze() throws NoSuchAlgorithmException {
+  void testFreezeAccount_savingsAccount_freeze() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
-    var ca = new SavingsAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
-    ca.setId(1L);
-    when(accountRepository.findByIdJoined(1L)).thenReturn(Optional.of(ca));
+    var sa = new SavingsAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    sa.setId(1L);
+    when(accountRepository.findByIdJoined(1L)).thenReturn(Optional.of(sa));
 
     accountService.freezeAccount(1L);
 
@@ -270,13 +279,48 @@ class AccountServiceTest {
 
   @Test
   @Order(6)
-  void freezeAccount_creditCard_doNothing() {
+  void testFreezeAccount_creditCard_doNothing() {
     verifyNoInteractions(accountRepository);
   }
 
   // ==================== Update balance ====================
-  void updateBalance() {
+  @Test
+  @Order(7)
+  void testUpdateBalance_checkingAccount_useCheckingAccountService() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var ca = new CheckingAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
 
+    accountService.updateBalance(ca);
+
+    verify(checkingAccountService).checkMinimumBalance(ca);
+    verify(checkingAccountService).checkMaintenanceFee(ca);
+    verifyNoMoreInteractions(checkingAccountService);
+  }
+
+  @Test
+  @Order(7)
+  void testUpdateBalance_savingsAccount_useSavingsAccountService() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var sa = new SavingsAccount(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+
+    accountService.updateBalance(sa);
+
+    verify(savingsAccountService).checkInterestRate(sa);
+    verify(savingsAccountService).checkMinimumBalance(sa);
+    verifyNoMoreInteractions(savingsAccountService);
+  }
+
+  @Test
+  @Order(7)
+  void testUpdateBalance_creditCard_useCreditCardService() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var cc = new CreditCard(newMoney("1000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+
+    accountService.updateBalance(cc);
+
+    verify(creditCardService).checkCreditLimit(cc);
+    verify(creditCardService).checkInterestRate(cc);
+    verifyNoMoreInteractions(creditCardService);
   }
 
 }

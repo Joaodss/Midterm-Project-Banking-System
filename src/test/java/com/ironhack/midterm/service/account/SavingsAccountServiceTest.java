@@ -6,6 +6,8 @@ import com.ironhack.midterm.dto.AccountDTO;
 import com.ironhack.midterm.model.Address;
 import com.ironhack.midterm.repository.account.SavingsAccountRepository;
 import com.ironhack.midterm.service.account.impl.SavingsAccountServiceImpl;
+import com.ironhack.midterm.service.transaction.InterestTransactionService;
+import com.ironhack.midterm.service.transaction.PenaltyFeeTransactionService;
 import com.ironhack.midterm.service.user.AccountHolderService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -41,6 +43,12 @@ class SavingsAccountServiceTest {
 
   @Mock
   private AccountHolderService accountHolderService;
+
+  @Mock
+  private InterestTransactionService interestTransactionService;
+
+  @Mock
+  private PenaltyFeeTransactionService penaltyFeeTransactionService;
 
 
   // ======================================== get Methods ========================================
@@ -80,5 +88,80 @@ class SavingsAccountServiceTest {
     assertEquals(user1, argumentCaptor.getValue().getPrimaryOwner());
     assertNull(argumentCaptor.getValue().getSecondaryOwner());
   }
+
+
+  // ======================================== update balance Methods ========================================
+  @Test
+  @Order(3)
+  void testCheckInterestUpdate_expiredInterestDate_CallMethodsToUpdate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var sa = new SavingsAccount(newMoney("100000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    sa.setId(1L);
+    sa.setLastInterestUpdate(LocalDate.parse("2020-01-01"));
+
+    savingsAccountService.checkInterestRate(sa);
+
+    verify(interestTransactionService).newTransaction(1L);
+    verify(interestTransactionService).validateInterestTransaction(any());
+    verifyNoMoreInteractions(interestTransactionService);
+  }
+
+  @Test
+  @Order(3)
+  void testCheckInterestUpdate_currentInterestDate_DoNothing() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var sa = new SavingsAccount(newMoney("100000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    sa.setId(1L);
+
+    savingsAccountService.checkInterestRate(sa);
+    verifyNoInteractions(interestTransactionService);
+  }
+
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_expiredPenaltyFeeDate_LowBalance_processFee() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var sa = new SavingsAccount(newMoney("70"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    sa.setId(1L);
+    sa.setLastPenaltyFeeCheck(LocalDate.parse("2021-01-01"));
+
+    savingsAccountService.checkMinimumBalance(sa);
+
+    verify(penaltyFeeTransactionService).newTransaction(1L);
+    verify(penaltyFeeTransactionService).validatePenaltyFeeTransaction(any());
+    verifyNoMoreInteractions(penaltyFeeTransactionService);
+  }
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_expiredPenaltyFeeDate_highBalance_updateLastDate() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var sa = new SavingsAccount(newMoney("70000"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    sa.setId(1L);
+    sa.setLastPenaltyFeeCheck(LocalDate.parse("2021-01-01"));
+
+    savingsAccountService.checkMinimumBalance(sa);
+
+    var argumentCaptor = ArgumentCaptor.forClass(SavingsAccount.class);
+    verify(savingsAccountRepository).save(argumentCaptor.capture());
+    verifyNoInteractions(penaltyFeeTransactionService);
+    assertEquals(LocalDate.now().minusMonths(1).minusDays(1), argumentCaptor.getValue().getLastPenaltyFeeCheck());
+  }
+
+  @Test
+  @Order(4)
+  void testCheckMinimumBalance_recentPenaltyFeeDate_lowBalance_doNothing() throws NoSuchAlgorithmException {
+    var pa = new Address("test", "test", "test", "test");
+    var sa = new SavingsAccount(newMoney("70"), new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa));
+    sa.setId(1L);
+    sa.setLastPenaltyFeeCheck(LocalDate.now().minusDays(5));
+
+    savingsAccountService.checkMinimumBalance(sa);
+
+    verifyNoInteractions(savingsAccountRepository);
+    verifyNoInteractions(penaltyFeeTransactionService);
+  }
+
 
 }

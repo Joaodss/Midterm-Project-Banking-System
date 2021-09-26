@@ -13,7 +13,7 @@ import com.ironhack.midterm.service.transaction.InterestTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -36,7 +36,7 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
 
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  public Transaction newTransaction(long accountId) throws InstanceNotFoundException, IllegalArgumentException {
+  public Transaction newTransaction(long accountId) throws EntityNotFoundException, IllegalArgumentException {
     Account account = accountService.getById(accountId);
     if (account.getClass() == SavingsAccount.class) {
       BigDecimal interestRate = ((SavingsAccount) account).getInterestRate();
@@ -54,7 +54,7 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
 
 
   // ======================================== VALIDATE TRANSACTION Methods ========================================
-  public void validateInterestTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void validateInterestTransaction(Transaction transaction) throws EntityNotFoundException {
     if (accountManagerService.isAccountsNotFrozen(transaction)) {
       receiptRepository.save(transaction.generateInterestTransactionReceipt(true));
       processTransaction(transaction);
@@ -65,7 +65,7 @@ public class InterestTransactionServiceImpl implements InterestTransactionServic
   }
 
   // ======================================== PROCESS TRANSACTION Methods ========================================
-  public void processTransaction(Transaction transaction) throws InstanceNotFoundException {
+  public void processTransaction(Transaction transaction) throws EntityNotFoundException {
     Account account = accountService.getById(transaction.getTargetAccount().getId());
     account.setBalance(addMoney(account.getBalance(), transaction.getConvertedAmount()));
     if (account.getClass() == SavingsAccount.class)

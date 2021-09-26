@@ -2,16 +2,16 @@ package com.ironhack.midterm.service.transaction;
 
 import com.ironhack.midterm.dao.transaction.Transaction;
 
-import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 public interface InterestTransactionService {
 
   // ======================================== ADD TRANSACTION Methods ========================================
-  Transaction newTransaction(long accountId) throws InstanceNotFoundException, IllegalArgumentException;
+  Transaction newTransaction(long accountId) throws EntityNotFoundException, IllegalArgumentException;
 
-  void validateInterestTransaction(Transaction transaction) throws InstanceNotFoundException;
+  void validateInterestTransaction(Transaction transaction) throws EntityNotFoundException;
 
-  void processTransaction(Transaction transaction) throws InstanceNotFoundException;
+  void processTransaction(Transaction transaction) throws EntityNotFoundException;
 
 
 }
