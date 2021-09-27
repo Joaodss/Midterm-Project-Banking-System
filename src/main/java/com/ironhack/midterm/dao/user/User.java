@@ -32,7 +32,6 @@ public abstract class User {
   @Column(name = "username", unique = true)
   private String username;
 
-  @JsonIgnore
   @ToString.Exclude
   @NotNull
   @Column(name = "password")

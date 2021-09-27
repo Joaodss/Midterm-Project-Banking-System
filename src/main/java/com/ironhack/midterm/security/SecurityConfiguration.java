@@ -73,10 +73,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("ADMIN")
 
 
-        // PATCH /users
+        // PATCH
         .mvcMatchers(HttpMethod.PATCH, "/api/users/{username}/change_password")
         .access("@apiGuard.checkUsernameOrIfAdmin(authentication, #username)")
-
         .mvcMatchers(HttpMethod.PATCH, "/api/users/edit/**}").hasRole("ADMIN")
         .mvcMatchers(HttpMethod.PATCH, "/api/accounts/edit/**}").hasRole("ADMIN")
 
