@@ -277,14 +277,14 @@ class ThirdPartyTransactionServiceTest {
 
   @Test
   @Order(4)
-  void testIsTransactionAmountValid_sendPurpose_false() throws NoSuchAlgorithmException {
+  void testIsTransactionAmountValid_sendPurpose_true() throws NoSuchAlgorithmException {
     var pa = new Address("test", "test", "test", "test");
     var ah = new AccountHolder("joaodss", "12345", "João", LocalDate.parse("1996-10-01"), pa);
     var ca = new CheckingAccount(newMoney("100"), ah);
     ca.setId(1L);
     var transaction = new Transaction(newMoney("101"), ca, TransactionPurpose.SEND);
 
-    assertFalse(thirdPartyTransactionService.isTransactionAmountValid(transaction));
+    assertTrue(thirdPartyTransactionService.isTransactionAmountValid(transaction));
   }
 
 }

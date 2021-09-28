@@ -108,9 +108,9 @@ public class ThirdPartyTransactionServiceImpl implements ThirdPartyTransactionSe
 
   // (transfer money <= account balance)
   public boolean isTransactionAmountValid(Transaction transaction) {
-    if (transaction.getTransactionPurpose() != null && transaction.getTransactionPurpose() == TransactionPurpose.REQUEST)
+    if (transaction.getTransactionPurpose() != null && transaction.getTransactionPurpose() == TransactionPurpose.REQUEST) {
       return compareMoney(transaction.getTargetAccount().getBalance(), transaction.getBaseAmount()) >= 0;
-    return false;
+    } else return transaction.getTransactionPurpose() != null && transaction.getTransactionPurpose() == TransactionPurpose.SEND;
   }
 
 }
