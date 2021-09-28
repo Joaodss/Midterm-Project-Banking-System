@@ -30,6 +30,4 @@ public interface TransactionController {
   // -------------------- Add Account Specific Third Party Transaction [ADMIN / Specific USER] --------------------
   void createThirdPartyTransaction(String hashedKey, TransactionThirdPartyDTO thirdPartyTransaction);
 
-  void createInternalTransaction(long id, TransactionInternalDTO internalTransactions);
-
 }

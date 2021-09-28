@@ -135,10 +135,8 @@ public class AccountControllerImpl implements AccountController {
   public void createCheckingAccount(@RequestBody @Valid AccountDTO checkingAccount) {
     try {
       checkingAccountService.newAccount(checkingAccount);
-    } catch (EntityNotFoundException e1) {
+    } catch (EntityNotFoundException | IllegalArgumentException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
-    } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e2.getMessage());
     } catch (NoSuchAlgorithmException e3) {
       throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e3.getMessage());
     } catch (Exception e) {

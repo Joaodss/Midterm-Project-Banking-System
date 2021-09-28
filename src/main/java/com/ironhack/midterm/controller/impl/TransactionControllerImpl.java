@@ -129,27 +129,4 @@ public class TransactionControllerImpl implements TransactionController {
     }
   }
 
-
-  @PostMapping("/{account_id}/transactions/new_internal_transaction")
-  @ResponseStatus(HttpStatus.CREATED)
-  public void createInternalTransaction(@PathVariable("account_id") long id, @RequestBody @Valid TransactionInternalDTO internalTransactions) {
-    try {
-      TransactionType transactionType = transactionTypeFromString(internalTransactions.getTransactionType());
-      if (transactionType == TransactionType.INTEREST) {
-        interestTransactionService.newTransaction(id);
-      } else if (transactionType == TransactionType.MAINTENANCE_FEE) {
-        maintenanceFeeTransactionService.newTransaction(id);
-      } else if (transactionType == TransactionType.PENALTY_FEE) {
-        penaltyFeeTransactionService.newTransaction(id);
-      } else throw new IllegalArgumentException("Invalid transaction type.");
-    } catch (EntityNotFoundException e1) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
-    } catch (IllegalArgumentException e2) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e2.getMessage());
-    } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-  }
-
-
 }
