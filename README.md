@@ -69,9 +69,8 @@ FLUSH PRIVILEGES;
 For the unit testing it was used Jacoco and Mockito to optimize the process.
 
 For the manual integration testing it was used Postman. All the examples and Postman testing was saved and can be
-accessed here
-([manual endpoints testing](extras/postman/%5BJoão%20Afonso%5D%20Midterm%20-%20Manual%20Testing.postman_collection.json))
-.
+accessed [here](extras/postman/%5BJoão%20Afonso%5D%20Midterm%20-%20Manual%20Testing.postman_collection.json). (import to
+postman)
 
 ### Diagrams
 
