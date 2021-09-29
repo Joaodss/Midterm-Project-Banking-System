@@ -45,9 +45,13 @@ public class AccountControllerImpl implements AccountController {
   public List<Account> getAccounts(Authentication auth) {
     try {
       if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
-        return accountService.getAll();
+        var accounts = accountService.getAll();
+        for (Account a : accounts) accountService.updateBalance(a);
+        return accounts;
       } else if (auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-        return accountService.getAllByUsername(auth.getName());
+        var accounts = accountService.getAllByUsername(auth.getName());
+        for (Account a : accounts) accountService.updateBalance(a);
+        return accounts;
       } else throw new LoginException("Invalid user logg in.");
     } catch (LoginException e1) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e1.getMessage());
@@ -61,7 +65,9 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Account getAccountById(@PathVariable("account_id") long id) {
     try {
-      return accountService.getById(id);
+      var account = accountService.getById(id);
+      accountService.updateBalance(account);
+      return account;
     } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {
@@ -74,7 +80,9 @@ public class AccountControllerImpl implements AccountController {
   @ResponseStatus(HttpStatus.OK)
   public Money getAccountBalanceById(@PathVariable("account_id") long id) {
     try {
-      return accountService.getById(id).getBalance();
+      var account = accountService.getById(id);
+      accountService.updateBalance(account);
+      return account.getBalance();
     } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
     } catch (Exception e) {

@@ -95,7 +95,6 @@ public class TransactionServiceImpl implements TransactionService {
   // -------------------- Check if transaction daily amount is fraudulent --------------------
   public boolean isTransactionDailyAmountFraudulent(Account account) {
     Money totalDayTransaction = lastDayTransactions(account);
-
     Money dailyMax = allDailyMax(account);
     Money baseMaxTransaction = convertCurrency(account.getBalance(), newMoney("1000"));
     Money dailyMaxTransaction = new Money(dailyMax.getAmount().multiply(new BigDecimal("1.5")), account.getBalance().getCurrency());
@@ -114,6 +113,7 @@ public class TransactionServiceImpl implements TransactionService {
   // -------------------- utils: max transaction amount in one day --------------------
   public Money allDailyMax(Account account) {
     HashMap<LocalDate, Money> dailyTransactions = dailyTransactions(account);
+    if (dailyTransactions.size() > 1) dailyTransactions.put(LocalDate.now(), newMoney("0"));
     Optional<Map.Entry<LocalDate, Money>> maxDailyMoney = dailyTransactions.entrySet().stream().max(
         Comparator.comparing((Map.Entry<LocalDate, Money> e) -> e.getValue().getAmount())
     );

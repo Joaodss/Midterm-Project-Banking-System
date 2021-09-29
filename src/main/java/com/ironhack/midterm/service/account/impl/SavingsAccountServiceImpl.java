@@ -47,7 +47,7 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.findAccountHolders(savingsAccount);
 
-    SavingsAccount sa = new SavingsAccount(newMoney(savingsAccount.getInitialBalance().toString(), savingsAccount.getCurrency()), accountHolders[0], accountHolders[1]);
+    SavingsAccount sa = new SavingsAccount(newMoney(savingsAccount.getInitialBalance().toString(), savingsAccount.getCurrency().toUpperCase()), accountHolders[0], accountHolders[1]);
     sa.updateCurrencyValues();
 
     savingsAccountRepository.save(sa);

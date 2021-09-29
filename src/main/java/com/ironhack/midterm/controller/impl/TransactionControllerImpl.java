@@ -1,12 +1,11 @@
 package com.ironhack.midterm.controller.impl;
 
 import com.ironhack.midterm.controller.TransactionController;
+import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.transaction.Receipt;
 import com.ironhack.midterm.dao.transaction.Transaction;
-import com.ironhack.midterm.dto.TransactionInternalDTO;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
 import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
-import com.ironhack.midterm.enums.TransactionType;
 import com.ironhack.midterm.service.account.AccountService;
 import com.ironhack.midterm.service.transaction.*;
 import com.ironhack.midterm.service.user.ThirdPartyService;
@@ -18,8 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
-
-import static com.ironhack.midterm.util.EnumsUtil.transactionTypeFromString;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -59,6 +56,7 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public List<Transaction> getTransactions(@PathVariable("account_id") long id) {
     try {
+      accountService.updateBalance(accountService.getById(id));
       return transactionService.getAllByAccountId(id);
     } catch (EntityNotFoundException e2) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e2.getMessage());
@@ -72,6 +70,7 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public Transaction getTransactionsById(@PathVariable("account_id") long accountId, @PathVariable("transaction_id") long transactionId) {
     try {
+      accountService.updateBalance(accountService.getById(accountId));
       return transactionService.getById(accountId, transactionId);
     } catch (EntityNotFoundException e1) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e1.getMessage());
@@ -89,6 +88,7 @@ public class TransactionControllerImpl implements TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public Receipt getReceiptsByTransactionId(@PathVariable("account_id") long accountId, @PathVariable("transaction_id") long transactionId) {
     try {
+      accountService.updateBalance(accountService.getById(accountId));
       return receiptService.getReceiptByTransactionId(accountId, transactionId);
     } catch (IllegalArgumentException e1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());

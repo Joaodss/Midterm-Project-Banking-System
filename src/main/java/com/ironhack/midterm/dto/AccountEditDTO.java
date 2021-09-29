@@ -40,7 +40,7 @@ public class AccountEditDTO {
 
   // Minimum Balance
   @PositiveOrZero(message = "Minimum balance must be positive or zero.")
-  private BigDecimal MinimumBalance;
+  private BigDecimal minimumBalance;
 
 
   // Credit Limit

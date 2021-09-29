@@ -46,7 +46,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     // Perform an identity check of both account owners
     AccountHolder[] accountHolders = accountHolderService.findAccountHolders(creditCard);
 
-    CreditCard cc = new CreditCard(newMoney(creditCard.getInitialBalance().toString(), creditCard.getCurrency()), accountHolders[0], accountHolders[1]);
+    CreditCard cc = new CreditCard(newMoney(creditCard.getInitialBalance().toString(), creditCard.getCurrency().toUpperCase()), accountHolders[0], accountHolders[1]);
     cc.updateCurrencyValues(); // converts default values if primary balance currency is different.
 
     creditCardRepository.save(cc);

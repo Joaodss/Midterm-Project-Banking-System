@@ -58,12 +58,12 @@ public class CheckingAccountServiceImpl implements CheckingAccountService {
 
     if (accountHolders[0].getDateOfBirth().plusYears(25).isBefore(LocalDate.now())) {
       // older than 24 years (25 years old or more) (birthdate + 25 < now)
-      CheckingAccount ca = new CheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency()), accountHolders[0], accountHolders[1]);
+      CheckingAccount ca = new CheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency().toUpperCase()), accountHolders[0], accountHolders[1]);
       ca.updateCurrencyValues();
       checkingAccountRepository.save(ca);
     } else {
       // younger than 24 years (24 years old or less) (birthdate + 25 > now)
-      StudentCheckingAccount sca = new StudentCheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency()), accountHolders[0], accountHolders[1]);
+      StudentCheckingAccount sca = new StudentCheckingAccount(newMoney(checkingAccount.getInitialBalance().toString(), checkingAccount.getCurrency().toUpperCase()), accountHolders[0], accountHolders[1]);
       sca.updateCurrencyValues();
       studentCheckingAccountService.newAccount(sca);
     }

@@ -48,15 +48,12 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public List<Account> getAllByUsername(String username) {
-    List<Account> accounts = accountRepository.findAllByUsernameJoined(username);
-    for (Account a : accounts) updateBalance(a);
-    return accounts;
+    return accountRepository.findAllByUsernameJoined(username);
   }
 
   public Account getById(Long id) {
     var account = accountRepository.findByIdJoined(id);
     if (account.isPresent()) {
-      updateBalance(account.get());
       return account.get();
     }
     throw new EntityNotFoundException("Id not found.");
@@ -94,14 +91,14 @@ public class AccountServiceImpl implements AccountService {
       User primaryUser = userService.getByUsername(accountEdit.getPrimaryOwnerUsername());
       if (primaryUser.getClass() == AccountHolder.class) {
         account.setPrimaryOwner((AccountHolder) primaryUser);
-      } else throw new EntityNotFoundException();
+      } else throw new IllegalArgumentException("Username for primary owner not found");
     }
 
     if (accountEdit.getSecondaryOwnerUsername() != null) {
       User secondaryUser = userService.getByUsername(accountEdit.getSecondaryOwnerUsername());
       if (secondaryUser.getClass() == AccountHolder.class) {
         account.setSecondaryOwner((AccountHolder) secondaryUser);
-      } else throw new EntityNotFoundException();
+      } else throw new IllegalArgumentException("Username for secondary owner not found");
     }
 
     // ==================== (Student) Checking Accounts ====================
@@ -112,10 +109,10 @@ public class AccountServiceImpl implements AccountService {
 
       // Currency
       if (accountEdit.getCurrency() != null) {
-        account.setBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), account.getBalance()));
-        account.setPenaltyFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), account.getPenaltyFee()));
-        ((CheckingAccount) account).setMinimumBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), ((CheckingAccount) account).getMinimumBalance()));
-        ((CheckingAccount) account).setMonthlyMaintenanceFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), ((CheckingAccount) account).getMonthlyMaintenanceFee()));
+        account.setBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), account.getBalance()));
+        account.setPenaltyFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), account.getPenaltyFee()));
+        ((CheckingAccount) account).setMinimumBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), ((CheckingAccount) account).getMinimumBalance()));
+        ((CheckingAccount) account).setMonthlyMaintenanceFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), ((CheckingAccount) account).getMonthlyMaintenanceFee()));
       }
 
       // Minimum Balance
@@ -138,9 +135,9 @@ public class AccountServiceImpl implements AccountService {
 
       // Currency
       if (accountEdit.getCurrency() != null) {
-        account.setBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), account.getBalance()));
-        account.setPenaltyFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), account.getPenaltyFee()));
-        ((SavingsAccount) account).setMinimumBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), ((SavingsAccount) account).getMinimumBalance()));
+        account.setBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), account.getBalance()));
+        account.setPenaltyFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), account.getPenaltyFee()));
+        ((SavingsAccount) account).setMinimumBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), ((SavingsAccount) account).getMinimumBalance()));
       }
 
       // Minimum Balance
@@ -164,9 +161,9 @@ public class AccountServiceImpl implements AccountService {
     } else if (account.getClass() == CreditCard.class) {
       // Currency
       if (accountEdit.getCurrency() != null) {
-        account.setBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), account.getBalance()));
-        account.setPenaltyFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), account.getPenaltyFee()));
-        ((CreditCard) account).setCreditLimit(convertCurrency(Currency.getInstance(accountEdit.getCurrency()), ((CreditCard) account).getCreditLimit()));
+        account.setBalance(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), account.getBalance()));
+        account.setPenaltyFee(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), account.getPenaltyFee()));
+        ((CreditCard) account).setCreditLimit(convertCurrency(Currency.getInstance(accountEdit.getCurrency().toUpperCase()), ((CreditCard) account).getCreditLimit()));
       }
 
       // Credit Limit
