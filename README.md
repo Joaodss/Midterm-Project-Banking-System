@@ -72,15 +72,221 @@ The application can be started from an IDE such as Intellij, or from the command
 - mysqlFinal profile: `mvn spring-boot:run`
 - mysqlDev profile: `mvn spring-boot:run -Dspring-boot.run.profiles=mysqlDev`
 
-### Endpoints
+## Endpoints
 
-#### Users
+It is important to note that for all endpoints available to the user are dependent on it own profile. In sum, a user
+will only be able to access its own information and its accounts and transactions.
 
-#### Accounts
+### Users
 
-#### Transactions
+| Request |                 Route                 | Permissions |                                 Description                                  |
+|---------|---------------------------------------|:-----------:|------------------------------------------------------------------------------|
+| GET     | /api/users                            | ADMIN       | Returns list of all users. (admins, account holders, and third parties)      |
+| GET     | /api/users/admins                     | ADMIN       | Returns list of all admins.                                                  |
+| GET     | /api/users/account_holders            | ADMIN       | Returns list of all account holders.                                         |
+| GET     | /api/users/third_parties              | ADMIN       | Returns list of all third parties.                                           |
+| GET     | /api/users/id/{id}                    | ADMIN       | Return a single user by id.                                                  |
+| GET     | /api/users/{username}                 | ADMIN, USER | Return a single user by username.                                            |
+| POST    | /api/users/new_admin                  | ADMIN       | Requires a payload(1), creates and saves an admin, and returns 201.          |
+| POST    | /api/users/new                        | PUBLIC      | Requires a payload(2), creates and saves an account holder, and returns 201. |
+| POST    | /api/users/new_third_party            | ADMIN       | Requires a payload(1), creates and saves a third party, and returns 201.     |
+| PATCH   | /api/users/{username}/change_password | ADMIN, USER | Requires a payload(3), changes user password, and returns 200.               |
+| PATCH   | /api/users/edit/user/{username}       | ADMIN       | Requires a payload(4), changes any user properties, and returns 200.         |
 
-### Testing
+#### Payload 1 example
+
+```
+{
+"username":"string",
+"password":"string",
+"name":"string"
+}
+```
+
+#### Payload 2 examples
+
+```
+{
+    "username":"string",
+    "password":"string",
+    "name":"string",
+    "dateOfBirth":"YYYY-MM-DD",
+    "paStreetAddress":"string",
+    "paPostalCode":"string",
+    "paCity":"string",
+    "paCountry":"string",
+    "maStreetAddress":"string",
+    "maPostalCode":"string",
+    "maCity":"string",
+    "maCountry":"string"
+}
+```
+
+Notes: The password will be encrypted for safer storage.  
+The mailing address (ma) is optional. Being the following payload is also valid:
+
+```
+{
+    "username":"string",
+    "password":"string",
+    "name":"string",
+    "dateOfBirth":"YYYY-MM-DD",
+    "paStreetAddress":"string",
+    "paPostalCode":"string",
+    "paCity":"string",
+    "paCountry":"string"
+}
+```
+
+#### Payload 3 example
+
+```
+{
+    "currentPassword":"string",
+    "newPassword":"string",
+    "repeatedNewPassword":"string"
+}
+```
+
+Notes: The current password must match the users' password.  
+The newPassword and repeatedNewPassword must be identical.
+
+#### Payload 4 example
+
+```
+{
+    "username":"string",
+    "password":"string",
+    "name":"string",
+    "dateOfBirth":"YYYY-MM-DD",
+    "paStreetAddress":"string",
+    "paPostalCode":"string",
+    "paCity":"string",
+    "paCountry":"string",
+    "maStreetAddress":"string",
+    "maPostalCode":"string",
+    "maCity":"string",
+    "maCountry":"string"
+}
+```
+
+Notes: All the values are optional and will only take effect if they exist. For example, postal code is not available on
+admins.  
+To add a new mailing address to a user without mailing address, all the ma properties must be present.
+
+### Accounts
+
+| Request |                  Route                  | Permissions |                                                          Description                                                          |
+|---------|-----------------------------------------|:-----------:|-------------------------------------------------------------------------------------------------------------------------------|
+| GET     | /api/accounts                           | ADMIN, USER | Returns list of all accounts. For users, only the owned accounts.                                                             |
+| GET     | /api/accounts/checking_accounts         | ADMIN       | Returns list of all checking accounts.                                                                                        |
+| GET     | /api/accounts/student_checking_accounts | ADMIN       | Returns list of all student checking accounts.                                                                                |
+| GET     | /api/accounts/savings_accounts          | ADMIN       | Returns list of all savings accounts.                                                                                         |
+| GET     | /api/accounts/credit_cards              | ADMIN       | Returns list of all credit cards.                                                                                             |
+| GET     | /api/accounts/{id}                      | ADMIN, USER | Return a single account by id.                                                                                                |
+| GET     | /api/accounts/{id}/balance              | ADMIN, USER | Return the balance for a single account by id.                                                                                |
+| POST    | /api/accounts/new_checking_account      | ADMIN       | Requires a payload(5), creates and saves a checking account or a student savings account (depending on age), and returns 201. |
+| POST    | /api/accounts/new_savings_account       | ADMIN       | Requires a payload(5), creates and saves a savings account, and returns 201.                                                  |
+| POST    | /api/accounts/new_credit_card           | ADMIN       | Requires a payload(5), creates and saves a credit card, and returns 201.                                                      |
+| PATCH   | /api/accounts/edit/account/{id}         | ADMIN       | Requires a payload(6), changes any account property, and returns 200.                                                         |
+
+#### Payload 5 example
+
+```
+{
+    "initialBalance":"decimal",
+    "currency":"string (3 charactes)",
+    "primaryOwnerId":"integer",
+    "primaryOwnerUsername":"string",
+    "secondaryOwnerId":"integer",
+    "secondaryOwnerUsername":"string"
+}
+```
+
+Notes: The balance must be positive.  
+The currency value must have 3 digits.  
+The id and username must correspond to the same user, and it needs to be an account holder.  
+The secondary owner is optional. Being the following payload is also valid:
+
+```
+{
+    "initialBalance":"decimal (positive)",
+    "currency":"string (3 digits)",
+    "primaryOwnerId":"integer",
+    "primaryOwnerUsername":"string"
+}
+```
+
+#### Payload 6 example
+
+```
+{
+    "primaryOwnerUsername":"string",
+    "secondaryOwnerUsername":"string",
+    "accountStatus":"string (active or frozen)",
+    "currency":"string (3 charactes)",
+    "accountBalance":"decimal (positive)",
+    "penaltyFee":"decimal (positive)",
+    "lastPenaltyFee":"(YYYY-MM-DD)",
+    "minimumBalance":"decimal (positive)",
+    "creditLimit":"decimal (positive)",
+    "monthlyMaintenanceFee":"decimal (positive)",
+    "lastMaintenanceFee":"(YYYY-MM-DD)",
+    "savingsAccountInterestRate":"decimal (positive, smaler than 0.5)",
+    "creditCardInterestRate":"decimal (greater than 0.1)",
+    "lastInterestUpdate":"(YYYY-MM-DD)"
+}
+```
+
+Notes: All the values are optional and will only take effect if they exist.  
+Account status should only be used on checking, student, and savings accounts.  
+Minimum balance should only be used on checking and savings accounts.  
+Credit Limit is specific to credit cards.  
+Maintenance Fees are specific to checking accounts.  
+Interest rate should only be used on savings accounts and credit cards. The specific values of
+savingsAccountInterestRate and creditCardInterestRate must be used for each one separately.
+
+### Transactions
+
+| Request |                               Route                              | Permissions |                                            Description                                                                                          |
+|---------|------------------------------------------------------------------|:-----------:|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| GET     | /api/accounts/{account_id}/transactions/                         | ADMIN, USER | Returns list of all transaction, from a given account by id.                                                                                    |
+| GET     | /api/accounts/{account_id}/transactions/{transaction_id}         | ADMIN, USER | Returns a single transaction by id, from a given account by id.                                                                                 |
+| GET     | /api/accounts/{account_id}/transactions/{transaction_id}/receipt | ADMIN, USER | Returns the receipt of a single transaction by id, from a given account by id.                                                                  |
+| POST    | /api/accounts/{account_id}/transactions/new_local_transaction    | ADMIN, USER | Requires a payload(7), creates, processes, and saves a local transaction, and returns 201.                                                      |
+| POST    | /api/accounts/transactions/new_third_party_transaction           | PUBLIC      | Requires a payload(8) and the third party's hashed key on the header. Creates, processes, and saves a third party transaction, and returns 201. |
+
+#### Payload 7 example
+
+```
+{
+    "transferValue":"decimal (positive)",
+    "currency":"string (3 charactes)",
+    "targetAccountId":"integer",
+    "targetOwnerName":"string"
+}
+```
+
+Notes: The id and name must correspond to the same user, and it needs to be an account holder.
+
+#### Payload 8 example
+
+```
+{
+    "transferValue":"decimal (positive)",
+    "currency":"string (3 charactes)",
+    "targetAccountId":"integer",
+    "secretKey":"string (account's secret key)",
+    "transactionPurpose":"string (send or request)"
+}
+```
+
+Notes: The id and secretKey must correspond to the same user and account. It needs to be an account holder, and the
+account cannot be a credit card.  
+The header must have a valid hashed key to identify the third party.  
+Send will send funds to the targeted account. Request will withdraw funds from the targeted account.
+
+## Testing
 
 For the unit testing it was used Jacoco to verify logic branches and Mockito to isolate the process of testing services.
 
@@ -88,24 +294,23 @@ For manual integration testing it was used Postman. All the examples and Postman
 accessed [here](extras/postman/%5BJoão%20Afonso%5D%20Midterm%20-%20Manual%20Testing.postman_collection.json). (import to
 postman)
 
-### Diagrams
+## Diagrams
 
-#### UML Class Diagram
-
-![sql relations diagram](extras/diagrams/SQL_Model.png)
-
-#### UML Class Diagram
+### UML Class Diagram
 
 ![sql relations diagram](extras/diagrams/SQL_Model.png)
 
-#### SQL Relations Diagram
+### UML Class Diagram
+
+![sql relations diagram](extras/diagrams/SQL_Model.png)
+
+### SQL Relations Diagram
 
 ![sql relations diagram](extras/diagrams/SQL_Model.png)
 
 ## Notes
 
 ## Next Steps
-
 
 
 
