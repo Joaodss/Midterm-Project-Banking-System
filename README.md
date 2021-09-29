@@ -1,6 +1,7 @@
 # IH-Midterm-Project-Banking-System
 
-Ironhack Bootcamp Midterm Project: Banking System
+Ironhack Bootcamp Midterm Project: Banking System  
+by: [Joaodss](https://github.com/Joaodss)
 
 ## Goals
 
@@ -23,13 +24,14 @@ requirements, the project must:
 
 The program works correctly and it implements its goal.
 
-It allows for the creation of account holders, admins, and third parties, adn for the creation of multiple accounts:
+It allows for the creation of account holders, admins, and third parties, and the creation of multiple accounts:
 checking, student checking, savings, credit card. The transactions are saved in a transaction model and in a receipt
 model to be easier to read.  
 For account management, it automatically adds interest on the correct dates (1 per month for credit card, and 1 per year
-for savings account), it withdraws penalty fees when the account is bellow the minimum amount, and it withdraws
-maintenance fees every month for checking accounts. Additional it checks each transaction for unusual behaviour, such as
-fast sequence of transactions or suspicious large transactions, and it will freeze the account for security reasons.
+for savings account), it withdraws penalty fees when the account is below the minimum amount, and it withdraws
+maintenance fees every month for checking accounts. Additionally, it checks each transaction for unusual behavior, such
+as a fast sequence of transactions or suspicious large transactions, and it will freeze the account for security
+reasons.
 
 ### Set up
 
@@ -60,9 +62,9 @@ FLUSH PRIVILEGES;
 
 The application can be run with two different profiles: mysqlFinal or mysqlDev.
 
-The default profile is mysqlFinal and initializes the database only on the first run. The next runs it will only read
-from the database and update it. The development profile resets the database everytime the application starts. All the
-data will be deleted o the start.
+The default profile is mysqlFinal and initializes the database only on the first run. The following runs it will only
+read from the database and update it. The development profile resets the database every time the application starts. All
+the data will be deleted o the start.
 
 Both profiles initialize with an admin entity: {username=admin, password=admin, name=Admin}, to allow the use of all
 endpoints.
@@ -74,8 +76,8 @@ The application can be started from an IDE such as Intellij, or from the command
 
 ## Endpoints
 
-It is important to note that for all endpoints available to the user are dependent on it own profile. In sum, a user
-will only be able to access its own information and its accounts and transactions.
+It is important to note that all endpoints available to the user are dependent on its own profile. In sum, a user will
+only be able to access its own information and its accounts and transactions.
 
 ### Users
 
@@ -170,9 +172,9 @@ The newPassword and repeatedNewPassword must be identical.
 }
 ```
 
-Notes: All the values are optional and will only take effect if they exist. For example, postal code is not available on
-admins.  
-To add a new mailing address to a user without mailing address, all the ma properties must be present.
+Notes: All the values are optional and will only take effect if they exist. For example, a postal code is not available
+on admins.  
+To add a new mailing address to a user without a mailing address, all the ma properties must be present.
 
 ### Accounts
 
@@ -240,10 +242,10 @@ The secondary owner is optional. Being the following payload is also valid:
 
 Notes: All the values are optional and will only take effect if they exist.  
 Account status should only be used on checking, student, and savings accounts.  
-Minimum balance should only be used on checking and savings accounts.  
-Credit Limit is specific to credit cards.  
+The minimum balance should only be used on checking and savings accounts.  
+The credit limit is specific to credit cards.  
 Maintenance Fees are specific to checking accounts.  
-Interest rate should only be used on savings accounts and credit cards. The specific values of
+The interest rate should only be used on savings accounts and credit cards. The specific values of
 savingsAccountInterestRate and creditCardInterestRate must be used for each one separately.
 
 ### Transactions
@@ -281,36 +283,35 @@ Notes: The id and name must correspond to the same user, and it needs to be an a
 }
 ```
 
-Notes: The id and secretKey must correspond to the same user and account. It needs to be an account holder, and the
+Notes: The id and secretKey must correspond to the same user and account. It needs to be an account holder and the
 account cannot be a credit card.  
 The header must have a valid hashed key to identify the third party.  
 Send will send funds to the targeted account. Request will withdraw funds from the targeted account.
 
 ## Testing
 
-For the unit testing it was used Jacoco to verify logic branches and Mockito to isolate the process of testing services.
+For the unit testing, it was used Jacoco to verify logic branches and Mockito to isolate the process of testing
+services.
 
-For manual integration testing it was used Postman. All the examples and Postman testing was saved and can be
-accessed [here](extras/postman/%5BJoão%20Afonso%5D%20Midterm%20-%20Manual%20Testing.postman_collection.json). (import to
-postman)
+The automated integration testing for the controllers was not yet implemented. To test the whole application, manual
+integration testing was done in Postman. Most of the test cases and Postman testing was saved and can be accessed
+here ([Manual integration testing](extras/postman/%5BJoão%20Afonso%5D%20Midterm%20-%20Manual%20Testing.postman_collection.json))
+, and imported to postman.
 
 ## Diagrams
 
-### UML Class Diagram
+### UML Use Case Diagram
 
-![sql relations diagram](extras/diagrams/SQL_Model.png)
-
-### UML Class Diagram
-
-![sql relations diagram](extras/diagrams/SQL_Model.png)
+![sql relations diagram](extras/diagrams/UML%20Diagram.svg)
 
 ### SQL Relations Diagram
 
 ![sql relations diagram](extras/diagrams/SQL_Model.png)
 
-## Notes
-
 ## Next Steps
 
-
+- Finish controllers' integration testing;
+- Remodel Credit card to make it more realistic (at the moment it behaves as an account);
+- Create a Request model to connect the admins with the account holders (request account alterations, user alterations);
+- Implement an initial save for the cached files of the currency exchange rates. Make the application update daily.
 
