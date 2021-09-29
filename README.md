@@ -56,6 +56,22 @@ GRANT ALL PRIVILEGES ON BankingSystem_test.* TO 'dev'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
+### Run
+
+The application can be run with two different profiles: mysqlFinal or mysqlDev.
+
+The default profile is mysqlFinal and initializes the database only on the first run. The next runs it will only read
+from the database and update it. The development profile resets the database everytime the application starts. All the
+data will be deleted o the start.
+
+Both profiles initialize with an admin entity: {username=admin, password=admin, name=Admin}, to allow the use of all
+endpoints.
+
+The application can be started from an IDE such as Intellij, or from the command line, by running:
+
+- mysqlFinal profile: `mvn spring-boot:run`
+- mysqlDev profile: `mvn spring-boot:run -Dspring-boot.run.profiles=mysqlDev`
+
 ### Endpoints
 
 #### Users
@@ -66,9 +82,9 @@ FLUSH PRIVILEGES;
 
 ### Testing
 
-For the unit testing it was used Jacoco and Mockito to optimize the process.
+For the unit testing it was used Jacoco to verify logic branches and Mockito to isolate the process of testing services.
 
-For the manual integration testing it was used Postman. All the examples and Postman testing was saved and can be
+For manual integration testing it was used Postman. All the examples and Postman testing was saved and can be
 accessed [here](extras/postman/%5BJoão%20Afonso%5D%20Midterm%20-%20Manual%20Testing.postman_collection.json). (import to
 postman)
 

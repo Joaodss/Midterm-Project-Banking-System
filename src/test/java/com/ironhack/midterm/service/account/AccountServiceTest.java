@@ -77,7 +77,6 @@ class AccountServiceTest {
     accountService.getAllByUsername("joaodss");
     verify(accountRepository).findAllByUsernameJoined("joaodss");
     verifyNoMoreInteractions(accountRepository);
-    verify(accountService).updateBalance(ca);
   }
 
   // ==================== Get By Id ====================
@@ -92,7 +91,6 @@ class AccountServiceTest {
     accountService.getById(1L);
     verify(accountRepository).findByIdJoined(1L);
     verifyNoMoreInteractions(accountRepository);
-    verify(accountService).updateBalance(ca);
   }
 
   @Test

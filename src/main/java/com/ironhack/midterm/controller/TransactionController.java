@@ -2,7 +2,6 @@ package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.dao.transaction.Receipt;
 import com.ironhack.midterm.dao.transaction.Transaction;
-import com.ironhack.midterm.dto.TransactionInternalDTO;
 import com.ironhack.midterm.dto.TransactionLocalDTO;
 import com.ironhack.midterm.dto.TransactionThirdPartyDTO;
 
